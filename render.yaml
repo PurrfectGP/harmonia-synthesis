@@ -1,0 +1,16 @@
+# Harmonia Synthesis - Render.com Configuration
+services:
+  - type: web
+    name: harmonia-synthesis
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: VISUAL_WEIGHT
+        value: 50
+      - key: PERSONALITY_WEIGHT
+        value: 35
+      - key: HLA_WEIGHT
+        value: 15

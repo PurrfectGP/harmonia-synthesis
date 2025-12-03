@@ -1,0 +1,16 @@
+# Harmonia Synthesis - Docker Compose
+version: '3.8'
+
+services:
+  harmonia:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - VISUAL_WEIGHT=${VISUAL_WEIGHT:-50}
+      - PERSONALITY_WEIGHT=${PERSONALITY_WEIGHT:-35}
+      - HLA_WEIGHT=${HLA_WEIGHT:-15}
+    volumes:
+      - ./harmonia_outputs:/app/harmonia_outputs
+    restart: unless-stopped
