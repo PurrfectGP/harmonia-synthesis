@@ -1,4 +1,3 @@
-# Enhanced Report Service for Harmonia Synthesis
 from docx import Document
 from docx.shared import Pt, RGBColor, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -44,19 +43,6 @@ class ReportService:
         """
         doc = Document()
         
-        # Add helper method for tables
-        def set_cell_border(cell, **kwargs):
-            """Set cell border."""
-            tc = cell._element
-            tcPr = tc.get_or_add_tcPr()
-            for edge in ('top', 'left', 'bottom', 'right'):
-                if edge in kwargs:
-                    edge_element = OxmlElement(f'w:{edge}')
-                    edge_element.set(qn('w:val'), 'single')
-                    edge_element.set(qn('w:sz'), '4')
-                    edge_element.set(qn('w:color'), kwargs[edge])
-                    tcPr.append(edge_element)
-
         # ═══════════════════════════════════════════════════════════════════
         # TITLE PAGE
         # ═══════════════════════════════════════════════════════════════════
@@ -141,7 +127,7 @@ class ReportService:
         star_desc = analysis.get('star_sign_description', '')
         if star_desc:
             doc.add_paragraph()
-            star_heading = doc.add_heading('✨ The Cosmic Connection', level=2)
+            doc.add_heading('✨ The Cosmic Connection', level=2)
             doc.add_paragraph(star_desc)
 
         # ═══════════════════════════════════════════════════════════════════
@@ -243,7 +229,7 @@ class ReportService:
         ui_cards = analysis.get('ui_cards', {})
         if ui_cards:
             doc.add_paragraph()
-            flags_table = doc.add_table(rows=5, cols=2)
+            flags_table = doc.add_table(rows=4, cols=2)
             flags_table.style = 'Table Grid'
             
             flags_data = [
@@ -431,7 +417,6 @@ class ReportService:
         )
 
         for sin in self.SIN_ORDER:
-            doc.add_page_break()
             doc.add_heading(f"{sin.capitalize()}: {self.SIN_DESCRIPTIONS[sin]}", level=2)
             
             # Person 1 Analysis
@@ -612,22 +597,3 @@ class ReportService:
         doc.save(filename)
         logger.info(f"✅ Enhanced report saved: {filename}")
         return filename
-'''
-
-print("="*60)
-print("✅ ENHANCED REPORT SERVICE CREATED")
-print("="*60)
-print()
-print("New Features Added:")
-print("  📋 Complete questionnaire Q&A pairs")
-print("  🔬 Detailed HLA locus-by-locus breakdown")
-print("  🖼️ Visual analysis with confidence & features")
-print("  🧮 Calculation methodology for all components")
-print("  💡 Per-trait compatibility insights")
-print("  ⭐ Star sign titles and descriptions")
-print("  👤 Individual character portraits")
-print("  📊 Scoring interpretation for each trait")
-print("  🎯 Evidence quotes linked to traits")
-print("  💜 Final compatibility verdict")
-print()
-print("=" * 60)
