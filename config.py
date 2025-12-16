@@ -1,31 +1,33 @@
+"""
+Configuration - Loads API keys from environment variables (Render)
+"""
+
 import os
 
-class Settings:
-    """
-    Configuration loaded from ENVIRONMENT VARIABLES only.
-    NEVER put API keys in this file!
+class Config:
+    """Configuration class for Harmonia."""
     
-    Set your API key in:
-    - Render: Dashboard → Environment → Add Variable
-    - Local: export GEMINI_API_KEY=your_key
-    """
+    # Load from Render environment variable
+    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
     
-    def __init__(self):
-        # Get API key from environment variable ONLY
-        self.GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-        
-        if not self.GEMINI_API_KEY:
-            raise ValueError(
-                "\n\n"
-                "❌ GEMINI_API_KEY environment variable not set!\n\n"
-                "To fix this:\n"
-                "  Render.com: Dashboard → Your Service → Environment → Add Environment Variable\n"
-                "  Local dev:  export GEMINI_API_KEY=your_key_here\n"
-            )
-        
-        # Weights (defaults provided)
-        self.VISUAL_WEIGHT = int(os.environ.get("VISUAL_WEIGHT", "50"))
-        self.PERSONALITY_WEIGHT = int(os.environ.get("PERSONALITY_WEIGHT", "35"))
-        self.HLA_WEIGHT = int(os.environ.get("HLA_WEIGHT", "15"))
-        self.MIN_WORDS = int(os.environ.get("MIN_WORDS", "25"))
-        self.MAX_WORDS = int(os.environ.get("MAX_WORDS", "150"))
+    # Verify API key exists
+    if not GEMINI_API_KEY:
+        print("⚠️ WARNING: GEMINI_API_KEY environment variable not set!")
+        print("   Set it in Render dashboard: Environment → Add Variable")
+        print("   Key: GEMINI_API_KEY")
+        print("   Value: Your API key from https://aistudio.google.com/apikey")
+    else:
+        # Don't print the full key for security
+        masked_key = GEMINI_API_KEY[:8] + "..." + GEMINI_API_KEY[-4:]
+        print(f"✅ GEMINI_API_KEY loaded from environment: {masked_key}")
+    
+    # Model configuration with fallbacks
+    MODELS = {
+        'primary': 'gemini-3-pro-preview',      # Most intelligent (Gemini 3)
+        'fallback': 'gemini-2.5-pro',           # State-of-the-art thinking
+        'fast_fallback': 'gemini-2.5-flash'     # Fast, reliable
+    }
+    
+    # Timeout settings (prevent timeout errors)
+    REQUEST_TIMEOUT = 180  # 3 minutes for complex analysis
+    GENERATION_TIMEOUT = 90  # 90 seconds for generation
