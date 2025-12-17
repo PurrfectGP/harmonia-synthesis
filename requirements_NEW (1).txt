@@ -1,0 +1,10 @@
+# NEW Google Gen AI SDK (replaces deprecated google-generativeai)
+google-genai>=0.3.0
+
+# Other dependencies
+fastapi
+uvicorn
+python-multipart
+python-docx
+pillow
+numpy
