@@ -1,5 +1,5 @@
 """
-Harmonia Main - FIXED (NO request_options)
+Harmonia Main - FIXED (IndexError Fix)
 Response generator that ALWAYS works
 """
 
@@ -159,34 +159,66 @@ NOW GENERATE RESPONSE (50-80 words, vague, deep, nuanced):"""
                 
                 print(f"   Response received")
                 
-                # NEVER access response.text - causes index error!
-                # Go directly via candidates
+                # SAFE TEXT EXTRACTION - ULTRA ROBUST
+                # This fixes the IndexError by checking every level of existence
+                text = None
+                
                 try:
-                    if not hasattr(response, 'candidates') or not response.candidates:
-                        raise Exception("No candidates in response")
+                    # 1. Check if response exists
+                    if not response:
+                        print("   ⚠️ Response object is None")
                     
-                    if len(response.candidates) == 0:
-                        raise Exception("Empty candidates list")
-                    
-                    candidate = response.candidates[0]
-                    
-                    if not hasattr(candidate, 'content') or not candidate.content:
-                        raise Exception("No content in candidate")
-                    
-                    if not hasattr(candidate.content, 'parts') or not candidate.content.parts:
-                        raise Exception("No parts in content")
-                    
-                    if len(candidate.content.parts) == 0:
-                        raise Exception("Empty parts list")
-                    
-                    text = candidate.content.parts[0].text
-                    
-                    if not text or len(text.strip()) == 0:
-                        raise Exception("Text is empty")
-                    
-                except Exception as extract_error:
-                    print(f"   ❌ Text extraction failed: {extract_error}")
-                    raise
+                    # 2. Check candidates list
+                    elif not hasattr(response, 'candidates') or not response.candidates:
+                        print("   ⚠️ No candidates found in response")
+                        
+                    # 3. Check specific candidate
+                    elif len(response.candidates) == 0:
+                         print("   ⚠️ Candidates list is empty")
+                         
+                    else:
+                        candidate = response.candidates[0]
+                        
+                        # Check finish reason for debugging
+                        if hasattr(candidate, 'finish_reason'):
+                            print(f"   ℹ️ Finish reason: {candidate.finish_reason}")
+                        
+                        # 4. Check content
+                        if not hasattr(candidate, 'content') or not candidate.content:
+                            print("   ⚠️ No content in candidate")
+                        
+                        # 5. Check parts
+                        elif not hasattr(candidate.content, 'parts') or not candidate.content.parts:
+                            print("   ⚠️ No parts in content")
+                            
+                        # 6. Check parts length
+                        elif len(candidate.content.parts) == 0:
+                            print("   ⚠️ Parts list is empty")
+                            
+                        # 7. Extract text
+                        else:
+                            part = candidate.content.parts[0]
+                            if hasattr(part, 'text') and part.text:
+                                text = part.text
+                                print("   ✅ Text extracted via candidates path")
+                            else:
+                                print("   ⚠️ Part has no text")
+                                
+                except Exception as deep_extract_e:
+                    print(f"   ⚠️ Deep extraction error: {deep_extract_e}")
+
+                # Fallback to .text (wrapped in heavy protection)
+                if not text:
+                    try:
+                        # Only touch .text if it exists and we haven't found anything yet
+                        # This access is what caused the original crash, so we wrap it
+                        if hasattr(response, 'text'):
+                            text = response.text
+                    except Exception as prop_e:
+                         print(f"   ⚠️ response.text access failed (expected if filtered): {prop_e}")
+
+                if not text:
+                     raise Exception("No text content found in response (empty or blocked)")
                 
                 text = text.strip()
                 words = text.split()
