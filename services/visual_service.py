@@ -1,5 +1,6 @@
 """
-Visual Service - Fixed (NO request_options parameter)
+Visual Service - Fixed (CRITICAL: Removed risky response.text access)
+Ensures image analysis doesn't crash on safety blocks
 """
 
 import google.generativeai as genai
@@ -67,7 +68,7 @@ class VisualService:
             }
     
     def _analyze_with_vision(self, image):
-        """Analyze image using Gemini Vision. NO request_options."""
+        """Analyze image using Gemini Vision. Uses ROBUST extraction."""
         prompt = """Analyze this photo:
 1. Facial expression
 2. Overall impression
@@ -80,10 +81,35 @@ Return JSON:
             try:
                 print(f"📸 Analyzing with {model_info['name']}...")
                 
-                # NO request_options parameter!
                 response = model_info['model'].generate_content([prompt, image])
                 
-                text = response.text.strip()
+                # CRITICAL FIX: Safe text extraction to avoid IndexError
+                text = None
+                
+                try:
+                    if hasattr(response, 'candidates') and response.candidates:
+                        if len(response.candidates) > 0:
+                            candidate = response.candidates[0]
+                            if hasattr(candidate, 'content') and candidate.content:
+                                if hasattr(candidate.content, 'parts') and candidate.content.parts:
+                                    if len(candidate.content.parts) > 0:
+                                        text = candidate.content.parts[0].text
+                except Exception:
+                    pass
+                
+                # Safe fallback
+                if not text:
+                    try:
+                        if hasattr(response, 'text'):
+                            text = response.text
+                    except Exception:
+                        pass
+                
+                if not text:
+                    raise Exception("Response blocked or empty")
+
+                # Parse JSON
+                text = text.strip()
                 text = re.sub(r'^```json\s*', '', text)
                 text = re.sub(r'^```\s*', '', text)
                 text = re.sub(r'\s*```$', '', text)
@@ -96,6 +122,7 @@ Return JSON:
             except Exception as e:
                 print(f"⚠️ {model_info['name']} failed: {str(e)[:50]}")
                 if model_info == self.vision_models[-1]:
+                    # Return neutral default if all models fail
                     return {
                         'expression': 'neutral',
                         'impression': 'standard',
