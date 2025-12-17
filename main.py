@@ -1,6 +1,6 @@
 """
-Harmonia Main - FIXED (IndexError Fix)
-Response generator that ALWAYS works
+Harmonia Main - FIXED (Safety Settings & Robust Fallback)
+Enables Gemini 3 Pro by reducing safety blocks
 """
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -95,7 +95,6 @@ async def generate_response(request: ResponseGeneratorRequest):
             print("❌ No API key available")
             raise Exception("No API key")
         
-        print(f"✅ API key available")
         genai.configure(api_key=Config.GEMINI_API_KEY)
         
         # CORRECT ORDER: Gemini 3 Pro FIRST!
@@ -103,6 +102,15 @@ async def generate_response(request: ResponseGeneratorRequest):
             ('gemini-3-pro-preview', 'Gemini 3 Pro'),
             ('gemini-2.5-pro', 'Gemini 2.5 Pro'),
             ('gemini-2.5-flash', 'Gemini 2.5 Flash')
+        ]
+        
+        # RELAXED SAFETY SETTINGS
+        # This is critical for "Seven Deadly Sins" content to pass Gemini 3 Pro filters
+        safety_settings = [
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
         ]
         
         print(f"🔄 Will try {len(models_to_try)} models in order:")
@@ -116,12 +124,11 @@ async def generate_response(request: ResponseGeneratorRequest):
             "neutral": "pragmatic and balanced, showing BOTH genuine consideration for others AND clear self-interest. Demonstrate complexity and mixed motivations."
         }
         
-        # COMPREHENSIVE PROMPT with strict requirements
         prompt = f"""You are helping a user respond to a personality assessment question. Generate a natural, conversational response.
 
 QUESTION: "{request.question}"
 
-TONE: {tone_instructions.get(request.tone, 'balanced and thoughtful')}
+TONE: {tone_instructions.get(request.tone.lower(), 'balanced and thoughtful')}
 
 CRITICAL REQUIREMENTS (ALL MUST BE MET):
 1. LENGTH: Exactly 50-80 words (count them!)
@@ -142,13 +149,12 @@ NOW GENERATE RESPONSE (50-80 words, vague, deep, nuanced):"""
         for idx, (model_name, model_label) in enumerate(models_to_try, 1):
             try:
                 print(f"🔮 Attempt {idx}/{len(models_to_try)}: {model_label}")
-                print(f"   Model: {model_name}")
                 
                 model = genai.GenerativeModel(model_name)
                 
-                print(f"   Sending request...")
                 response = model.generate_content(
                     prompt,
+                    safety_settings=safety_settings,  # APPLIED HERE
                     generation_config={
                         'temperature': 0.9,
                         'max_output_tokens': 250,
@@ -157,68 +163,30 @@ NOW GENERATE RESPONSE (50-80 words, vague, deep, nuanced):"""
                     }
                 )
                 
-                print(f"   Response received")
-                
                 # SAFE TEXT EXTRACTION - ULTRA ROBUST
-                # This fixes the IndexError by checking every level of existence
                 text = None
                 
                 try:
-                    # 1. Check if response exists
-                    if not response:
-                        print("   ⚠️ Response object is None")
-                    
-                    # 2. Check candidates list
-                    elif not hasattr(response, 'candidates') or not response.candidates:
-                        print("   ⚠️ No candidates found in response")
-                        
-                    # 3. Check specific candidate
-                    elif len(response.candidates) == 0:
-                         print("   ⚠️ Candidates list is empty")
-                         
-                    else:
-                        candidate = response.candidates[0]
-                        
-                        # Check finish reason for debugging
-                        if hasattr(candidate, 'finish_reason'):
-                            print(f"   ℹ️ Finish reason: {candidate.finish_reason}")
-                        
-                        # 4. Check content
-                        if not hasattr(candidate, 'content') or not candidate.content:
-                            print("   ⚠️ No content in candidate")
-                        
-                        # 5. Check parts
-                        elif not hasattr(candidate.content, 'parts') or not candidate.content.parts:
-                            print("   ⚠️ No parts in content")
-                            
-                        # 6. Check parts length
-                        elif len(candidate.content.parts) == 0:
-                            print("   ⚠️ Parts list is empty")
-                            
-                        # 7. Extract text
-                        else:
-                            part = candidate.content.parts[0]
-                            if hasattr(part, 'text') and part.text:
-                                text = part.text
-                                print("   ✅ Text extracted via candidates path")
-                            else:
-                                print("   ⚠️ Part has no text")
-                                
+                    if hasattr(response, 'candidates') and response.candidates:
+                        if len(response.candidates) > 0:
+                            candidate = response.candidates[0]
+                            if hasattr(candidate, 'content') and candidate.content:
+                                if hasattr(candidate.content, 'parts') and candidate.content.parts:
+                                    if len(candidate.content.parts) > 0:
+                                        text = candidate.content.parts[0].text
                 except Exception as deep_extract_e:
-                    print(f"   ⚠️ Deep extraction error: {deep_extract_e}")
+                    print(f"   ⚠️ Deep extraction warning: {deep_extract_e}")
 
                 # Fallback to .text (wrapped in heavy protection)
                 if not text:
                     try:
-                        # Only touch .text if it exists and we haven't found anything yet
-                        # This access is what caused the original crash, so we wrap it
                         if hasattr(response, 'text'):
                             text = response.text
-                    except Exception as prop_e:
-                         print(f"   ⚠️ response.text access failed (expected if filtered): {prop_e}")
+                    except Exception:
+                         pass
 
                 if not text:
-                     raise Exception("No text content found in response (empty or blocked)")
+                     raise ValueError("Response blocked or empty")
                 
                 text = text.strip()
                 words = text.split()
@@ -248,16 +216,12 @@ NOW GENERATE RESPONSE (50-80 words, vague, deep, nuanced):"""
                 })
                 
             except Exception as e:
+                # Cleaner error logging - avoid traceback for expected blocks
                 error_msg = str(e)
-                print(f"❌ {model_label} FAILED")
-                print(f"   Error: {error_msg[:150]}")
-                print(f"   Error type: {type(e).__name__}")
-                
-                # Log full traceback for debugging
-                import traceback
-                print(f"   Traceback:")
-                traceback.print_exc()
-                print()
+                if "blocked" in error_msg.lower() or "empty" in error_msg.lower():
+                    print(f"⚠️ {model_label} result was empty or blocked (Safety Filter).")
+                else:
+                    print(f"❌ {model_label} FAILED: {error_msg[:100]}")
                 
                 if idx == len(models_to_try):
                     print(f"❌ ALL {len(models_to_try)} MODELS FAILED!")
@@ -268,7 +232,8 @@ NOW GENERATE RESPONSE (50-80 words, vague, deep, nuanced):"""
         
         # All models failed - use fallback
         print("🔄 ALL MODELS FAILED - Using pre-defined fallback")
-        text = fallbacks.get(request.tone, fallbacks["neutral"])
+        fallback_key = request.tone.lower()
+        text = fallbacks.get(fallback_key, fallbacks["neutral"])
         print(f"✅ Returning fallback: {len(text.split())} words")
         
         return JSONResponse({
@@ -280,11 +245,8 @@ NOW GENERATE RESPONSE (50-80 words, vague, deep, nuanced):"""
         
     except Exception as e:
         print(f"❌ FATAL ERROR: {e}")
-        import traceback
-        traceback.print_exc()
-        
         # Last resort fallback
-        text = fallbacks.get(request.tone, fallbacks["neutral"])
+        text = fallbacks.get(request.tone.lower(), fallbacks["neutral"])
         return JSONResponse({
             "status": "error_fallback",
             "response": text,
