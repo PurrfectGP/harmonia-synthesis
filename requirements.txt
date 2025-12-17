@@ -1,0 +1,14 @@
+# OLD SDK (current - works with gemini_service_WORKING.py)
+google-generativeai
+
+# Core dependencies
+fastapi
+uvicorn[standard]
+python-multipart
+python-docx
+pillow
+numpy
+
+# Optional but recommended
+pydantic
+aiofiles
