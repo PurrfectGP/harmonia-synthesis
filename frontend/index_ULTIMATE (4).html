@@ -1,0 +1,5277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia — The Compatibility Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for radar chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --cream: #FDF8F3;
+            --blush: #FFF0EC;
+            --rose: #FFEAE5;
+            --magenta: #E84A8A;
+            --magenta-light: rgba(232, 74, 138, 0.1);
+            --violet: #8B5CF6;
+            --violet-light: rgba(139, 92, 246, 0.1);
+            --navy: #1E293B;
+            --slate: #475569;
+            --plum: #4A1D5C;
+            --dark-bg: #0F0F14;
+            --dark-surface: #1A1A24;
+            --dark-border: #2A2A3A;
+            --gray-light: #F1F5F9;
+        }
+
+        /* Dark Mode Variables */
+        [data-theme="dark"] {
+            --cream: #0F0F14;
+            --blush: #1A1A24;
+            --rose: #252532;
+            --navy: #F1F5F9;
+            --slate: #94A3B8;
+            --gray-light: #2A2A3A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--navy);
+            overflow-x: hidden;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(253, 248, 243, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(30, 41, 59, 0.08);
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.4s ease;
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(15, 15, 20, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--navy);
+            letter-spacing: -0.02em;
+            cursor: pointer;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--slate);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--magenta);
+        }
+
+        /* iOS-style Toggle Switch */
+        .theme-toggle {
+            position: relative;
+            width: 52px;
+            height: 32px;
+            background: var(--gray-light);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border: none;
+            padding: 0;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background: var(--magenta);
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .theme-toggle::before {
+            transform: translateX(20px);
+        }
+
+        .theme-toggle-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6px;
+            pointer-events: none;
+        }
+
+        .theme-toggle-icons svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .sun-icon {
+            color: #F59E0B;
+        }
+
+        .moon-icon {
+            color: white;
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: calc(100vh - 80px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            padding: 4rem 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, var(--magenta-light) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, var(--violet-light) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-20px, -20px) rotate(2deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tagline {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            color: var(--navy);
+        }
+
+        .tagline .addiction {
+            color: var(--slate);
+            font-style: italic;
+            opacity: 0;
+            animation: fadeInWord 0.8s ease 0.3s forwards;
+        }
+
+        .tagline .compatibility {
+            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            animation: fadeInWord 0.8s ease 0.8s forwards;
+        }
+
+        @keyframes fadeInWord {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--slate);
+            max-width: 500px;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Radar Chart Container */
+        .radar-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+        }
+
+        /* Abstract Background Circles */
+        .radar-bg-circle {
+            position: absolute;
+            border: 1px solid var(--gray-light);
+            border-radius: 50%;
+        }
+
+        .radar-bg-circle.large { width: 400px; height: 400px; }
+        .radar-bg-circle.medium { width: 300px; height: 300px; }
+        .radar-bg-circle.small { width: 200px; height: 200px; }
+
+        .radar-container {
+            position: relative;
+            width: 450px;
+            height: 450px;
+        }
+
+        .radar-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .radar-grid {
+            stroke: var(--slate);
+            stroke-width: 1;
+            fill: none;
+            opacity: 0.15;
+        }
+
+        .radar-shape-a {
+            fill: rgba(232, 74, 138, 0.15);
+            stroke: var(--magenta);
+            stroke-width: 2.5;
+            transition: all 1.2s ease-in-out;
+        }
+
+        .radar-shape-b {
+            fill: rgba(139, 92, 246, 0.15);
+            stroke: var(--violet);
+            stroke-width: 2.5;
+            transition: all 1.2s ease-in-out;
+        }
+
+        /* Floating Labels around radar */
+        .radar-label {
+            position: absolute;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--slate);
+        }
+
+        .radar-label.top { top: 20px; left: 50%; transform: translateX(-50%); }
+        .radar-label.bottom-left { bottom: 30px; left: 30px; }
+        .radar-label.bottom-right { bottom: 30px; right: 30px; }
+
+        /* Central Status */
+        .radar-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.6rem 1.2rem;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--magenta);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.5s ease;
+        }
+
+        [data-theme="dark"] .radar-status {
+            background: rgba(26, 26, 36, 0.9);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--navy);
+            color: white;
+            box-shadow: 0 4px 20px rgba(30, 41, 59, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--magenta);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(232, 74, 138, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--navy);
+        }
+
+        .btn-secondary:hover {
+            background: var(--navy);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 6rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--navy);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--slate);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Why Harmonia Page */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(30, 41, 59, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        [data-theme="dark"] .stat-card {
+            background: var(--blush);
+            border-color: var(--dark-border);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number.navy { color: var(--navy); }
+        .stat-number.magenta { color: var(--magenta); }
+
+        .stat-label {
+            color: var(--slate);
+            font-size: 0.95rem;
+        }
+
+        /* Vision Quote */
+        .vision-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            line-height: 1.8;
+            color: var(--navy);
+            text-align: center;
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 3rem;
+            position: relative;
+            font-style: italic;
+        }
+
+        .vision-quote::before {
+            content: '"';
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 6rem;
+            color: var(--magenta);
+            opacity: 0.2;
+            line-height: 1;
+            font-style: normal;
+        }
+
+        /* Science Table */
+        .science-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .science-table {
+            background: var(--blush);
+        }
+
+        .science-table th {
+            background: var(--navy);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .science-table th:last-child {
+            color: var(--magenta);
+            background: var(--navy);
+        }
+
+        [data-theme="dark"] .science-table th:last-child {
+            color: #F9A8D4;
+        }
+
+        .science-table td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.08);
+            color: var(--slate);
+        }
+
+        [data-theme="dark"] .science-table td {
+            border-bottom-color: var(--dark-border);
+        }
+
+        .science-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .science-table tr:hover td {
+            background: var(--blush);
+        }
+
+        [data-theme="dark"] .science-table tr:hover td {
+            background: var(--rose);
+        }
+
+        /* Compatibility Footnote */
+        .compatibility-note {
+            background: linear-gradient(135deg, var(--blush), var(--rose));
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--magenta);
+            margin-top: 2rem;
+        }
+
+        [data-theme="dark"] .compatibility-note {
+            background: var(--dark-surface);
+        }
+
+        .compatibility-note h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--magenta);
+            margin-bottom: 0.5rem;
+        }
+
+        .compatibility-note p {
+            color: var(--slate);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Partnerships Page */
+        .partnerships-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .partnerships-content h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--navy);
+        }
+
+        .partnerships-content > p {
+            color: var(--slate);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .benefit-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--violet-light);
+            border: 1px solid var(--violet);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .benefit-check svg {
+            width: 14px;
+            height: 14px;
+            color: var(--violet);
+        }
+
+        .benefit-text h4 {
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .benefit-text p {
+            color: var(--slate);
+            font-size: 0.95rem;
+        }
+
+        /* Current Partners */
+        .current-partners {
+            margin-top: 3rem;
+        }
+
+        .current-partners h3 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--slate);
+            margin-bottom: 1rem;
+        }
+
+        .partner-logos {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .partner-logos:hover {
+            opacity: 1;
+        }
+
+        .partner-logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .partner-logo-text.serif {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+        }
+
+        /* Integration Form */
+        .integration-form-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(30, 41, 59, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .integration-form-card {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .integration-form-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: var(--magenta-light);
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .integration-form-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--navy);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--slate);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 0;
+            border: none;
+            border-bottom: 2px solid var(--gray-light);
+            background: transparent;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--navy);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-bottom-color: var(--magenta);
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        /* Team Page */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .team-card {
+            text-align: center;
+        }
+
+        .team-avatar {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            background: var(--gray-light);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        [data-theme="dark"] .team-avatar {
+            background: var(--dark-surface);
+        }
+
+        .team-avatar-radar {
+            width: 70%;
+            height: 70%;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .team-card:hover .team-avatar-radar {
+            opacity: 1;
+        }
+
+        .team-avatar-placeholder {
+            position: absolute;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--slate);
+            opacity: 0.5;
+        }
+
+        .team-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .team-card .role {
+            color: var(--magenta);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .team-card .bio {
+            color: var(--slate);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Founding Story */
+        .founding-story {
+            background: linear-gradient(135deg, var(--blush), var(--rose));
+            border-radius: 24px;
+            padding: 4rem;
+            margin: 4rem 0;
+        }
+
+        [data-theme="dark"] .founding-story {
+            background: var(--dark-surface);
+        }
+
+        .founding-story blockquote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            line-height: 2;
+            color: var(--navy);
+            font-style: italic;
+        }
+
+        
+        /* ═══════════════════════════════════════════════════════════════════ */
+        /* ENHANCED LOCAL NETWORK UI - MATCHING MARKETING PAGE QUALITY */
+        /* ═══════════════════════════════════════════════════════════════════ */
+
+        #local-network {
+            background: var(--cream);
+            transition: background 0.4s ease;
+            padding: 4rem 0;
+        }
+
+        [data-theme="dark"] #local-network {
+            background: var(--dark-bg);
+        }
+
+        .engine-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .engine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.08);
+        }
+
+        [data-theme="dark"] .engine-header {
+            border-bottom-color: var(--dark-border);
+        }
+
+        .engine-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        [data-theme="dark"] .engine-title {
+            color: white;
+        }
+
+        .engine-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #22C55E;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22C55E;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        /* Enhanced Form Styling - Matches Marketing Pages */
+        .engine-form {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(30, 41, 59, 0.08);
+            transition: all 0.4s ease;
+        }
+
+        [data-theme="dark"] .engine-form {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label, .file-label {
+            display: block;
+            color: var(--slate);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        [data-theme="dark"] .form-group label,
+        [data-theme="dark"] .file-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .engine-input {
+            width: 100%;
+            background: var(--blush);
+            border: 1px solid rgba(30, 41, 59, 0.12);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            color: var(--navy);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .engine-input:focus {
+            outline: none;
+            border-color: var(--magenta);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(232, 74, 138, 0.1);
+        }
+
+        .engine-input::placeholder {
+            color: var(--slate);
+            opacity: 0.5;
+        }
+
+        [data-theme="dark"] .engine-input {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--dark-border);
+            color: white;
+        }
+
+        [data-theme="dark"] .engine-input:focus {
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 0 3px rgba(232, 74, 138, 0.2);
+        }
+
+        .engine-file-input {
+            width: 100%;
+            color: var(--slate);
+            font-size: 0.9rem;
+            padding: 0.75rem;
+            background: var(--blush);
+            border: 1px solid rgba(30, 41, 59, 0.12);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .engine-file-input:hover {
+            border-color: var(--magenta);
+        }
+
+        [data-theme="dark"] .engine-file-input {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--dark-border);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .input-status {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .input-hint {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--slate);
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        [data-theme="dark"] .input-hint {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .form-section-title {
+            color: var(--navy);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        [data-theme="dark"] .form-section-title {
+            color: white;
+        }
+
+        /* Expandable Section - Elegant Style */
+        .expandable {
+            background: var(--rose);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(30, 41, 59, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .expandable {
+            background: rgba(255,255,255,0.03);
+            border-color: var(--dark-border);
+        }
+
+        .expandable[open] {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .expandable-title {
+            color: var(--navy);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .expandable-title::-webkit-details-marker {
+            display: none;
+        }
+
+        .expandable-title::before {
+            content: '▶';
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+            color: var(--magenta);
+        }
+
+        .expandable[open] .expandable-title::before {
+            transform: rotate(90deg);
+        }
+
+        [data-theme="dark"] .expandable-title {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .expandable-content {
+            margin-top: 1.5rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .divider-text {
+            text-align: center;
+            color: var(--slate);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 2rem 0;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        [data-theme="dark"] .divider-text {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .divider-text::before,
+        .divider-text::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 42%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(30, 41, 59, 0.15), transparent);
+        }
+
+        [data-theme="dark"] .divider-text::before,
+        [data-theme="dark"] .divider-text::after {
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        .divider-text::before { left: 0; }
+        .divider-text::after { right: 0; }
+
+        /* Buttons - Sophisticated Style */
+        .engine-btn {
+            padding: 1.1rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .engine-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .engine-btn:hover::before {
+            left: 100%;
+        }
+
+        .engine-btn.primary {
+            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            color: white;
+            box-shadow: 0 4px 15px rgba(232, 74, 138, 0.3);
+        }
+
+        .engine-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(232, 74, 138, 0.4);
+        }
+
+        .engine-btn.secondary {
+            background: var(--blush);
+            color: var(--navy);
+            border: 1px solid rgba(30, 41, 59, 0.15);
+        }
+
+        .engine-btn.secondary:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="dark"] .engine-btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: var(--dark-border);
+        }
+
+        [data-theme="dark"] .engine-btn.secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* ENHANCED LOADING SCREEN */
+        .processing-container {
+            text-align: center;
+            padding: 6rem 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .loading-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 3rem;
+        }
+
+        .loading-radar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radar-spin {
+            animation: spin 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            transform-origin: center;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .radar-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(232, 74, 138, 0.2) 0%, transparent 70%);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { opacity: 0.3; transform: translate(-50%, -50%) scale(0.95); }
+            to { opacity: 0.6; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .processing-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+        }
+
+        [data-theme="dark"] .processing-title {
+            color: white;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            max-width: 500px;
+            height: 8px;
+            background: var(--blush);
+            border-radius: 100px;
+            margin: 2rem auto;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        [data-theme="dark"] .progress-bar-container {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--magenta), var(--violet));
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+            border-radius: 100px;
+            box-shadow: 0 0 20px rgba(232, 74, 138, 0.6);
+        }
+
+        .processing-message {
+            color: var(--slate);
+            font-size: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        [data-theme="dark"] .processing-message {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* FUN FACTS - GAME-STYLE LOADING TIPS */
+        .loading-facts {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(30, 41, 59, 0.08);
+        }
+
+        [data-theme="dark"] .loading-facts {
+            border-top-color: var(--dark-border);
+        }
+
+        .fact-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--magenta);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .fact-text {
+            font-size: 0.95rem;
+            color: var(--slate);
+            line-height: 1.7;
+            opacity: 0.8;
+            font-style: italic;
+            min-height: 3rem;
+            animation: factFadeIn 0.6s ease;
+        }
+
+        [data-theme="dark"] .fact-text {
+            color: rgba(255,255,255,0.6);
+        }
+
+        @keyframes factFadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 0.8; transform: translateY(0); }
+        }
+
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-progress {
+            color: var(--slate);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        [data-theme="dark"] .quiz-progress {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .quiz-divider {
+            margin: 0 0.5rem;
+        }
+
+        .block-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--navy);
+        }
+
+        [data-theme="dark"] .block-title {
+            color: white;
+        }
+
+        .questions-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .question-card {
+            background: white;
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        [data-theme="dark"] .question-card {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+        }
+
+        .question-title {
+            color: var(--magenta);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .question-text {
+            color: var(--slate);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        [data-theme="dark"] .question-text {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .question-textarea {
+            width: 100%;
+            background: white;
+            border: 1px solid rgba(30, 41, 59, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--navy);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            min-height: 120px;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .question-textarea:focus {
+            outline: none;
+            border-color: var(--magenta);
+        }
+
+        [data-theme="dark"] .question-textarea {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--dark-border);
+            color: white;
+        }
+
+        [data-theme="dark"] .question-textarea:focus {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .word-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .word-counter.valid {
+            color: #22C55E;
+        }
+
+        .word-counter.invalid {
+            color: #EF4444;
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Processing Styles */
+        .processing-container {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-radar {
+            margin: 0 auto 2rem;
+        }
+
+        .radar-spin {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .processing-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        [data-theme="dark"] .processing-title {
+            color: white;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            max-width: 400px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin: 2rem auto 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--magenta), var(--violet));
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .processing-message {
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        [data-theme="dark"] .processing-message {
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Results Styles */
+        .results-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .results-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+        }
+
+        [data-theme="dark"] .results-title {
+            color: white;
+        }
+
+        .overall-score {
+            display: inline-block;
+            background: white;
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem 3rem;
+        }
+
+        [data-theme="dark"] .overall-score {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+        }
+
+        .score-label {
+            color: var(--slate);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .score-label {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .result-card {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+        }
+
+        .card-label {
+            color: var(--slate);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        [data-theme="dark"] .card-label {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .card-score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        [data-theme="dark"] .card-score {
+            color: white;
+        }
+
+        .insights-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .insight-card {
+            background: white;
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        [data-theme="dark"] .insight-card {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+        }
+
+        .insight-card h4 {
+            color: var(--magenta);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-card p {
+            color: var(--slate);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        [data-theme="dark"] .insight-card p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .insight-card.vibe {
+            grid-column: span 2;
+        }
+
+        .themes-section {
+            margin-bottom: 3rem;
+        }
+
+        .themes-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        [data-theme="dark"] .themes-title {
+            color: white;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .theme-badge {
+            background: rgba(232, 74, 138, 0.15);
+            border: 1px solid rgba(232, 74, 138, 0.3);
+            color: var(--magenta);
+            padding: 0.75rem 1rem;
+            border-radius: 100px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .flags-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .flag-card {
+            background: white;
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        [data-theme="dark"] .flag-card {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+        }
+
+        .flag-icon {
+            font-size: 1.5rem;
+        }
+
+        .flag-label {
+            color: var(--slate);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .flag-label {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .flag-text {
+            color: var(--navy);
+            font-size: 0.95rem;
+        }
+
+        [data-theme="dark"] .flag-text {
+            color: white;
+        }
+
+        .chart-section {
+            background: white;
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        [data-theme="dark"] .chart-section {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+        }
+
+        .chart-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .chart-title {
+            color: white;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .form-row, .results-grid, .insights-container, .themes-grid, .flags-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        .divider-text {
+            text-align: center;
+            color: var(--slate);
+            font-size: 0.85rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        [data-theme="dark"] .divider-text {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .divider-text::before,
+        .divider-text::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: rgba(30, 41, 59, 0.2);
+        }
+
+        [data-theme="dark"] .divider-text::before,
+        [data-theme="dark"] .divider-text::after {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .divider-text::before {
+            left: 0;
+        }
+
+        .divider-text::after {
+            right: 0;
+        }
+
+        .open {
+            /* Make expandable open by default */
+        }
+
+        /* ══════════════════════════════════════════════════════════════ */
+        /* ENHANCED RESULTS PAGE - MAXIMUM ENGAGEMENT */
+        /* ══════════════════════════════════════════════════════════════ */
+        
+        .results-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .results-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 0.6s ease;
+        }
+
+        .celebration-icon {
+            font-size: 3.5rem;
+            animation: bounce 1s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Hero Score Circle */
+        .hero-metric {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .overall-score-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(30, 41, 59, 0.08);
+            text-align: center;
+            min-width: 320px;
+        }
+
+        [data-theme="dark"] .overall-score-card {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .score-circle {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 1rem auto;
+        }
+
+        .score-ring {
+            transform: rotate(-90deg);
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: var(--blush);
+            stroke-width: 12;
+        }
+
+        [data-theme="dark"] .ring-bg {
+            stroke: rgba(255,255,255,0.1);
+        }
+
+        .ring-progress {
+            fill: none;
+            stroke: url(#scoreGradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 471;
+            stroke-dashoffset: 471;
+            transition: stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .score-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .score-unit {
+            font-size: 1.2rem;
+            color: var(--slate);
+            margin-top: 0.25rem;
+        }
+
+        /* Component Cards - Interactive */
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .component-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(30, 41, 59, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .component-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--magenta), var(--violet));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .component-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .component-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        [data-theme="dark"] .component-card {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .component-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .component-label {
+            color: var(--navy);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        [data-theme="dark"] .component-label {
+            color: white;
+        }
+
+        .component-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .component-score {
+            color: white;
+        }
+
+        .component-description {
+            color: var(--slate);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        /* Expandable Insights */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .expandable-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(30, 41, 59, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .expandable-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .expandable-card.expanded {
+            border-color: var(--magenta);
+            box-shadow: 0 12px 40px rgba(232, 74, 138, 0.15);
+        }
+
+        [data-theme="dark"] .expandable-card {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .insight-icon {
+            font-size: 1.5rem;
+        }
+
+        .insight-title {
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        [data-theme="dark"] .insight-title {
+            color: white;
+        }
+
+        .insight-preview {
+            color: var(--slate);
+            font-size: 0.85rem;
+        }
+
+        [data-theme="dark"] .insight-preview {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .expand-arrow {
+            margin-left: auto;
+            color: var(--magenta);
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .expandable-card.expanded .expand-arrow {
+            transform: rotate(180deg);
+        }
+
+        .insight-detail {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(30, 41, 59, 0.08);
+            color: var(--slate);
+            line-height: 1.7;
+            animation: slideDown 0.3s ease;
+        }
+
+        [data-theme="dark"] .insight-detail {
+            border-top-color: var(--dark-border);
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Themes - Animated Grid */
+        .themes-showcase {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .theme-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(30, 41, 59, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .theme-card.visible {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(232, 74, 138, 0.15);
+            border-color: var(--magenta);
+        }
+
+        [data-theme="dark"] .theme-card {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .theme-badge-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .theme-badge-title {
+            color: var(--navy);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .theme-badge-title {
+            color: white;
+        }
+
+        /* Chart Wrapper */
+        .chart-wrapper {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .legend-instruction {
+            color: var(--slate);
+            font-size: 0.85rem;
+            padding: 1rem;
+            background: var(--blush);
+            border-radius: 12px;
+            border-left: 3px solid var(--magenta);
+            margin-bottom: 1.5rem;
+        }
+
+        [data-theme="dark"] .legend-instruction {
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--navy);
+        }
+
+        [data-theme="dark"] .legend-item {
+            color: white;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        /* Enhanced Flags */
+        .flag-card.strength {
+            border-left: 4px solid #22C55E;
+        }
+
+        .flag-card.challenge {
+            border-left: 4px solid #EF4444;
+        }
+
+        .flag-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .flag-content {
+            color: var(--slate);
+            line-height: 1.7;
+        }
+
+        [data-theme="dark"] .flag-content {
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Large Download Button */
+        .engine-btn.large {
+            padding: 1.5rem 3rem;
+            font-size: 1.1rem;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .btn-icon {
+            font-size: 1.5rem;
+        }
+
+        .btn-subtitle {
+            font-size: 0.7rem;
+            opacity: 0.85;
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .components-grid,
+            .themes-showcase,
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    
+        /* Global Error Display - Stays Visible */
+        .global-error {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            max-width: 600px;
+            width: 90%;
+            animation: slideInDown 0.3s ease;
+        }
+
+        .global-error.hidden {
+            display: none;
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .error-content {
+            background: #FEE2E2;
+            border: 2px solid #EF4444;
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.3);
+        }
+
+        [data-theme="dark"] .error-content {
+            background: #7F1D1D;
+            border-color: #EF4444;
+        }
+
+        .error-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .error-text {
+            flex: 1;
+            color: #991B1B;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        [data-theme="dark"] .error-text {
+            color: #FCA5A5;
+        }
+
+        .error-close {
+            background: none;
+            border: none;
+            color: #991B1B;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .error-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .error-close {
+            color: #FCA5A5;
+        }
+
+        /* Back Button Styling */
+        .back-btn {
+            opacity: 0.8;
+        }
+
+        .back-btn:hover {
+            opacity: 1;
+        }
+
+        /* Generate Response Button */
+        .generate-btn {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--violet);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .generate-btn:hover {
+            background: #7C3AED;
+            transform: translateY(-1px);
+        }
+
+        [data-theme="dark"] .generate-btn {
+            background: rgba(139, 92, 246, 0.8);
+        }
+
+    
+        /* ═══════════════════════════════════════════════════════════════ */
+        /* ERROR MODALS & CONFIRMATIONS */
+        /* ═══════════════════════════════════════════════════════════════ */
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--cream);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        [data-theme="dark"] .modal-content {
+            background: var(--dark-surface);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--navy);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        [data-theme="dark"] .modal-title {
+            color: white;
+        }
+
+        .modal-message {
+            color: var(--slate);
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        [data-theme="dark"] .modal-message {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: var(--blush);
+            color: var(--navy);
+            border: 1px solid rgba(30, 41, 59, 0.15);
+        }
+
+        [data-theme="dark"] .modal-btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: var(--dark-border);
+        }
+
+        /* BACK NAVIGATION BUTTON */
+        .back-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--slate);
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-nav:hover {
+            color: var(--magenta);
+            background: var(--blush);
+        }
+
+        [data-theme="dark"] .back-nav {
+            color: rgba(255,255,255,0.7);
+        }
+
+        [data-theme="dark"] .back-nav:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--magenta);
+        }
+
+        /* RESPONSE GENERATOR BUTTONS */
+        .question-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .gen-btn {
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .gen-btn.positive {
+            background: #22C55E;
+            color: white;
+        }
+
+        .gen-btn.positive:hover {
+            background: #16A34A;
+        }
+
+        .gen-btn.negative {
+            background: #EF4444;
+            color: white;
+        }
+
+        .gen-btn.negative:hover {
+            background: #DC2626;
+        }
+
+        .gen-btn.neutral {
+            background: #F59E0B;
+            color: white;
+        }
+
+        .gen-btn.neutral:hover {
+            background: #D97706;
+        }
+
+        .gen-spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* MOBILE RESPONSIVE FIXES */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 2rem 1.5rem;
+                min-height: auto;
+            }
+
+            .radar-wrapper {
+                height: 300px;
+            }
+
+            .radar-container {
+                width: 280px;
+                height: 280px;
+            }
+
+            .engine-container {
+                padding: 0 1rem;
+            }
+
+            .engine-form {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .components-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .chart-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .themes-showcase {
+                grid-template-columns: 1fr;
+            }
+
+            .flags-section {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .engine-title {
+                font-size: 1.8rem;
+            }
+        }
+
+    
+        /* Error Modal - Persistent */
+        .error-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-modal.active {
+            display: flex;
+        }
+
+        .error-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        [data-theme="dark"] .error-content {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .error-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+        }
+
+        [data-theme="dark"] .error-title {
+            color: white;
+        }
+
+        .error-message {
+            color: var(--slate);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        [data-theme="dark"] .error-message {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .error-btn {
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .error-btn.primary {
+            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            color: white;
+        }
+
+        .error-btn.secondary {
+            background: var(--blush);
+            color: var(--navy);
+            border: 1px solid rgba(30,41,59,0.2);
+        }
+
+        [data-theme="dark"] .error-btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .error-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+    
+        /* Dopamine Animations - Engagement Boosters */
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--magenta);
+            animation: confetti 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        @keyframes celebration-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .celebrate {
+            animation: celebration-pulse 0.5s ease;
+        }
+
+        @keyframes progress-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(232,74,138,0.3); }
+            50% { box-shadow: 0 0 20px rgba(232,74,138,0.8); }
+        }
+
+        .progress-milestone {
+            animation: progress-glow 1s ease-in-out 3;
+        }
+
+        @keyframes check-appear {
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(-45deg); }
+            100% { transform: scale(1) rotate(-45deg); opacity: 1; }
+        }
+
+        .answer-complete-check {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-left: 3px solid #22C55E;
+            border-bottom: 3px solid #22C55E;
+            transform: rotate(-45deg);
+            animation: check-appear 0.5s ease;
+        }
+
+        .word-counter.gold {
+            color: #F59E0B;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(245,158,11,0.5);
+        }
+
+    
+        /* Mobile Responsive Design - Complete */
+        @media (max-width: 1024px) {
+            nav {
+                padding: 1rem 2rem;
+            }
+            
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 3rem 2rem;
+                gap: 2rem;
+            }
+            
+            .radar-wrapper {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Typography scales down */
+            .tagline {
+                font-size: 2.5rem !important;
+            }
+            
+            .section-title {
+                font-size: 2rem !important;
+            }
+            
+            /* Navigation becomes hamburger (simplified for now) */
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Forms stack */
+            .form-row,
+            .components-grid,
+            .insights-grid,
+            .themes-showcase,
+            .flags-section {
+                grid-template-columns: 1fr !important;
+                gap: 1rem;
+            }
+            
+            .chart-wrapper {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Touch-friendly buttons */
+            .engine-btn {
+                min-height: 44px;
+                font-size: 1rem;
+            }
+            
+            /* Better spacing on mobile */
+            .engine-container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .engine-form {
+                padding: 2rem 1.5rem;
+            }
+            
+            /* Larger text for readability */
+            body {
+                font-size: 16px;
+            }
+            
+            .question-text {
+                font-size: 1rem;
+            }
+            
+            .question-textarea {
+                font-size: 1rem;
+                min-height: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Extra small screens */
+            .tagline {
+                font-size: 2rem !important;
+            }
+            
+            nav {
+                padding: 0.75rem 1rem;
+            }
+            
+            .logo {
+                font-size: 1.4rem;
+            }
+            
+            .engine-btn {
+                padding: 1rem 1.5rem;
+                font-size: 0.95rem;
+            }
+            
+            .score-circle {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .score-value {
+                font-size: 2.5rem;
+            }
+        }
+
+    
+        /* Response Generator Buttons */
+        .gen-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .gen-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gen-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .gen-btn:active::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .gen-btn.positive {
+            background: linear-gradient(135deg, #22C55E, #16A34A);
+            color: white;
+        }
+
+        .gen-btn.negative {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+        }
+
+        .gen-btn.neutral {
+            background: linear-gradient(135deg, #6366F1, #4F46E5);
+            color: white;
+        }
+
+        .gen-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+
+        .gen-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .gen-spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+    
+        /* Photo Rating System */
+        .rating-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .rating-photo {
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin: 2rem auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .rating-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .rating-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--navy);
+            border: 2px solid rgba(30,41,59,0.2);
+        }
+
+        .rating-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .rating-btn.selected {
+            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            color: white;
+            border-color: var(--magenta);
+        }
+
+        [data-theme="dark"] .rating-btn {
+            background: var(--dark-surface);
+            color: white;
+            border-color: var(--dark-border);
+        }
+
+        .rating-progress {
+            text-align: center;
+            color: var(--slate);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        [data-theme="dark"] .rating-progress {
+            color: rgba(255,255,255,0.7);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <svg class="loader-radar" viewBox="0 0 100 100">
+            <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="url(#loaderGradient)" stroke-width="2"/>
+            <polygon points="50,25 70,37 70,63 50,75 30,63 30,37" fill="none" stroke="url(#loaderGradient)" stroke-width="1.5" opacity="0.6"/>
+            <defs>
+                <linearGradient id="loaderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#E84A8A"/>
+                    <stop offset="100%" stop-color="#8B5CF6"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- Navigation -->
+    
+    <!-- Global Error Display -->
+    <div id="global-error" class="global-error hidden">
+        <div class="error-content">
+            <div class="error-icon">⚠️</div>
+            <div class="error-text" id="error-text"></div>
+            <button class="error-close" onclick="closeError()">✕</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo" onclick="showPage('home')">Harmonia</div>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+                <li><a onclick="showPage('why')" id="nav-why">Why Harmonia</a></li>
+                <li><a onclick="showPage('partnerships')" id="nav-partnerships">Partnerships</a></li>
+                <li><a onclick="showPage('team')" id="nav-team">Team</a></li>
+                <li><a onclick="showPage('local-network')" id="nav-local-network">Local Network</a></li>
+                <li><a onclick="showPage('p2p')" id="nav-p2p">P2P Network</a></li>
+                <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
+            </ul>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <div class="theme-toggle-icons">
+                    <svg class="sun-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                    </svg>
+                    <svg class="moon-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                    </svg>
+                </div>
+            </button>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="home">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="tagline">
+                    They designed <span class="addiction">addiction.</span><br>
+                    We designed <span class="compatibility">compatibility.</span>
+                </h1>
+                <p class="subtitle">Harmonia is the compatibility engine that dating apps should have been — combining visual attraction, personality science, and genetic chemistry to help platforms prioritize real human connection over endless swiping.</p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="showPage('p2p')">Join the Testing Pool</button>
+                    <button class="btn btn-secondary" onclick="showPage('partnerships')">Integrate Harmonia</button>
+                </div>
+            </div>
+
+            <div class="radar-wrapper">
+                <div class="radar-bg-circle large"></div>
+                <div class="radar-bg-circle medium"></div>
+                <div class="radar-bg-circle small"></div>
+                
+                <div class="radar-container">
+                    <svg class="radar-svg" viewBox="0 0 400 400">
+                        <!-- Grid -->
+                        <polygon class="radar-grid" points="200,40 350,120 350,280 200,360 50,280 50,120"/>
+                        <polygon class="radar-grid" points="200,80 310,140 310,260 200,320 90,260 90,140"/>
+                        <polygon class="radar-grid" points="200,120 270,160 270,240 200,280 130,240 130,160"/>
+                        
+                        <!-- Dynamic Shapes -->
+                        <polygon id="radarA" class="radar-shape-a" points="200,50 340,125 330,275 200,345 60,270 70,130"/>
+                        <polygon id="radarB" class="radar-shape-b" points="200,70 320,140 325,265 200,330 80,260 75,135"/>
+                    </svg>
+                    
+                    <span class="radar-label top">VISUAL</span>
+                    <span class="radar-label bottom-left">GENETIC</span>
+                    <span class="radar-label bottom-right">PERSONALITY</span>
+                    
+                    <div class="radar-status" id="radar-status">SYNTHESIZING...</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- WHY HARMONIA PAGE -->
+    <div class="page" id="why">
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Dating is broken. And it's not an accident.</h2>
+            </div>
+            
+            <div class="problem-grid">
+                <div class="stat-card">
+                    <div class="stat-number navy">57%</div>
+                    <p class="stat-label">Market controlled by Match.com monopoly</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number magenta">80%</div>
+                    <p class="stat-label">Women reporting dating app burnout</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number navy">11%</div>
+                    <p class="stat-label">Users who say their app actually works</p>
+                </div>
+            </div>
+
+            <div class="vision-quote">
+                Attraction isn't random. It's a synthesis — the spark you feel when you see someone, the resonance when your minds align, and a chemistry so deep it lives in your biology. Harmonia is the first platform to bring all three together.
+            </div>
+
+            <div class="section-header">
+                <h2 class="section-title">The Science</h2>
+                <p class="section-subtitle">What research actually says — and what dating apps ignored.</p>
+            </div>
+
+            <table class="science-table">
+                <thead>
+                    <tr>
+                        <th>What Science Proved</th>
+                        <th>What Dating Apps Did</th>
+                        <th>What Harmonia Does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Physical attraction is the strongest initial predictor</td>
+                        <td>Reduced it to a swipe</td>
+                        <td>Prioritized it properly</td>
+                    </tr>
+                    <tr>
+                        <td>Perceived similarity creates connection</td>
+                        <td>Ignored it entirely</td>
+                        <td>Built it into the experience</td>
+                    </tr>
+                    <tr>
+                        <td>Genetic compatibility creates "chemistry"</td>
+                        <td>Never touched it</td>
+                        <td>Made the invisible visible</td>
+                    </tr>
+                    <tr>
+                        <td>Profile-based matching doesn't predict real attraction</td>
+                        <td>Doubled down on profiles</td>
+                        <td>Went beyond profiles</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="compatibility-note">
+                <h4>A Note on Compatibility</h4>
+                <p>We do not filter for "better" genes. We reveal <strong>Chemistry, not selection.</strong> Nature already does this unconsciously; we simply make the invisible signals visible to help you understand why you click with who you click with.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- PARTNERSHIPS PAGE -->
+    <div class="page" id="partnerships">
+        <section class="section">
+            <div class="partnerships-grid">
+                <div class="partnerships-content">
+                    <h2>Partner With Harmonia</h2>
+                    <p>We built Harmonia for platforms that believe dating can be better. We provide the infrastructure; you keep your users.</p>
+                    
+                    <div class="benefits">
+                        <div class="benefit-item">
+                            <div class="benefit-check">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div class="benefit-text">
+                                <h4>Scientifically Credible Matchmaking</h4>
+                                <p>Backed by peer-reviewed research, not engagement algorithms.</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-check">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div class="benefit-text">
+                                <h4>Full Autonomy</h4>
+                                <p>We're infrastructure, not a competitor. Your platform, your users, your brand.</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-check">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div class="benefit-text">
+                                <h4>Competitive Edge</h4>
+                                <p>The only system synthesizing visual, personality, AND genetic compatibility.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="current-partners">
+                        <h3>Current Partners</h3>
+                        <div class="partner-logos">
+                            <span class="partner-logo-text">Google Cloud</span>
+                            <span class="partner-logo-text serif">Genetic Lifespan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="integration-form-card">
+                    <h3>Integrate Harmonia</h3>
+                    <form id="integrationForm">
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" name="company" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Interest</label>
+                            <select name="interest">
+                                <option>API Integration</option>
+                                <option>Research Partnership</option>
+                                <option>Investment</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Message (Optional)</label>
+                            <textarea name="message" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Request Access</button>
+                        <div class="form-message" id="integrationMessage"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TEAM PAGE -->
+    <div class="page" id="team">
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">The Architects</h2>
+                <p class="section-subtitle">Five people. Four months. One question that refused to stay unanswered.</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <svg class="team-avatar-radar" viewBox="0 0 100 100">
+                            <polygon points="50,10 90,40 70,90 30,90 10,40" fill="none" stroke="#E84A8A" stroke-width="1">
+                                <animate attributeName="points" dur="4s" repeatCount="indefinite" values="50,10 90,40 70,90 30,90 10,40; 50,15 85,45 75,85 25,85 15,45; 50,10 90,40 70,90 30,90 10,40"/>
+                            </polygon>
+                            <polygon points="50,20 80,45 65,80 35,80 20,45" fill="rgba(139,92,246,0.2)" stroke="#8B5CF6" stroke-width="1">
+                                <animate attributeName="points" dur="4s" repeatCount="indefinite" values="50,20 80,45 65,80 35,80 20,45; 50,25 75,50 60,75 40,75 25,50; 50,20 80,45 65,80 35,80 20,45"/>
+                            </polygon>
+                        </svg>
+                        <span class="team-avatar-placeholder">PHOTO</span>
+                    </div>
+                    <h3>Avery</h3>
+                    <div class="role">Operations</div>
+                    <p class="bio">MSc student at LSE. Created the team structure and laid out how the platform should work — every function, every flow. The architect of how it all fits together.</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <svg class="team-avatar-radar" viewBox="0 0 100 100">
+                            <polygon points="50,5 95,35 75,95 25,95 5,35" fill="none" stroke="#E84A8A" stroke-width="1">
+                                <animate attributeName="points" dur="5s" repeatCount="indefinite" values="50,5 95,35 75,95 25,95 5,35; 50,10 90,40 70,90 30,90 10,40; 50,5 95,35 75,95 25,95 5,35"/>
+                            </polygon>
+                            <polygon points="50,25 75,45 65,85 35,85 25,45" fill="rgba(232,74,138,0.2)" stroke="#E84A8A" stroke-width="1">
+                                <animate attributeName="points" dur="5s" repeatCount="indefinite" values="50,25 75,45 65,85 35,85 25,45; 50,30 70,50 60,80 40,80 30,50; 50,25 75,45 65,85 35,85 25,45"/>
+                            </polygon>
+                        </svg>
+                        <span class="team-avatar-placeholder">PHOTO</span>
+                    </div>
+                    <h3>Joles</h3>
+                    <div class="role">Marketing</div>
+                    <p class="bio">The origin. Conceived the idea in October 2024. First investor. Found the first key company partner. Designed the brand aesthetics. Chief marketing lead.</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <svg class="team-avatar-radar" viewBox="0 0 100 100">
+                            <polygon points="50,10 90,40 70,90 30,90 10,40" fill="none" stroke="#E84A8A" stroke-width="1">
+                                <animate attributeName="points" dur="4.5s" repeatCount="indefinite" values="50,10 90,40 70,90 30,90 10,40; 55,15 85,35 75,85 35,90 15,45; 50,10 90,40 70,90 30,90 10,40"/>
+                            </polygon>
+                            <polygon points="60,20 85,50 60,80 40,80 15,50" fill="rgba(30,41,59,0.2)" stroke="#1E293B" stroke-width="1">
+                                <animate attributeName="points" dur="4.5s" repeatCount="indefinite" values="60,20 85,50 60,80 40,80 15,50; 55,25 80,55 55,75 45,75 20,55; 60,20 85,50 60,80 40,80 15,50"/>
+                            </polygon>
+                        </svg>
+                        <span class="team-avatar-placeholder">PHOTO</span>
+                    </div>
+                    <h3>Abe</h3>
+                    <div class="role">Engineering</div>
+                    <p class="bio">Chief engineer. Works at Google. Landed the Google Cloud collaboration. The one who makes it all real — core implementor of every technical system.</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <svg class="team-avatar-radar" viewBox="0 0 100 100">
+                            <polygon points="50,10 90,40 70,90 30,90 10,40" fill="none" stroke="#E84A8A" stroke-width="1">
+                                <animate attributeName="points" dur="5.5s" repeatCount="indefinite" values="50,10 90,40 70,90 30,90 10,40; 50,15 88,42 72,88 28,88 12,42; 50,10 90,40 70,90 30,90 10,40"/>
+                            </polygon>
+                            <polygon points="50,15 85,45 65,85 35,85 15,45" fill="rgba(74,29,92,0.2)" stroke="#4A1D5C" stroke-width="1">
+                                <animate attributeName="points" dur="5.5s" repeatCount="indefinite" values="50,15 85,45 65,85 35,85 15,45; 50,20 80,48 62,82 38,82 20,48; 50,15 85,45 65,85 35,85 15,45"/>
+                            </polygon>
+                        </svg>
+                        <span class="team-avatar-placeholder">PHOTO</span>
+                    </div>
+                    <h3>Felix Noble</h3>
+                    <div class="role">Neuroscience Advisor</div>
+                    <p class="bio">Founder of Neurogenesis. Masters in Neuroscience from Goldsmith. Studied at KCL and University of Chicago. The scientific conscience — keeps everything credible and rigorous.</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <svg class="team-avatar-radar" viewBox="0 0 100 100">
+                            <polygon points="50,10 90,40 70,90 30,90 10,40" fill="none" stroke="#E84A8A" stroke-width="1">
+                                <animate attributeName="points" dur="6s" repeatCount="indefinite" values="50,10 90,40 70,90 30,90 10,40; 52,12 88,38 72,88 32,92 12,42; 50,10 90,40 70,90 30,90 10,40"/>
+                            </polygon>
+                            <polygon points="50,30 70,50 60,80 40,80 30,50" fill="rgba(30,41,59,0.2)" stroke="#1E293B" stroke-width="1">
+                                <animate attributeName="points" dur="6s" repeatCount="indefinite" values="50,30 70,50 60,80 40,80 30,50; 52,32 68,52 58,78 42,78 32,52; 50,30 70,50 60,80 40,80 30,50"/>
+                            </polygon>
+                        </svg>
+                        <span class="team-avatar-placeholder">PHOTO</span>
+                    </div>
+                    <h3>Brian</h3>
+                    <div class="role">CEO</div>
+                    <p class="bio">PhD in Financial Law (University of Zurich). Experience in fintech, technology law, and regulatory compliance. The "adult in the room" — brings decades of experience in what makes ventures survive.</p>
+                </div>
+            </div>
+
+            <div class="founding-story">
+                <blockquote>
+                    It started with a question that wouldn't let go.<br><br>
+                    In October 2024, Joles couldn't stop thinking about why dating felt so broken — why billions of swipes led to so little real connection. He shared the idea with Avery, who saw something others might have missed: this wasn't just a product idea. It was a scientific problem no one had properly solved.<br><br>
+                    Avery brought it to Brian — a legal mind with decades of experience who'd seen countless startups rise and fall. His advice was simple: "Don't rush. Build the right team first."<br><br>
+                    Then came Abe. One conversation. That's all it took. A Google engineer who understood immediately that this wasn't just another dating app — it was infrastructure for human connection. He was in before the call ended.<br><br>
+                    The first alpha demo changed everything. When Avery showed it to Felix Noble — a neuroscientist who'd built his own company interrogating how the brain works — he didn't just see potential. He saw proof. The science wasn't theoretical anymore. It was running.<br><br>
+                    Five people. Four months. One question that refused to stay unanswered.<br><br>
+                    <strong>Harmonia was born.</strong>
+                </blockquote>
+            </div>
+        </section>
+    </div>
+
+    <!-- LOCAL NETWORK (DARK MODE ENGINE) -->
+        <div class="page" id="local-network">
+        <div class="engine-container">
+            <div class="engine-header">
+                <h2 class="engine-title">Local Network Engine</h2>
+                <div class="engine-status">
+                    <span class="status-dot"></span>
+                    <span id="engine-status-text">Loading...</span>
+                </div>
+            </div>
+
+            <!-- SETUP STEP -->
+            <div id="setup-step" class="engine-step">
+                <div class="engine-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Person 1 Name</label>
+                            <input type="text" id="name1" placeholder="Enter name" class="engine-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Person 2 Name</label>
+                            <input type="text" id="name2" placeholder="Enter name" class="engine-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Person 1 Gender</label>
+                            <select id="gender1" class="engine-input">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Person 2 Gender</label>
+                            <select id="gender2" class="engine-input">
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4 class="form-section-title">📸 Photos (Optional)</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="file-label">Person 1 Photo</label>
+                                <input type="file" id="image1" accept="image/*" class="engine-file-input">
+                                <div id="image1-status" class="input-status"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="file-label">Person 2 Photo</label>
+                                <input type="file" id="image2" accept="image/*" class="engine-file-input">
+                                <div id="image2-status" class="input-status"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <details class="form-section expandable" open>
+                        <summary class="expandable-title">🧬 Genetic Data (Optional)</summary>
+                        <div class="expandable-content">
+                            <!-- DNA CSV Upload Option -->
+                            <div class="form-section">
+                                <h4 class="form-section-title">Upload DNA File (CSV)</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="file-label">Person 1 DNA File</label>
+                                        <input type="file" id="dna1" accept=".csv,.txt" class="engine-file-input">
+                                        <div id="dna1-status" class="input-status"></div>
+                                        <div class="input-hint">23andMe, AncestryDNA, or MyHeritage CSV</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="file-label">Person 2 DNA File</label>
+                                        <input type="file" id="dna2" accept=".csv,.txt" class="engine-file-input">
+                                        <div id="dna2-status" class="input-status"></div>
+                                        <div class="input-hint">23andMe, AncestryDNA, or MyHeritage CSV</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="divider-text">OR</div>
+
+                            <!-- Manual HLA Input Option -->
+                            <div class="form-section">
+                                <h4 class="form-section-title">Type HLA Alleles Manually</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Person 1 HLA Alleles</label>
+                                        <input type="text" id="hla1" 
+                                               placeholder="HLA-A*02:01 HLA-B*44:03 HLA-C*07:01"
+                                               class="engine-input">
+                                        <div class="input-hint">Example: HLA-A*02:01 HLA-A*24:02 HLA-B*44:03</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Person 2 HLA Alleles</label>
+                                        <input type="text" id="hla2"
+                                               placeholder="HLA-A*03:01 HLA-B*07:02 HLA-C*06:02"
+                                               class="engine-input">
+                                        <div class="input-hint">Example: HLA-DRB1*15:01 HLA-DQB1*06:02</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <button id="start-btn" class="engine-btn primary">
+                        Begin Assessment →
+                    </button>
+                </div>
+            </div>
+
+            <!-- QUESTIONNAIRE STEP -->
+            
+            <!-- PHOTO RATING STEP - Calibrate Visual Preferences -->
+            <div id="rating-step" class="engine-step hidden">
+                <div class="rating-container">
+                    <button class="error-btn secondary" onclick="backToSetup()" style="position: absolute; left: 2rem; top: 2rem;">
+                        ← Back to Setup
+                    </button>
+                    
+                    <div class="rating-header">
+                        <h3 class="results-title">Calibrate Your Preferences</h3>
+                        <p class="results-subtitle">Rate these photos to help us understand what you find attractive</p>
+                        <div class="rating-progress" id="rating-progress">Photo 1 / 10</div>
+                    </div>
+                    
+                    <div class="rating-content">
+                        <img id="rating-photo" class="rating-photo" src="" alt="Rate this photo">
+                        
+                        <div class="rating-buttons">
+                            <button class="rating-btn" onclick="ratePhoto(1)">1</button>
+                            <button class="rating-btn" onclick="ratePhoto(2)">2</button>
+                            <button class="rating-btn" onclick="ratePhoto(3)">3</button>
+                            <button class="rating-btn" onclick="ratePhoto(4)">4</button>
+                            <button class="rating-btn" onclick="ratePhoto(5)">5</button>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <p style="color: var(--slate); font-size: 0.85rem;">
+                                1 = Not attracted · 5 = Very attracted
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="engine-btn secondary" onclick="skipRating()" style="margin-top: 2rem;">
+                        Skip Calibration
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="quiz-step" class="engine-step hidden">
+                <div class="back-nav" onclick="backToSetup()">
+                        ← Back to Setup
+                    </div>
+                    
+                <div class="quiz-header">
+                    <button class="error-btn secondary" onclick="backToSetup()" style="position: absolute; left: 2rem; top: 2rem;">
+                        ← Back to Setup
+                    </button>
+                    <div class="quiz-progress">
+                        <span id="current-user-name">Person 1</span>
+                        <span class="quiz-divider">•</span>
+                        <span id="current-block-progress">Block 1 / 6</span>
+                    </div>
+                    <h3 id="block-title" class="block-title">Loading...</h3>
+                </div>
+
+                <div id="questions-container" class="questions-grid">
+                    <!-- Questions loaded dynamically -->
+                </div>
+
+                <div class="quiz-actions">
+                    <button class="engine-btn secondary back-btn" onclick="goToSetup()">← Back to Setup</button>
+                    <button id="skip-btn" class="engine-btn secondary">Skip Block</button>
+                    <button id="next-btn" class="engine-btn primary">Continue →</button>
+                </div>
+            </div>
+
+            <!-- PROCESSING STEP -->
+                        <!-- PROCESSING STEP - ENHANCED -->
+            <div id="processing-step" class="engine-step hidden">
+                <div class="processing-container">
+                    <div class="loading-animation">
+                        <div class="radar-glow"></div>
+                        <div class="loading-radar">
+                            <svg viewBox="0 0 200 200" width="140" height="140">
+                                <polygon points="100,20 170,60 170,140 100,180 30,140 30,60" 
+                                         fill="none" stroke="var(--magenta)" stroke-width="3" 
+                                         class="radar-spin"/>
+                                <polygon points="100,40 150,70 150,130 100,160 50,130 50,70" 
+                                         fill="none" stroke="var(--violet)" stroke-width="2" 
+                                         opacity="0.6" class="radar-spin"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <h3 id="processing-status" class="processing-title">Analyzing compatibility...</h3>
+                    <p id="processing-message" class="processing-message">Synthesizing visual, personality, and genetic data</p>
+                    
+                    <div class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                        <div id="progress-percentage" style="text-align: center; color: var(--slate); font-size: 0.9rem; margin-top: 0.5rem; font-weight: 600;">30%</div>
+                    </div>
+
+                    <div class="loading-facts">
+                        <div class="fact-label">Did You Know?</div>
+                        <div id="fun-fact" class="fact-text">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+    <!-- RESULTS STEP -->
+                        <div id="results-step" class="engine-step hidden">
+                <div class="results-container">
+                    <!-- Celebration Header -->
+                    <div class="back-nav" onclick="backToSetup()">
+                        ← Start Over
+                    </div>
+                    
+                    <div class="results-hero">
+                        <div class="celebration-icon">✨</div>
+                        <h3 class="results-title">Compatibility Analysis Complete</h3>
+                        <p class="results-subtitle">Here's what we discovered about your connection</p>
+                    </div>
+
+                    <!-- Hero Score with Circular Progress -->
+                    <div class="hero-metric">
+                        <div class="metric-card overall-score-card">
+                            <div class="score-label">Overall Compatibility</div>
+                            <div class="score-circle">
+                                <svg class="score-ring" width="180" height="180">
+                                    <defs>
+                                        <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#E84A8A;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="ring-bg" cx="90" cy="90" r="75" />
+                                    <circle id="score-progress" class="ring-progress" cx="90" cy="90" r="75" />
+                                </svg>
+                                <div class="score-content">
+                                    <div id="overall-score" class="score-value">--</div>
+                                    <div class="score-unit">%</div>
+                                </div>
+                            </div>
+                            <div id="compatibility-verdict-text" class="compatibility-verdict">Calculating...</div>
+                        </div>
+                    </div>
+
+                    <!-- The Three Dimensions - Interactive -->
+                    <div class="components-section">
+                        <h4 class="section-heading">The Three Dimensions</h4>
+                        <div class="components-grid">
+                            <div class="component-card">
+                                <div class="component-icon">🖼️</div>
+                                <div class="component-label">Visual Chemistry</div>
+                                <div id="visual-score" class="component-score">--</div>
+                                <div class="component-description">The immediate spark</div>
+                            </div>
+
+                            <div class="component-card">
+                                <div class="component-icon">🧠</div>
+                                <div class="component-label">Personality Resonance</div>
+                                <div id="personality-score" class="component-score">--</div>
+                                <div class="component-description">The deeper alignment</div>
+                            </div>
+
+                            <div class="component-card">
+                                <div class="component-icon">🧬</div>
+                                <div class="component-label">Genetic Harmony</div>
+                                <div id="hla-score" class="component-score">--</div>
+                                <div class="component-description">The invisible chemistry</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Insights - Expandable -->
+                    <div class="insights-section">
+                        <h4 class="section-heading">Key Insights</h4>
+                        <div class="insights-grid">
+                            <div class="expandable-card" onclick="toggleInsight(this)">
+                                <div class="insight-header">
+                                    <div class="insight-icon">💜</div>
+                                    <div style="flex: 1;">
+                                        <div class="insight-title">The Vibe</div>
+                                        <div class="insight-preview" id="vibe-preview">Click to expand...</div>
+                                    </div>
+                                    <div class="expand-arrow">▼</div>
+                                </div>
+                                <div class="insight-detail hidden">
+                                    <p id="vibe-check">--</p>
+                                </div>
+                            </div>
+
+                            <div class="expandable-card" onclick="toggleInsight(this)">
+                                <div class="insight-header">
+                                    <div class="insight-icon">👀</div>
+                                    <div style="flex: 1;">
+                                        <div class="insight-title">First Impression</div>
+                                        <div class="insight-preview" id="first-impression-preview">Click to expand...</div>
+                                    </div>
+                                    <div class="expand-arrow">▼</div>
+                                </div>
+                                <div class="insight-detail hidden">
+                                    <p id="first-impression">--</p>
+                                </div>
+                            </div>
+
+                            <div class="expandable-card" onclick="toggleInsight(this)">
+                                <div class="insight-header">
+                                    <div class="insight-icon">🔑</div>
+                                    <div style="flex: 1;">
+                                        <div class="insight-title">Long-Term Key</div>
+                                        <div class="insight-preview" id="long-term-preview">Click to expand...</div>
+                                    </div>
+                                    <div class="expand-arrow">▼</div>
+                                </div>
+                                <div class="insight-detail hidden">
+                                    <p id="long-term-key">--</p>
+                                </div>
+                            </div>
+
+                            <div class="expandable-card" onclick="toggleInsight(this)">
+                                <div class="insight-header">
+                                    <div class="insight-icon">🤝</div>
+                                    <div style="flex: 1;">
+                                        <div class="insight-title">Mutual Perception</div>
+                                        <div class="insight-preview" id="mutual-preview">Click to expand...</div>
+                                    </div>
+                                    <div class="expand-arrow">▼</div>
+                                </div>
+                                <div class="insight-detail hidden">
+                                    <p id="mutual-perception">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personality Radar Chart - Interactive -->
+                    <div class="chart-section">
+                        <h4 class="section-heading">Personality Profiles</h4>
+                        <div class="chart-wrapper">
+                            <div class="chart-container">
+                                <canvas id="radar-chart" width="450" height="450"></canvas>
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-instruction">💡 Hover over the chart to see detailed trait analysis</div>
+                                <div class="legend-items">
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: #E84A8A;"></span>
+                                        <span id="legend-person1">Person 1</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: #8B5CF6;"></span>
+                                        <span id="legend-person2">Person 2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Connection Themes -->
+                    <div class="themes-section">
+                        <h4 class="section-heading">Connection Themes</h4>
+                        <div id="themes-container" class="themes-showcase">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Green/Red Flags -->
+                    <div class="flags-section">
+                        <div class="flag-card strength">
+                            <div class="flag-header">
+                                <span class="flag-icon">🟢</span>
+                                <span class="flag-label">Green Flag</span>
+                            </div>
+                            <div id="green-flag" class="flag-content">--</div>
+                        </div>
+
+                        <div class="flag-card challenge">
+                            <div class="flag-header">
+                                <span class="flag-icon">🔴</span>
+                                <span class="flag-label">Red Flag</span>
+                            </div>
+                            <div id="red-flag" class="flag-content">--</div>
+                        </div>
+                    </div>
+
+                    <!-- Actions with Prominent Download -->
+                    <div class="results-actions">
+                        <button class="engine-btn secondary back-btn" onclick="goToSetup()">← New Analysis</button>
+                        <button id="download-btn" class="engine-btn primary large">
+                            <span class="btn-icon">📄</span>
+                            Download Full Report
+                            <span class="btn-subtitle">15-20 page comprehensive analysis</span>
+                        </button>
+                        <button id="restart-btn" class="engine-btn secondary">
+                            Start New Analysis
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="page" id="p2p">
+        <section class="section">
+            <div class="coming-soon-container">
+                <span class="coming-soon-badge">Coming Soon</span>
+                <h2 class="section-title">Peer-to-Peer Network</h2>
+                <p class="section-subtitle">Direct-to-consumer compatibility matching. No apps. No middlemen. Just you and the science of connection.</p>
+                
+                <p class="rebellion-tagline">Join the Rebellion. Be one of the first.</p>
+
+                <div class="waitlist-form">
+                    <form id="waitlistForm">
+                        <input type="email" name="email" placeholder="Enter your email" required>
+                        <button type="submit" class="btn btn-primary">Join Waitlist</button>
+                    </form>
+                    <div class="form-message" id="waitlistMessage"></div>
+                </div>
+
+                <div class="free-dna-banner">
+                    <h3>🧬 Free DNA Test Included</h3>
+                    <p>Join the testing pool and receive a free HLA compatibility test. Shipping covered. No questions asked.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- CONTACT PAGE -->
+    <div class="page" id="contact">
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-subtitle">Whether you're a user wanting early access or a platform ready to integrate — we'd love to hear from you.</p>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-option">
+                    <h3>For Users</h3>
+                    <p>Join our testing pool and be among the first to experience compatibility matching backed by real science.</p>
+                    <button class="btn btn-primary" onclick="showPage('p2p')">Join the Testing Pool</button>
+                </div>
+                <div class="contact-option">
+                    <h3>For Companies</h3>
+                    <p>Integrate Harmonia's compatibility engine into your platform and give your users matches that actually work.</p>
+                    <button class="btn btn-secondary" onclick="showPage('partnerships')">Integrate Harmonia</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="contact-section">
+            <div style="max-width: 500px; margin: 0 auto; text-align: center;">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--navy);">Send Us a Message</h3>
+                <form id="contactForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="text" name="name" placeholder="Name" required style="padding: 1rem; border: 2px solid rgba(30,41,59,0.15); border-radius: 12px; font-family: inherit; font-size: 1rem; background: white;">
+                    <input type="email" name="email" placeholder="Email" required style="padding: 1rem; border: 2px solid rgba(30,41,59,0.15); border-radius: 12px; font-family: inherit; font-size: 1rem; background: white;">
+                    <select name="type" style="padding: 1rem; border: 2px solid rgba(30,41,59,0.15); border-radius: 12px; font-family: inherit; font-size: 1rem; background: white;">
+                        <option>I'm a user</option>
+                        <option>I represent a company</option>
+                    </select>
+                    <textarea name="message" placeholder="Message" rows="4" required style="padding: 1rem; border: 2px solid rgba(30,41,59,0.15); border-radius: 12px; font-family: inherit; font-size: 1rem; resize: vertical; background: white;"></textarea>
+                    <button class="btn btn-primary" type="submit">Send Message</button>
+                    <div class="form-message" id="contactMessage"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="logo">Harmonia</div>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+        </div>
+        <p class="copyright">© 2025 Harmonia. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // =============================================
+        // CONFIGURATION - UPDATE THESE VALUES
+        // =============================================
+        const CONFIG = {
+            // Webhook URLs - Replace with your actual webhook endpoints
+            // Recommended platforms: Make.com, Zapier, n8n, or custom backend
+            WAITLIST_WEBHOOK: 'YOUR_WAITLIST_WEBHOOK_URL',
+            INTEGRATION_WEBHOOK: 'YOUR_INTEGRATION_WEBHOOK_URL',
+            CONTACT_WEBHOOK: 'YOUR_CONTACT_WEBHOOK_URL',
+            
+            // Email to receive notifications
+            NOTIFICATION_EMAIL: 'team@harmonia.io',
+            
+            // Google Sheets ID (if using Google Sheets integration)
+            SPREADSHEET_ID: 'YOUR_GOOGLE_SHEET_ID'
+        };
+
+        // =============================================
+        // THEME TOGGLE
+        // =============================================
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // =============================================
+        // PAGE NAVIGATION
+        // =============================================
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active from all nav links
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Add active to nav link
+            const navLink = document.getElementById('nav-' + pageId);
+            if (navLink) navLink.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // =============================================
+        // LOADER
+        // =============================================
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1000);
+        });
+
+        // =============================================
+        // RADAR CHART ANIMATION
+        // =============================================
+        const statusTexts = ['SYNTHESIZING...', 'ANALYZING HLA...', 'CHECKING RESONANCE...', 'CALCULATING...', 'MATCHING...'];
+        let statusIndex = 0;
+
+        function animateRadar() {
+            const radarA = document.getElementById('radarA');
+            const radarB = document.getElementById('radarB');
+            const status = document.getElementById('radar-status');
+
+            if (!radarA || !radarB) return;
+
+            // Animate radar shapes
+            setInterval(() => {
+                const pointsA = generateRandomPoints(200, 50, 350, 120, 280);
+                const pointsB = generateRandomPoints(200, 70, 320, 140, 260);
+                
+                radarA.setAttribute('points', pointsA);
+                radarB.setAttribute('points', pointsB);
+            }, 2000);
+
+            // Cycle status text
+            setInterval(() => {
+                status.style.opacity = '0';
+                setTimeout(() => {
+                    statusIndex = (statusIndex + 1) % statusTexts.length;
+                    status.textContent = statusTexts[statusIndex];
+                    status.style.opacity = '1';
+                }, 300);
+            }, 3000);
+        }
+
+        function generateRandomPoints(cx, minR, maxR, minY, maxY) {
+            const rand = () => Math.random() * 30 - 15;
+            return [
+                `${cx},${50 + rand()}`,
+                `${340 + rand()},${125 + rand()}`,
+                `${330 + rand()},${275 + rand()}`,
+                `${cx},${345 + rand()}`,
+                `${60 + rand()},${270 + rand()}`,
+                `${70 + rand()},${130 + rand()}`
+            ].join(' ');
+        }
+
+        // =============================================
+        // FORM HANDLING
+        // =============================================
+        
+        /**
+         * INTEGRATION GUIDE FOR FORM SUBMISSIONS
+         * 
+         * To make these forms functional, you need to set up a backend service.
+         * Here are the recommended platforms and how to set them up:
+         * 
+         * 1. MAKE.COM (Recommended for no-code)
+         *    - Create a new scenario
+         *    - Add "Webhooks" -> "Custom webhook" as trigger
+         *    - Add "Google Sheets" -> "Add a Row" action
+         *    - Add "Email" -> "Send an email" action
+         *    - Copy the webhook URL to CONFIG above
+         * 
+         * 2. ZAPIER
+         *    - Create a new Zap
+         *    - Trigger: "Webhooks by Zapier" -> "Catch Hook"
+         *    - Action 1: "Google Sheets" -> "Create Spreadsheet Row"
+         *    - Action 2: "Email by Zapier" -> "Send Outbound Email"
+         *    - Copy the webhook URL to CONFIG above
+         * 
+         * 3. N8N (Self-hosted option)
+         *    - Create workflow with Webhook node
+         *    - Add Google Sheets node
+         *    - Add Email node
+         *    - Deploy and copy webhook URL
+         * 
+         * 4. GOOGLE APPS SCRIPT (Free)
+         *    - Create a Google Sheet
+         *    - Extensions -> Apps Script
+         *    - Use doPost function to handle webhooks
+         *    - Deploy as web app
+         * 
+         * SPREADSHEET STRUCTURE:
+         * For Waitlist: timestamp, email, source
+         * For Integration: timestamp, company, email, interest, message
+         * For Contact: timestamp, name, email, type, message
+         */
+
+        async function submitForm(formData, webhookUrl, messageElement, successMsg) {
+            try {
+                // Add timestamp
+                formData.timestamp = new Date().toISOString();
+                formData.source = window.location.href;
+
+                // If webhook is not configured, show demo message
+                if (webhookUrl === 'YOUR_WAITLIST_WEBHOOK_URL' || 
+                    webhookUrl === 'YOUR_INTEGRATION_WEBHOOK_URL' || 
+                    webhookUrl === 'YOUR_CONTACT_WEBHOOK_URL') {
+                    
+                    console.log('Form submission (demo mode):', formData);
+                    messageElement.textContent = '✓ ' + successMsg + ' (Demo mode - configure webhooks for production)';
+                    messageElement.className = 'form-message success';
+                    return true;
+                }
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    messageElement.textContent = '✓ ' + successMsg;
+                    messageElement.className = 'form-message success';
+                    return true;
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+                messageElement.textContent = 'Something went wrong. Please try again.';
+                messageElement.className = 'form-message error';
+                return false;
+            }
+        }
+
+        // Waitlist Form
+        document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                email: this.email.value,
+                type: 'waitlist'
+            };
+            
+            const success = await submitForm(
+                formData, 
+                CONFIG.WAITLIST_WEBHOOK, 
+                document.getElementById('waitlistMessage'),
+                "You're on the waitlist! We'll be in touch soon."
+            );
+            
+            if (success) this.reset();
+        });
+
+        // Integration Form
+        document.getElementById('integrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                company: this.company.value,
+                email: this.email.value,
+                interest: this.interest.value,
+                message: this.message.value,
+                type: 'integration'
+            };
+            
+            const success = await submitForm(
+                formData, 
+                CONFIG.INTEGRATION_WEBHOOK, 
+                document.getElementById('integrationMessage'),
+                "Request received! Our team will reach out within 48 hours."
+            );
+            
+            if (success) this.reset();
+        });
+
+        // Contact Form
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: this.name.value,
+                email: this.email.value,
+                userType: this.type.value,
+                message: this.message.value,
+                type: 'contact'
+            };
+            
+            const success = await submitForm(
+                formData, 
+                CONFIG.CONTACT_WEBHOOK, 
+                document.getElementById('contactMessage'),
+                "Message sent! We'll get back to you soon."
+            );
+            
+            if (success) this.reset();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            animateRadar();
+        });
+    </script>
+
+    <script>
+    
+    // ═══════════════════════════════════════════════════════════════
+    // PRODUCTION JAVASCRIPT - All Features
+    // ═══════════════════════════════════════════════════════════════
+
+    // Error modal state
+    let currentErrorContext = null;
+
+    function showErrorModal(title, message, icon, context) {
+        currentErrorContext = context;
+        document.getElementById('error-title').textContent = title;
+        document.getElementById('error-message').textContent = message;
+        document.getElementById('error-icon').textContent = icon;
+        document.getElementById('error-modal').classList.add('active');
+    }
+
+    function closeErrorModal() {
+        document.getElementById('error-modal').classList.remove('active');
+        currentErrorContext = null;
+    }
+
+    function retryUpload() {
+        closeErrorModal();
+        if (currentErrorContext && currentErrorContext.retry) {
+            currentErrorContext.retry();
+        }
+    }
+
+    function proceedWithoutFeature() {
+        closeErrorModal();
+        if (currentErrorContext && currentErrorContext.proceed) {
+            currentErrorContext.proceed();
+        }
+    }
+
+    // Enhanced upload with error handling
+    async function uploadImageEnhanced(userId, input, statusElement) {
+        const file = input.files[0];
+        if (!file) return true;
+        
+        statusElement.textContent = "Uploading...";
+        statusElement.style.color = "#F59E0B";
+        
+        const formData = new FormData();
+        formData.append("file", file);
+        
+        try {
+            const response = await fetch(`/api/upload-image/${userId}`, {
+                method: "POST",
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.detail || `Upload failed: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            const quality = data.features?.quality_score || 'N/A';
+            statusElement.textContent = `✅ Uploaded (Quality: ${quality}%)`;
+            statusElement.style.color = "#22C55E";
+            return true;
+            
+        } catch (error) {
+            console.error('Image upload error:', error);
+            statusElement.textContent = `❌ Failed: ${error.message}`;
+            statusElement.style.color = "#EF4444";
+            
+            // Show persistent error modal
+            return new Promise((resolve) => {
+                showErrorModal(
+                    'Photo Upload Failed',
+                    `Could not upload ${file.name}: ${error.message}\n\nYou can proceed without photos (visual compatibility will use default score) or retry.`,
+                    '📸',
+                    {
+                        retry: async () => {
+                            const success = await uploadImageEnhanced(userId, input, statusElement);
+                            resolve(success);
+                        },
+                        proceed: () => {
+                            statusElement.textContent = "⚠️ Skipped";
+                            statusElement.style.color = "#F59E0B";
+                            resolve(false);
+                        }
+                    }
+                );
+            });
+        }
+    }
+
+    async function uploadDNAEnhanced(userId, input, statusElement) {
+        const file = input.files[0];
+        if (!file) return true;
+        
+        statusElement.textContent = "Uploading DNA...";
+        statusElement.style.color = "#F59E0B";
+        
+        const formData = new FormData();
+        formData.append("file", file);
+        
+        try {
+            const response = await fetch(`/api/upload-dna/${userId}`, {
+                method: "POST",
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.detail || `Upload failed: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            const snps = data.snps_extracted || 0;
+            statusElement.textContent = `✅ Uploaded (${snps} SNPs)`;
+            statusElement.style.color = "#22C55E";
+            return true;
+            
+        } catch (error) {
+            console.error('DNA upload error:', error);
+            statusElement.textContent = `❌ Failed: ${error.message}`;
+            statusElement.style.color = "#EF4444";
+            
+            // Show persistent error modal
+            return new Promise((resolve) => {
+                showErrorModal(
+                    'DNA Upload Failed',
+                    `Could not process ${file.name}: ${error.message}\n\nYou can proceed with manual HLA input, retry the upload, or skip genetic analysis entirely.`,
+                    '🧬',
+                    {
+                        retry: async () => {
+                            const success = await uploadDNAEnhanced(userId, input, statusElement);
+                            resolve(success);
+                        },
+                        proceed: () => {
+                            statusElement.textContent = "⚠️ Skipped - Use manual HLA";
+                            statusElement.style.color = "#F59E0B";
+                            resolve(false);
+                        }
+                    }
+                );
+            });
+        }
+    }
+
+    // Response generator with Gemini 2.0 Flash
+    async function generateResponse(questionId, questionText, tone) {
+        const textarea = document.getElementById(`answer-${questionId}`);
+        const spinner = document.getElementById(`spinner-${questionId}`);
+        const buttons = document.querySelectorAll(`[data-question="${questionId}"]`);
+        
+        // Disable buttons and show spinner
+        buttons.forEach(btn => btn.disabled = true);
+        if (spinner) {
+            spinner.classList.remove('hidden');
+            spinner.innerHTML = '<div class="gen-spinner"></div>';
+        }
+        
+        try {
+            const response = await fetch('/api/generate-response', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    question: questionText,
+                    tone: tone
+                })
+            });
+            
+            if (!response.ok) {
+                // Try to get error details from response
+                let errorDetail = `HTTP ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    errorDetail = errorData.detail || errorData.message || errorDetail;
+                } catch (e) {
+                    // Response wasn't JSON
+                    const errorText = await response.text();
+                    if (errorText) errorDetail = errorText.substring(0, 100);
+                }
+                throw new Error(errorDetail);
+            }
+            
+            const data = await response.json();
+            
+            if (!data.response) {
+                throw new Error('No response text received from server');
+            }
+            
+            // Animate text appearing
+            textarea.value = '';
+            const text = data.response;
+            let i = 0;
+            const typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    textarea.value += text[i];
+                    i++;
+                    // Trigger word count update
+                    textarea.dispatchEvent(new Event('input'));
+                } else {
+                    clearInterval(typeInterval);
+                }
+            }, 20);
+            
+            // Show celebration
+            celebrateGeneration(textarea);
+            
+        } catch (error) {
+            console.error('Generation error:', error);
+            
+            // Show detailed error to user with more info
+            const errorMsg = error.message || error.toString();
+            
+            // Also display error in textarea temporarily so user can see it
+            textarea.value = `[ERROR] ${errorMsg}\n\nPlease type your answer manually.`;
+            textarea.style.borderColor = '#EF4444';
+            
+            // Alert with details
+            alert(`Response Generator Error:\n\n${errorMsg}\n\nCheck browser console (F12) for more details.\n\nPlease type your answer manually.`);
+            
+            // Log full details
+            console.error('Full error details:', error);
+            console.error('Error type:', error.constructor.name);
+            if (error.stack) console.error('Stack:', error.stack);
+            
+        } finally {
+            buttons.forEach(btn => btn.disabled = false);
+            if (spinner) spinner.classList.add('hidden');
+        }
+    }
+
+    // Celebration effects
+    function celebrateGeneration(element) {
+        // Quick pulse
+        element.classList.add('celebrate');
+        setTimeout(() => element.classList.remove('celebrate'), 500);
+    }
+
+    function throwConfetti(x, y) {
+        for (let i = 0; i < 15; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = x + 'px';
+            confetti.style.top = y + 'px';
+            confetti.style.background = ['#E84A8A', '#8B5CF6', '#F59E0B', '#22C55E'][Math.floor(Math.random() * 4)];
+            confetti.style.animationDelay = (Math.random() * 0.3) + 's';
+            confetti.style.animationDuration = (1 + Math.random()) + 's';
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 2000);
+        }
+    }
+
+    function celebrateQuestionComplete(questionCard) {
+        const rect = questionCard.getBoundingClientRect();
+        throwConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    }
+
+    // Back to setup navigation
+    function backToSetup() {
+        if (confirm('Go back to setup? Current progress will be lost.')) {
+            location.reload();
+        }
+    }
+
+    // Configuration
+    const MIN_WORDS = 25;
+    const MAX_WORDS = 150;
+
+    // Questions will be loaded from JSON
+    let QUESTIONS = {};
+    let QUESTIONS_LOADED = false;
+
+    // State management
+    const state = {
+        user1: "", user2: "", userId1: "", userId2: "",
+        hla1: "", hla2: "",
+        currentUser: 1, currentBlock: 0,
+        blocks: [
+            "Block 1: Social & Interpersonal",
+            "Block 2: Stress & Problem-Solving",
+            "Block 3: Decision-Making & Values",
+            "Block 4: Conflict & Disagreement",
+            "Block 5: Time & Priorities",
+            "Block 6: Growth & Change"
+        ],
+        responses: {1: {}, 2: {}},
+        partnerRating: null
+    };
+
+    // Load Felix's questions from JSON
+    async function loadQuestions() {
+        try {
+            console.log('📋 Loading questions from /data/felix_questions.json...');
+            const response = await fetch('/data/felix_questions.json');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            // Randomize questions within each block
+            QUESTIONS = {};
+            for (const [blockName, questions] of Object.entries(data.questions)) {
+                const shuffled = [...questions];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                QUESTIONS[blockName] = shuffled;
+            }
+            
+            QUESTIONS_LOADED = true;
+            document.getElementById('engine-status-text').textContent = 'Ready';
+            console.log('✅ Questions loaded and randomized');
+            return true;
+            
+        } catch (error) {
+            console.error('❌ Failed to load questions:', error);
+            document.getElementById('engine-status-text').textContent = 'Error Loading';
+            alert('Failed to load questionnaire. Please refresh the page or check that /data/felix_questions.json exists.');
+            return false;
+        }
+    }
+
+    // Upload image
+    
+    // ═══════════════════════════════════════════════════════════════
+    // ERROR HANDLING - Shows errors that stay visible
+    // ═══════════════════════════════════════════════════════════════
+    
+    function showError(message) {
+        const errorDiv = document.getElementById('global-error');
+        const errorText = document.getElementById('error-text');
+        errorText.textContent = message;
+        errorDiv.classList.remove('hidden');
+        console.error('ERROR:', message);
+    }
+
+    function closeError() {
+        document.getElementById('global-error').classList.add('hidden');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // NAVIGATION
+    // ═══════════════════════════════════════════════════════════════
+    
+    function goToSetup() {
+        if (confirm('Are you sure? This will reset your current progress.')) {
+            location.reload();
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // RESPONSE GENERATOR - Creates example answers
+    // ═══════════════════════════════════════════════════════════════
+    
+    const EXAMPLE_RESPONSES = [
+        "I'd try to split things fairly while being considerate of everyone's situation. If someone clearly ordered less, I'd suggest we account for that, but I wouldn't make a big deal about a few dollars difference.",
+        "I'd be upfront with both parties about the situation. I'd apologize to my friend and explain the work commitment, but also see if there's any flexibility on timing. Maybe I could stop by the birthday dinner for an hour before the networking event.",
+        "I'd listen attentively and offer support where appropriate, but also be mindful of boundaries. I'd validate their feelings without necessarily trying to fix everything, and make it clear I'm there if they need to talk more.",
+        "I'd take 30 seconds to give them clear directions if I can help, while letting them know I'm in a rush. A quick interaction that helps someone doesn't cost much time, and it's the right thing to do.",
+        "I'd be friendly and give them the benefit of the doubt initially. Maybe ask if we've met before and where, which gives them a chance to clarify or realize they've confused me with someone else.",
+        "I'd approach my manager privately to discuss my compensation and understand the reasoning behind the difference. I'd focus on my own value and performance rather than making it about comparison.",
+        "I'd thank them for caring and sharing their perspective, while explaining that I've thought carefully about my path. I'd try to find the wisdom in their advice even if I don't follow it exactly.",
+        "I'd go to the ceremony to show support for my friend, even if it's outside my comfort zone. Being there for important moments in friends' lives matters more than my personal discomfort about the specific setting."
+    ];
+
+    // ═══════════════════════════════════════════════════════════════
+    // ENHANCED UPLOAD WITH BETTER ERROR HANDLING
+    // ═══════════════════════════════════════════════════════════════
+    
+    
+    // ═════════════════════════════════════════════════════════════════
+    // ERROR MODALS & CONFIRMATIONS
+    // ═════════════════════════════════════════════════════════════════
+    
+    let modalResolve = null;
+    
+    function showModal(title, message, icon = '⚠️', confirmText = 'Continue Anyway') {
+        return new Promise((resolve) => {
+            modalResolve = resolve;
+            document.getElementById('modal-icon').textContent = icon;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('modal-confirm-btn').textContent = confirmText;
+            document.getElementById('error-modal').style.display = 'flex';
+        });
+    }
+    
+    function closeModal(result = false) {
+        document.getElementById('error-modal').style.display = 'none';
+        if (modalResolve) {
+            modalResolve(result);
+            modalResolve = null;
+        }
+    }
+    
+    document.getElementById('modal-confirm-btn')?.addEventListener('click', () => closeModal(true));
+    
+    // ═════════════════════════════════════════════════════════════════
+    // ENHANCED UPLOAD WITH ERROR HANDLING
+    // ═════════════════════════════════════════════════════════════════
+    
+    async function uploadImage(userId, input, statusElement) {
+        const file = input.files[0];
+        if (!file) return true;  // No file is OK
+        
+        statusElement.textContent = "Uploading...";
+        statusElement.style.color = "#F59E0B";
+        
+        const formData = new FormData();
+        formData.append("file", file);
+        
+        try {
+            const response = await fetch(`/api/upload-image/${userId}`, {
+                method: "POST",
+                body: formData
+            });
+            
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const data = await response.json();
+            const quality = data.features?.quality_score || 'N/A';
+            statusElement.textContent = `✅ Uploaded (Quality: ${quality}%)`;
+            statusElement.style.color = "#22C55E";
+            return true;
+            
+        } catch (error) {
+            console.error('❌ Image upload failed:', error);
+            statusElement.textContent = `❌ Failed: ${error.message}`;
+            statusElement.style.color = "#EF4444";
+            
+            // Show confirmation modal
+            const proceed = await showModal(
+                'Photo Upload Failed',
+                `Could not upload photo for ${userId === state.userId1 ? state.user1 : state.user2}. Error: ${error.message}\n\nYou can continue without photos (visual analysis will use default scores) or go back to try again.`,
+                '📸',
+                'Continue Without Photos'
+            );
+            
+            return proceed;
+        }
+    }
+    
+    async function uploadDNA(userId, input, statusElement) {
+        const file = input.files[0];
+        if (!file) return true;  // No file is OK
+        
+        statusElement.textContent = "Uploading DNA...";
+        statusElement.style.color = "#F59E0B";
+        
+        const formData = new FormData();
+        formData.append("file", file);
+        
+        try {
+            const response = await fetch(`/api/upload-dna/${userId}`, {
+                method: "POST",
+                body: formData
+            });
+            
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const data = await response.json();
+            const snpCount = data.snps_extracted || 0;
+            statusElement.textContent = `✅ Uploaded (${snpCount} SNPs extracted)`;
+            statusElement.style.color = "#22C55E";
+            return true;
+            
+        } catch (error) {
+            console.error('❌ DNA upload failed:', error);
+            statusElement.textContent = `❌ Failed: ${error.message}`;
+            statusElement.style.color = "#EF4444";
+            
+            // Show confirmation modal
+            const proceed = await showModal(
+                'DNA Upload Failed',
+                `Could not upload DNA file for ${userId === state.userId1 ? state.user1 : state.user2}. Error: ${error.message}\n\nYou can continue without genetic data (HLA score will use default 50%) or go back to try again.`,
+                '🧬',
+                'Continue Without DNA'
+            );
+            
+            return proceed;
+        }
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // RESPONSE GENERATOR - AI-POWERED TEST RESPONSES
+    // ═════════════════════════════════════════════════════════════════
+    
+    
+    // ═════════════════════════════════════════════════════════════════
+    // BACK NAVIGATION
+    // ═════════════════════════════════════════════════════════════════
+    
+    function backToSetup() {
+        if (confirm('Go back to setup? Current progress will be lost.')) {
+            location.reload();
+        }
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // ENHANCED START QUESTIONNAIRE WITH CONFIRMATIONS
+    // ═════════════════════════════════════════════════════════════════
+    
+    
+    // Photo Rating System
+    const SAMPLE_PHOTOS = [
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400',
+        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400',
+        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400',
+        'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=400',
+        'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400',
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400',
+        'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400'
+    ];
+    
+    let currentRatingIndex = 0;
+    let ratingData = [];
+    
+    function startPhotoRating() {
+        currentRatingIndex = 0;
+        ratingData = [];
+        showRatingPhoto();
+        showStep('rating-step');
+    }
+    
+    function showRatingPhoto() {
+        if (currentRatingIndex >= SAMPLE_PHOTOS.length) {
+            // Rating complete, move to questionnaire
+            console.log('📊 Rating calibration complete:', ratingData);
+            showStep('quiz-step');
+            renderBlock();
+            return;
+        }
+        
+        document.getElementById('rating-photo').src = SAMPLE_PHOTOS[currentRatingIndex];
+        document.getElementById('rating-progress').textContent = 
+            `Photo ${currentRatingIndex + 1} / ${SAMPLE_PHOTOS.length}`;
+        
+        // Remove selected state from all buttons
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+    }
+    
+    function ratePhoto(rating) {
+        // Highlight selected button
+        document.querySelectorAll('.rating-btn').forEach((btn, i) => {
+            if (i === rating - 1) {
+                btn.classList.add('selected');
+            }
+        });
+        
+        // Record rating
+        ratingData.push({
+            photo: SAMPLE_PHOTOS[currentRatingIndex],
+            rating: rating,
+            timestamp: Date.now()
+        });
+        
+        // Celebration for rating
+        if (rating >= 4) {
+            throwConfetti(window.innerWidth / 2, window.innerHeight / 2);
+        }
+        
+        // Move to next photo after brief delay
+        setTimeout(() => {
+            currentRatingIndex++;
+            showRatingPhoto();
+        }, 300);
+    }
+    
+    function skipRating() {
+        if (confirm('Skip calibration? Your matches will be less personalized initially.')) {
+            showStep('quiz-step');
+            renderBlock();
+        }
+    }
+
+    async function startQuestionnaire() {
+        if (!QUESTIONS_LOADED) {
+            alert('Questions not loaded yet. Please wait or refresh the page.');
+            return;
+        }
+        
+        state.user1 = document.getElementById("name1").value || "Person 1";
+        state.user2 = document.getElementById("name2").value || "Person 2";
+        state.gender1 = document.getElementById("gender1")?.value || "male";
+        state.gender2 = document.getElementById("gender2")?.value || "female";
+        state.hla1 = document.getElementById("hla1")?.value || "";
+        state.hla2 = document.getElementById("hla2")?.value || "";
+        state.userId1 = `u1_${Date.now()}`;
+        state.userId2 = `u2_${Date.now()}`;
+        
+        // Upload images with error handling
+        const img1 = document.getElementById("image1");
+        const img2 = document.getElementById("image2");
+        
+        let canProceed = true;
+        
+        if (img1?.files[0]) {
+            const result = await uploadImage(state.userId1, img1, document.getElementById("image1-status"));
+            if (!result) {
+                canProceed = false;
+            }
+        }
+        
+        if (canProceed && img2?.files[0]) {
+            const result = await uploadImage(state.userId2, img2, document.getElementById("image2-status"));
+            if (!result) {
+                canProceed = false;
+            }
+        }
+        
+        // Upload DNA files with error handling
+        const dna1 = document.getElementById("dna1");
+        const dna2 = document.getElementById("dna2");
+        
+        if (canProceed && dna1?.files[0]) {
+            const result = await uploadDNA(state.userId1, dna1, document.getElementById("dna1-status"));
+            if (!result) {
+                canProceed = false;
+            }
+        }
+        
+        if (canProceed && dna2?.files[0]) {
+            const result = await uploadDNA(state.userId2, dna2, document.getElementById("dna2-status"));
+            if (!result) {
+                canProceed = false;
+            }
+        }
+        
+        if (!canProceed) {
+            // User chose to cancel
+            return;
+        }
+        
+        state.currentUser = 1;
+        state.currentBlock = 0;
+        // Start with photo rating calibration
+        startPhotoRating();
+    }
+
+    function showStep(stepId) {
+        ["setup-step", "rating-step", "quiz-step", "processing-step", "results-step"].forEach(id => {
+            document.getElementById(id)?.classList.add("hidden");
+        });
+        document.getElementById(stepId)?.classList.remove("hidden");
+        
+        // Start fun facts rotation when showing processing
+        if (stepId === "processing-step") {
+            startFactRotation();
+        } else {
+            stopFactRotation();
+        }
+    }
+
+    // Render current block
+    function renderBlock() {
+        const blockName = state.blocks[state.currentBlock];
+        const questions = QUESTIONS[blockName] || [];
+        
+        document.getElementById("current-user-name").textContent = state.currentUser === 1 ? state.user1 : state.user2;
+        document.getElementById("current-block-progress").textContent = `Block ${state.currentBlock + 1} / ${state.blocks.length}`;
+        document.getElementById("block-title").textContent = blockName;
+        
+        const container = document.getElementById("questions-container");
+        container.innerHTML = "";
+        
+        questions.forEach(q => {
+            const div = document.createElement("div");
+            div.className = "question-card";
+            div.innerHTML = `
+                <h4 class="question-title">${q.title}</h4>
+                <p class="question-text">${q.question}</p>
+                <textarea id="answer-${q.id}" class="question-textarea" placeholder="Type your response (25-150 words)..."></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div class="gen-buttons">
+                        <button class="gen-btn positive" data-question="${q.id}" onclick="generateResponse('${q.id}', \`${q.question.replace(/`/g, '').replace(/'/g, "\\'")}\`, 'positive')" type="button">
+                            👍 Gen+
+                        </button>
+                        <button class="gen-btn negative" data-question="${q.id}" onclick="generateResponse('${q.id}', \`${q.question.replace(/`/g, '').replace(/'/g, "\\'")}\`, 'negative')" type="button">
+                            👎 Gen-
+                        </button>
+                        <button class="gen-btn neutral" data-question="${q.id}" onclick="generateResponse('${q.id}', \`${q.question.replace(/`/g, '').replace(/'/g, "\\'")}\`, 'neutral')" type="button">
+                            🎲 Neutral
+                        </button>
+                        <span id="spinner-${q.id}" class="hidden"></span>
+                    </div>
+                    <div id="wc-${q.id}" class="word-counter">0 words</div>
+                </div>
+            `;
+            container.appendChild(div);
+            
+            // Add word counter with dopamine triggers
+            const textarea = document.getElementById(`answer-${q.id}`);
+            textarea.addEventListener("input", () => {
+                const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+                const counter = document.getElementById(`wc-${q.id}`);
+                counter.textContent = `${words} words`;
+                
+                // Dopamine trigger: Perfect length range
+                if (words >= MIN_WORDS && words <= MAX_WORDS) {
+                    counter.className = "word-counter valid";
+                    
+                    // Extra celebration for "golden zone" (60-80 words)
+                    if (words >= 60 && words <= 80 && !counter.classList.contains('gold')) {
+                        counter.classList.add('gold');
+                        celebrateQuestionComplete(div);
+                    }
+                } else {
+                    counter.className = "word-counter invalid";
+                    counter.classList.remove('gold');
+                }
+            });
+        });
+    }
+
+    // Skip block
+    function skipBlock() {
+        nextBlock();
+    }
+
+    // Next block or user
+    function nextBlock() {
+        // Save current block responses
+        const blockName = state.blocks[state.currentBlock];
+        const questions = QUESTIONS[blockName];
+        let answered = 0;
+        
+        questions.forEach(q => {
+            const answer = document.getElementById(`answer-${q.id}`)?.value || "";
+            const words = answer.trim().split(/\s+/).filter(w => w.length > 0).length;
+            if (words >= MIN_WORDS && words <= MAX_WORDS) {
+                if (!state.responses[state.currentUser][q.id]) {
+                    state.responses[state.currentUser][q.id] = {
+                        question: q.question,
+                        answer: answer
+                    };
+                }
+                answered++;
+            }
+        });
+        
+        // Check if at least 1 valid answer
+        if (answered < 1) {
+            alert(`Please answer at least 1 question with ${MIN_WORDS}-${MAX_WORDS} words.`);
+            return;
+        }
+        
+        // Move to next block or next user
+        if (state.currentBlock < state.blocks.length - 1) {
+            state.currentBlock++;
+            renderBlock();
+        } else if (state.currentUser === 1) {
+            // Switch to Person 2
+            state.currentUser = 2;
+            state.currentBlock = 0;
+            renderBlock();
+        } else {
+            // Both done - analyze
+            analyzeCompatibility();
+        }
+    }
+
+    
+    // FUN FACTS - Rotating loading tips about compatibility science
+    const FUN_FACTS = [
+        "Studies show optimal HLA dissimilarity is around 55% — too similar or too different both reduce attraction.",
+        "Visual chemistry accounts for the 'spark' — research shows we make attraction decisions in under 3 seconds.",
+        "Personality compatibility is about complementary traits, not identical ones — opposites often create balance.",
+        "The HLA genes on chromosome 6 influence your immune system AND subconscious partner preferences.",
+        "Wedekind's 1995 T-shirt study showed women preferred the scent of men with dissimilar HLA genes.",
+        "Dating apps with 2:1 male-to-female ratios create impossible odds — 97.4% of men never match.",
+        "80% of dating app users report being unhappy with their match quality according to recent surveys.",
+        "Facial symmetry correlates with perceived attractiveness across cultures — it's universal.",
+        "The Seven Deadly Sins framework maps to modern personality psychology with surprising accuracy.",
+        "Genetic compatibility isn't about 'perfect matches' — diversity creates stronger attraction signals.",
+        "Research shows personality tests predict initial attraction at essentially 0% — compatibility emerges over time.",
+        "Your MHC genes create your unique scent signature — attraction is partly olfactory and subconscious.",
+        "Match.com controls 57% of the $6.18B dating market — it's time for alternatives.",
+        "The radar chart you see is based on the seven core personality dimensions from classical philosophy.",
+        "Real compatibility requires synthesis — visual, psychological, and biological factors all matter."
+    ];
+
+    let currentFactIndex = 0;
+    let factRotationInterval = null;
+
+    function rotateFact() {
+        currentFactIndex = (currentFactIndex + 1) % FUN_FACTS.length;
+        const factElement = document.getElementById('fun-fact');
+        if (factElement) {
+            factElement.style.animation = 'none';
+            setTimeout(() => {
+                factElement.textContent = FUN_FACTS[currentFactIndex];
+                factElement.style.animation = 'factFadeIn 0.6s ease';
+            }, 50);
+        }
+    }
+
+    function startFactRotation() {
+        currentFactIndex = Math.floor(Math.random() * FUN_FACTS.length);
+        document.getElementById('fun-fact').textContent = FUN_FACTS[currentFactIndex];
+        factRotationInterval = setInterval(rotateFact, 5000); // Rotate every 5 seconds
+    }
+
+    function stopFactRotation() {
+        if (factRotationInterval) {
+            clearInterval(factRotationInterval);
+            factRotationInterval = null;
+        }
+    }
+
+    // Analyze compatibility
+    async function analyzeCompatibility() {
+        console.log('🔬 ═══════════════════════════════════════');
+        console.log('🔬 STARTING COMPATIBILITY ANALYSIS');
+        console.log('🔬 ═══════════════════════════════════════');
+        
+        showStep("processing-step");
+        document.getElementById("processing-status").textContent = "Analyzing compatibility...";
+        document.getElementById("progress-bar").style.width = "30%";
+        document.getElementById("progress-percentage").textContent = "30%";
+        
+        try {
+            // Submit profiles
+            const responses1 = Object.values(state.responses[1]);
+            const responses2 = Object.values(state.responses[2]);
+            
+            console.log(`📝 Person 1 responses: ${responses1.length}`);
+            console.log(`📝 Person 2 responses: ${responses2.length}`);
+            
+            // Submit Person 1
+            console.log('📤 Submitting Person 1 profile...');
+            const submit1 = await fetch('/api/submit-profile', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: state.userId1,
+                    user_name: state.user1,
+                    responses: responses1,
+                    hla_data: state.hla1
+                })
+            });
+            
+            if (!submit1.ok) {
+                const error1 = await submit1.json();
+                throw new Error(`Person 1 profile failed: ${error1.detail || submit1.status}`);
+            }
+            
+            const result1 = await submit1.json();
+            console.log(`✅ Person 1 submitted: ${result1.status}`);
+            
+            document.getElementById("progress-bar").style.width = "50%";
+            document.getElementById("progress-percentage").textContent = "50%";
+            
+            // Submit Person 2
+            console.log('📤 Submitting Person 2 profile...');
+            const submit2 = await fetch('/api/submit-profile', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: state.userId2,
+                    user_name: state.user2,
+                    responses: responses2,
+                    hla_data: state.hla2
+                })
+            });
+            
+            if (!submit2.ok) {
+                const error2 = await submit2.json();
+                throw new Error(`Person 2 profile failed: ${error2.detail || submit2.status}`);
+            }
+            
+            const result2 = await submit2.json();
+            console.log(`✅ Person 2 submitted: ${result2.status}`);
+            
+            document.getElementById("progress-bar").style.width = "70%";
+            document.getElementById("progress-percentage").textContent = "70%";
+            
+            // Wait for profiles to be ready
+            console.log('⏳ Waiting 2 seconds for profile processing...');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            document.getElementById("progress-bar").style.width = "85%";
+            document.getElementById("progress-percentage").textContent = "85%";
+            
+            // Analyze
+            console.log('🔬 Requesting compatibility analysis...');
+            console.log(`   Person A: ${state.userId1} (${state.user1})`);
+            console.log(`   Person B: ${state.userId2} (${state.user2})`);
+            
+            const analysisResponse = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_a_id: state.userId1,
+                    user_b_id: state.userId2
+                })
+            });
+            
+            console.log(`   Analysis response status: ${analysisResponse.status}`);
+            
+            if (!analysisResponse.ok) {
+                const errorData = await analysisResponse.json().catch(() => ({}));
+                throw new Error(`Analysis failed: ${errorData.detail || analysisResponse.status}`);
+            }
+            
+            console.log('📥 Receiving analysis results...');
+            const result = await analysisResponse.json();
+            console.log('✅ Analysis complete!');
+            console.log(`   Overall score: ${result.overall_score}%`);
+            console.log(`   Components:`, result.components);
+            
+            document.getElementById("progress-bar").style.width = "100%";
+            document.getElementById("progress-percentage").textContent = "100%";
+            
+            // Display results
+            console.log('🎨 Displaying results...');
+            displayResults(result);
+            console.log('✅ Results displayed!');
+            
+            // Show results step
+            showStep("results-step");
+            console.log('✅ Switched to results step');
+            
+        } catch (error) {
+            console.error('❌ ═══════════════════════════════════════');
+            console.error('❌ ANALYSIS ERROR');
+            console.error('❌ ═══════════════════════════════════════');
+            console.error('Error message:', error.message);
+            console.error('Error type:', error.constructor.name);
+            console.error('Full error:', error);
+            if (error.stack) console.error('Stack:', error.stack);
+            
+            alert(`Error during analysis:\n\n${error.message}\n\nCheck browser console (F12) for details.`);
+            showStep("setup-step");
+        }
+    }
+
+    // Display results
+    
+    // Trait descriptions for radar tooltips
+    const TRAIT_DESCRIPTIONS = {
+        'Greed': 'Ambition and material drive vs. contentment and generosity',
+        'Pride': 'Self-confidence and achievement vs. humility and cooperation',
+        'Lust': 'Passion and spontaneity vs. restraint and thoughtfulness',
+        'Wrath': 'Assertiveness and directness vs. patience and calm',
+        'Gluttony': 'Indulgence and pleasure-seeking vs. moderation and discipline',
+        'Envy': 'Aspiration and comparison vs. satisfaction and gratitude',
+        'Sloth': 'Relaxation and ease vs. productivity and energy'
+    };
+
+    function getTraitDescription(trait) {
+        return TRAIT_DESCRIPTIONS[trait] || '';
+    }
+
+    function getThemeIcon(index) {
+        const icons = ['💫', '🌟', '✨', '🔮', '💎', '🎯'];
+        return icons[index % icons.length];
+    }
+
+    function truncate(text, length) {
+        if (!text || text.length <= length) return text;
+        return text.substring(0, length) + '...';
+    }
+
+    function animateScore(elementId, targetScore) {
+        const element = document.getElementById(elementId);
+        let current = 0;
+        const increment = targetScore / 40;
+        const interval = setInterval(() => {
+            current += increment;
+            if (current >= targetScore) {
+                current = targetScore;
+                clearInterval(interval);
+            }
+            element.textContent = Math.round(current);
+        }, 40);
+    }
+
+    function animateCircularProgress(score) {
+        const circle = document.getElementById('score-progress');
+        if (!circle) return;
+        const circumference = 471;
+        const offset = circumference - (score / 100) * circumference;
+        setTimeout(() => {
+            circle.style.strokeDashoffset = offset;
+        }, 300);
+    }
+
+    function toggleInsight(card) {
+        const wasExpanded = card.classList.contains('expanded');
+        
+        // Collapse all
+        document.querySelectorAll('.expandable-card').forEach(c => {
+            c.classList.remove('expanded');
+            c.querySelector('.insight-detail')?.classList.add('hidden');
+        });
+        
+        // Expand this one if it wasn't
+        if (!wasExpanded) {
+            card.classList.add('expanded');
+            card.querySelector('.insight-detail')?.classList.remove('hidden');
+        }
+    }
+
+    function renderInteractiveRadar(chartData) {
+        const ctx = document.getElementById("radar-chart")?.getContext("2d");
+        if (!ctx) return;
+        
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: chartData.p1_name,
+                    data: chartData.p1_scores,
+                    borderColor: '#E84A8A',
+                    backgroundColor: 'rgba(232, 74, 138, 0.15)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#E84A8A',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#E84A8A',
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }, {
+                    label: chartData.p2_name,
+                    data: chartData.p2_scores,
+                    borderColor: '#8B5CF6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#8B5CF6',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#8B5CF6',
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        min: -5,
+                        max: 5,
+                        ticks: { 
+                            stepSize: 2.5,
+                            color: 'var(--slate)',
+                            backdropColor: 'transparent'
+                        },
+                        grid: { color: 'rgba(30, 41, 59, 0.15)' },
+                        angleLines: { color: 'rgba(30, 41, 59, 0.15)' },
+                        pointLabels: { 
+                            color: 'var(--navy)',
+                            font: { size: 13, weight: '600' }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'var(--navy)',
+                        titleColor: '#E84A8A',
+                        bodyColor: 'white',
+                        borderColor: '#E84A8A',
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            title: (ctx) => ctx[0].label,
+                            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.r}`,
+                            afterBody: (ctx) => getTraitDescription(ctx[0].label)
+                        }
+                    }
+                },
+                interaction: { mode: 'point', intersect: true },
+                animation: { duration: 1500, easing: 'easeInOutQuart' }
+            }
+        });
+    }
+
+    function displayResults(data) {
+        console.log('📊 Displaying enhanced results...');
+        
+        // Animate overall score
+        const overallScore = Math.round(data.overall_score || 0);
+        animateScore('overall-score', overallScore);
+        animateCircularProgress(overallScore);
+        
+        // Component scores with staggered timing
+        setTimeout(() => {
+            const visual = Math.round(data.components?.visual?.score || 50);
+            document.getElementById("visual-score").textContent = `${visual}%`;
+        }, 300);
+        
+        setTimeout(() => {
+            const personality = Math.round(data.components?.personality?.score || 50);
+            document.getElementById("personality-score").textContent = `${personality}%`;
+        }, 600);
+        
+        setTimeout(() => {
+            const hla = Math.round(data.components?.hla?.score || 50);
+            document.getElementById("hla-score").textContent = `${hla}%`;
+        }, 900);
+        
+        // Insights with previews
+        const vibeText = data.analysis?.ui_cards?.vibe_check || "--";
+        document.getElementById("vibe-check").textContent = vibeText;
+        document.getElementById("vibe-preview").textContent = truncate(vibeText, 50);
+        
+        const firstText = data.analysis?.ui_cards?.first_impression || "--";
+        document.getElementById("first-impression").textContent = firstText;
+        document.getElementById("first-impression-preview").textContent = truncate(firstText, 50);
+        
+        const longText = data.analysis?.ui_cards?.long_term_key || "--";
+        document.getElementById("long-term-key").textContent = longText;
+        document.getElementById("long-term-preview").textContent = truncate(longText, 50);
+        
+        const mutualText = data.analysis?.perceived_similarity || "--";
+        document.getElementById("mutual-perception").textContent = mutualText;
+        document.getElementById("mutual-preview").textContent = truncate(mutualText, 50);
+        
+        // Flags
+        document.getElementById("green-flag").textContent = data.analysis?.ui_cards?.green_flag || "--";
+        document.getElementById("red-flag").textContent = data.analysis?.ui_cards?.red_flag || "--";
+        
+        // Themes with staggered animation
+        const themesContainer = document.getElementById("themes-container");
+        themesContainer.innerHTML = "";
+        (data.analysis?.themes || []).forEach((theme, index) => {
+            const card = document.createElement("div");
+            card.className = "theme-card";
+            card.style.animationDelay = `${index * 0.15}s`;
+            card.innerHTML = `
+                <div class="theme-badge-icon">${getThemeIcon(index)}</div>
+                <div class="theme-badge-title">${theme}</div>
+            `;
+            themesContainer.appendChild(card);
+            setTimeout(() => card.classList.add('visible'), 100);
+        });
+        
+        // Update legend
+        if (data.chart_data) {
+            document.getElementById("legend-person1").textContent = data.chart_data.p1_name || "Person 1";
+            document.getElementById("legend-person2").textContent = data.chart_data.p2_name || "Person 2";
+            renderInteractiveRadar(data.chart_data);
+        }
+        
+        showStep("results-step");
+    }
+    
+    function restart() {
+        location.reload();
+    }
+
+    // Initialize
+    document.addEventListener("DOMContentLoaded", async () => {
+        console.log('🚀 Initializing Harmonia...');
+        
+        // Load questions
+        await loadQuestions();
+        
+        // Set up engine event listeners
+        document.getElementById("start-btn")?.addEventListener("click", startQuestionnaire);
+        document.getElementById("skip-btn")?.addEventListener("click", skipBlock);
+        document.getElementById("next-btn")?.addEventListener("click", nextBlock);
+        document.getElementById("download-btn")?.addEventListener("click", downloadReport);
+        document.getElementById("restart-btn")?.addEventListener("click", restart);
+    });
+    </script>
+
+    <!-- ERROR MODAL -->
+    <div id="error-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon" id="modal-icon">⚠️</div>
+            <h3 class="modal-title" id="modal-title">Error</h3>
+            <p class="modal-message" id="modal-message">An error occurred.</p>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn primary" id="modal-confirm-btn">Continue Anyway</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="error-modal">
+        <div class="error-content">
+            <div class="error-icon" id="error-icon">⚠️</div>
+            <h3 class="error-title" id="error-title">Upload Failed</h3>
+            <p class="error-message" id="error-message">There was an error processing your file.</p>
+            <div class="error-actions">
+                <button class="error-btn secondary" onclick="closeErrorModal()">Cancel</button>
+                <button class="error-btn secondary" id="retry-btn" onclick="retryUpload()">Retry</button>
+                <button class="error-btn primary" id="proceed-btn" onclick="proceedWithoutFeature()">Proceed Anyway</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
