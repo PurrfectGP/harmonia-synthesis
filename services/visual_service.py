@@ -15,15 +15,48 @@ class VisualService:
     def __init__(self, api_key: str, model_name: str = None):
         import os
         genai.configure(api_key=api_key)
-        # Use model from parameter, environment, or default
-        self.model_name = model_name or os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
+        # Use model from parameter, environment, or default to Gemini 3 Flash (fast with Pro reasoning)
+        self.model_name = model_name or os.getenv('GEMINI_MODEL', 'gemini-3-flash-preview')
+
+        # Fallback chain: Gemini 3 Flash → 2.5 Flash → 2.5 Pro
+        self.fallback_models = ['gemini-2.5-flash', 'gemini-2.5-pro']
+
         self.safety_settings = [
             {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
             {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
             {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
             {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
         ]
-        logger.info(f"✅ VisualService: {self.model_name}")
+        logger.info(f"✅ VisualService: {self.model_name} (fallback: {' → '.join(self.fallback_models)})")
+
+    def _generate_with_fallback(self, prompt, generation_config, image=None):
+        """Try to generate content with primary model, fall back to alternatives if needed."""
+        models_to_try = [self.model_name] + self.fallback_models
+
+        for model_name in models_to_try:
+            try:
+                logger.info(f"🔮 Trying {model_name}...")
+                model = genai.GenerativeModel(model_name)
+
+                if image:
+                    response = model.generate_content([prompt, image], generation_config=generation_config, safety_settings=self.safety_settings)
+                else:
+                    response = model.generate_content(prompt, generation_config=generation_config, safety_settings=self.safety_settings)
+
+                text = self._extract_text_safely(response)
+                if text:
+                    logger.info(f"✅ Success with {model_name}")
+                    return text
+
+                logger.warning(f"⚠️  {model_name} returned empty, trying next...")
+
+            except Exception as e:
+                logger.warning(f"⚠️  {model_name} failed: {e}")
+                if model_name == models_to_try[-1]:  # Last model
+                    raise
+                logger.info(f"   Trying fallback model...")
+
+        return None
 
     def _extract_text_safely(self, response) -> str:
         """Safely extract text from Gemini response, handling blocked/empty responses."""
@@ -73,14 +106,15 @@ class VisualService:
             prompt = """Analyze photo for dating compatibility. Rate 1-10: quality, attractiveness, expression, impression. Return ONLY JSON:
 {"quality_score": <1-10>, "attractiveness": <1-10>, "expression": "<warm/neutral/cold>", "impression": "<friendly/serious/mysterious>", "confidence": <0.0-1.0>}"""
 
-            model = genai.GenerativeModel(self.model_name)
-            response = model.generate_content([prompt, image], generation_config={'temperature': 0.4, 'max_output_tokens': 1024, 'top_p': 0.9, 'top_k': 40}, safety_settings=self.safety_settings)
-
-            text = self._extract_text_safely(response)
+            text = self._generate_with_fallback(
+                prompt,
+                generation_config={'temperature': 0.4, 'max_output_tokens': 1024, 'top_p': 0.9, 'top_k': 40},
+                image=image
+            )
 
             # If empty response, use fallback
             if not text:
-                logger.error("❌ Empty response from Gemini API, using fallback")
+                logger.error("❌ All models returned empty, using fallback")
                 return {'quality_score': 70, 'attractiveness': 7, 'expression': 'neutral', 'impression': 'friendly', 'confidence': 0.5}
 
             import json, re

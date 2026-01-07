@@ -46,8 +46,8 @@ class Config:
     }
 
     # Model selection (set via GEMINI_MODEL environment variable)
-    # Default: gemini-2.5-pro for best quality/reliability balance
-    GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-2.5-pro')
+    # Default: gemini-3-pro-preview (most advanced model with superior reasoning)
+    GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-3-pro-preview')
 
     # Model configuration with recommended fallback order
     MODELS = {

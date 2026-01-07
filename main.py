@@ -131,10 +131,10 @@ CRITICAL: Your response MUST be 70-80 words. Count carefully. Be detailed, thoug
 
 Write ONLY the response (no preamble, no quotation marks):"""
         
-        print(f"🔮 Flash (FORCED LONG)")
+        print(f"🔮 Gemini (FORCED LONG)")
 
-        # Use model from environment or default
-        model_name = os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
+        # Use model from environment or default to Gemini 3 Flash (fast with Pro reasoning)
+        model_name = os.getenv('GEMINI_MODEL', 'gemini-3-flash-preview')
         model = genai.GenerativeModel(model_name)
 
         # FORCE maximum output!

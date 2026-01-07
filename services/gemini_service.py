@@ -24,13 +24,16 @@ class GeminiService:
 
         genai.configure(api_key=api_key)
 
-        # Use environment variable or default to gemini-2.5-pro for better quality
-        self.model_name = model_name or os.getenv('GEMINI_MODEL', 'gemini-2.5-pro')
+        # Use environment variable or default to Gemini 3 Pro (most advanced)
+        self.model_name = model_name or os.getenv('GEMINI_MODEL', 'gemini-3-pro-preview')
 
         # Validate model name
         if self.model_name not in self.AVAILABLE_MODELS:
-            print(f"⚠️  Unknown model '{self.model_name}', falling back to gemini-2.5-pro")
-            self.model_name = 'gemini-2.5-pro'
+            print(f"⚠️  Unknown model '{self.model_name}', falling back to gemini-3-pro-preview")
+            self.model_name = 'gemini-3-pro-preview'
+
+        # Fallback chain: Gemini 3 Pro → 2.5 Pro → 2.5 Flash
+        self.fallback_models = ['gemini-2.5-pro', 'gemini-2.5-flash']
 
         self.safety_settings = [
             {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
@@ -39,7 +42,36 @@ class GeminiService:
             {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
         ]
 
-        print(f"✅ {self.AVAILABLE_MODELS[self.model_name]} initialized")
+        print(f"✅ {self.AVAILABLE_MODELS[self.model_name]} initialized (fallback: {' → '.join(self.fallback_models)})")
+
+    def _generate_with_fallback(self, prompt, generation_config, images=None):
+        """Try to generate content with primary model, fall back to alternatives if needed."""
+        models_to_try = [self.model_name] + self.fallback_models
+
+        for model_name in models_to_try:
+            try:
+                print(f"🔮 Trying {self.AVAILABLE_MODELS.get(model_name, model_name)}...")
+                model = genai.GenerativeModel(model_name)
+
+                if images:
+                    response = model.generate_content([prompt] + images, generation_config=generation_config, safety_settings=self.safety_settings)
+                else:
+                    response = model.generate_content(prompt, generation_config=generation_config, safety_settings=self.safety_settings)
+
+                text = self._extract_text_safely(response)
+                if text:
+                    print(f"✅ Success with {self.AVAILABLE_MODELS.get(model_name, model_name)}")
+                    return text
+
+                print(f"⚠️  {self.AVAILABLE_MODELS.get(model_name, model_name)} returned empty, trying next...")
+
+            except Exception as e:
+                print(f"⚠️  {self.AVAILABLE_MODELS.get(model_name, model_name)} failed: {e}")
+                if model_name == models_to_try[-1]:  # Last model
+                    raise
+                print(f"   Trying fallback model...")
+
+        return None
 
     def _extract_text_safely(self, response) -> str:
         """Safely extract text from Gemini response, handling blocked/empty responses."""
@@ -91,12 +123,14 @@ Response: {answer}"""
 
         try:
             print(f"\n📝 Parsing: {question[:50]}...")
-            model = genai.GenerativeModel(self.model_name)
-            response = model.generate_content(prompt, generation_config={'temperature': 0.6, 'max_output_tokens': 4096}, safety_settings=self.safety_settings)
 
-            text = self._extract_text_safely(response)
+            text = self._generate_with_fallback(
+                prompt,
+                generation_config={'temperature': 0.6, 'max_output_tokens': 4096}
+            )
+
             if not text:
-                print(f"❌ Empty response from Gemini API\n")
+                print(f"❌ All models returned empty responses\n")
                 return {sin: {'score': 0, 'evidence': 'N/A'} for sin in ["greed", "pride", "lust", "wrath", "gluttony", "envy", "sloth"]}
 
             cleaned = re.sub(r'^```json\s*|^```\s*|\s*```$', '', text.strip())
@@ -146,19 +180,16 @@ Generate DETAILED analysis. Return JSON with these EXACT fields:
 CRITICAL: Each field MUST meet its word count minimum. Be COMPREHENSIVE, DETAILED, SPECIFIC. Write FULL PARAGRAPHS."""
 
         try:
-            model = genai.GenerativeModel(self.model_name)
-            response = model.generate_content(
+            text = self._generate_with_fallback(
                 prompt,
                 generation_config={
                     'temperature': 0.85,  # High for detailed content
                     'max_output_tokens': 8192  # Maximum for long analysis
-                },
-                safety_settings=self.safety_settings
+                }
             )
 
-            text = self._extract_text_safely(response)
             if not text:
-                print(f"❌ Empty response from Gemini API, using fallback\n")
+                print(f"❌ All models returned empty responses, using fallback\n")
                 return {
                     "themes": ["Complementary Dynamics", "Shared Growth Potential", "Balanced Energy"],
                     "deep_analysis": f"The compatibility between {profile_a['name']} and {profile_b['name']} demonstrates meaningful potential across multiple dimensions of personality and interpersonal dynamics. Their personality profiles suggest a relationship characterized by both natural synergy and constructive tension that could fuel growth.",
