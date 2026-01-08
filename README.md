@@ -2,7 +2,38 @@
 
 AI-powered relationship compatibility analysis using Visual, Personality (Seven Deadly Sins), and Genetic (HLA) factors.
 
-## 🚀 Deploy to Render.com
+## 🚀 Deployment Options
+
+### Option 1: Cloudflare + Contabo + Zoho Mail (Recommended)
+
+**For Production Deployment:**
+
+**Complete Beginner?** Start here:
+- 📖 [**Complete Beginner's Guide**](DEPLOYMENT_BEGINNER.md) - Step-by-step with screenshots explanations (3-4 hours)
+- 📖 [**Cloudflare Setup for Beginners**](deployment/CLOUDFLARE_BEGINNER.md) - Domain, SSL, security
+- 📖 [**Zoho Mail Setup for Beginners**](deployment/ZOHO_MAIL_BEGINNER.md) - Professional email addresses
+
+**Experienced User?** Quick guides:
+- ⚡ [**Quick Start Guide**](deployment/QUICK_START.md) - Fast deployment (1 hour)
+- 📖 [**Full Deployment Guide**](DEPLOYMENT.md) - Complete technical reference
+- 📖 [**Cloudflare Advanced Setup**](deployment/CLOUDFLARE_SETUP.md) - DNS, SSL, security optimization
+
+**Features:**
+- ✅ Custom domain with HTTPS
+- ✅ Professional email (noreply@yourdomain.com)
+- ✅ Automatic email notifications
+- ✅ CDN & DDoS protection via Cloudflare
+- ✅ Production-ready with Docker
+- ✅ Auto-start on boot
+- ✅ Secure API key management
+
+**Cost:** ~$10-20/month (Contabo + domain)
+
+---
+
+### Option 2: Deploy to Render.com (Simple)
+
+**Quick deployment for testing:**
 
 1. Fork/clone this repository
 2. Go to [Render.com](https://render.com) and create a new Web Service
@@ -13,6 +44,8 @@ AI-powered relationship compatibility analysis using Visual, Personality (Seven 
    - Key: `GEMINI_API_KEY`
    - Value: Your API key from https://aistudio.google.com/app/apikey
 5. Deploy!
+
+**Note:** Render is easier but has limitations (no custom email, basic features)
 
 ## ⚠️ Security Note
 
