@@ -267,8 +267,8 @@ class ReportService:
         doc.add_paragraph()
         
         # Detailed trait scores
-        doc.add_heading('Seven Deadly Sins Profile Comparison', level=2)
-        doc.add_paragraph("Detailed breakdown of personality traits across the Seven Deadly Sins framework:")
+        doc.add_heading('Personality Profile Comparison', level=2)
+        doc.add_paragraph("Detailed breakdown of personality traits across 7 core dimensions of Drive, Confidence, Passion, Assertiveness, Indulgence, Aspiration, and Ease:")
         doc.add_paragraph()
         
         trait_table = doc.add_table(rows=8, cols=5)
@@ -494,7 +494,7 @@ class ReportService:
         
         doc.add_paragraph()
         doc.add_heading('Personality Framework', level=2)
-        doc.add_paragraph("The Seven Deadly Sins framework maps to modern personality psychology, providing nuanced assessment of behavioral tendencies, values, and interpersonal dynamics.")
+        doc.add_paragraph("Our 7-dimensional personality framework maps to modern psychology research, providing nuanced assessment of Drive (ambition), Confidence (self-assurance), Passion (intensity/desire), Assertiveness (directness), Indulgence (pleasure-seeking), Aspiration (competitive drive), and Ease (work-life balance).")
 
         # ══════════════════════════════════════════════════════════════
         # FOOTER

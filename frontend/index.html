@@ -3726,10 +3726,102 @@
             }
 
             /* Hide slider controls for Team section on desktop */
-            .team-slider-wrapper .slider-arrow, 
+            .team-slider-wrapper .slider-arrow,
             .slider-dots {
                 display: none;
             }
+        }
+
+        /* ═══════════════════════════════════════════════════════ */
+        /* LOCAL NETWORK ENGINE ANIMATIONS */
+        /* ═══════════════════════════════════════════════════════ */
+
+        /* Confetti Animation */
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            animation: confetti 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* Gen Spinner */
+        .gen-spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(114,47,55,0.3);
+            border-top-color: var(--maroon);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Word Counter States */
+        .word-counter {
+            color: var(--slate);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .word-counter.valid {
+            color: var(--gold) !important;
+            font-weight: 700;
+        }
+
+        .word-counter.invalid {
+            color: #EF4444 !important;
+        }
+
+        .word-counter.gold {
+            color: var(--gold) !important;
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Question Card Animation */
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--gold-light);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(114,47,55,0.1);
+        }
+
+        /* Gen Button Hover Effects */
+        .gen-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(212,168,83,0.2);
+            background: var(--gold-light) !important;
+            border-color: var(--gold) !important;
+        }
+
+        .gen-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Hidden Utility */
+        .hidden {
+            display: none !important;
         }
 
     </style>
@@ -5114,19 +5206,21 @@ async function loadQuestions() {
 
         const data = await response.json();
 
-        // Randomize questions within each block
+        // Select 2 random questions from each block
         QUESTIONS = {};
         for (const [blockName, questions] of Object.entries(data.questions)) {
             const shuffled = [...questions];
+            // Fisher-Yates shuffle
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
-            QUESTIONS[blockName] = shuffled;
+            // Select only first 2 questions
+            QUESTIONS[blockName] = shuffled.slice(0, 2);
         }
 
         QUESTIONS_LOADED = true;
-        console.log('✅ Questions loaded and randomized');
+        console.log('✅ Questions loaded - 2 per block selected randomly');
         return true;
 
     } catch (error) {
@@ -5311,6 +5405,26 @@ async function startQuiz() {
     renderBlock();
 }
 
+// Confetti celebration
+function throwConfetti(x, y) {
+    for (let i = 0; i < 15; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = x + 'px';
+        confetti.style.top = y + 'px';
+        confetti.style.background = ['var(--maroon)', 'var(--gold)', 'var(--wine)', '#F59E0B'][Math.floor(Math.random() * 4)];
+        confetti.style.animationDelay = (Math.random() * 0.3) + 's';
+        confetti.style.animationDuration = (1 + Math.random()) + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 2000);
+    }
+}
+
+function celebrateQuestionComplete(questionCard) {
+    const rect = questionCard.getBoundingClientRect();
+    throwConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+}
+
 // Render current block
 function renderBlock() {
     const blockName = state.blocks[state.currentBlock];
@@ -5348,17 +5462,26 @@ function renderBlock() {
         `;
         container.appendChild(div);
 
-        // Add word counter
+        // Add word counter with animations
         const textarea = document.getElementById(`answer-${q.id}`);
         textarea.addEventListener("input", () => {
             const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
             const counter = document.getElementById(`wc-${q.id}`);
             counter.textContent = `${words} words`;
+            counter.className = 'word-counter';
 
+            // Dopamine trigger: Perfect length range
             if (words >= MIN_WORDS && words <= MAX_WORDS) {
-                counter.style.color = "var(--gold)";
+                counter.classList.add('valid');
+
+                // Extra celebration for "golden zone" (60-80 words)
+                if (words >= 60 && words <= 80 && !counter.classList.contains('gold')) {
+                    counter.classList.add('gold');
+                    celebrateQuestionComplete(div);
+                }
             } else {
-                counter.style.color = "var(--slate)";
+                counter.classList.add('invalid');
+                counter.classList.remove('gold');
             }
         });
     });
@@ -5628,6 +5751,58 @@ function toggleDNAMethod(method) {
 document.addEventListener("DOMContentLoaded", async () => {
     console.log('🚀 Initializing Local Network Engine...');
     await loadQuestions();
+
+    // Photo upload previews
+    const photoA = document.getElementById('photo-a');
+    const photoB = document.getElementById('photo-b');
+
+    if (photoA) {
+        photoA.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('photo-a-preview').innerHTML = `<img src="${event.target.result}" style="max-width: 100%; max-height: 80px; border-radius: 4px; object-fit: cover;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (photoB) {
+        photoB.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('photo-b-preview').innerHTML = `<img src="${event.target.result}" style="max-width: 100%; max-height: 80px; border-radius: 4px; object-fit: cover;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // DNA file name display
+    const dnaFileA = document.getElementById('dna-file-a');
+    const dnaFileB = document.getElementById('dna-file-b');
+
+    if (dnaFileA) {
+        dnaFileA.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('dna-file-a-name').innerHTML = `📄 ${file.name}<br><span style="font-size: 0.75rem; color: var(--gold);">Selected</span>`;
+            }
+        });
+    }
+
+    if (dnaFileB) {
+        dnaFileB.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('dna-file-b-name').innerHTML = `📄 ${file.name}<br><span style="font-size: 0.75rem; color: var(--gold);">Selected</span>`;
+            }
+        });
+    }
 });    </script>
 </body>
 </html>
