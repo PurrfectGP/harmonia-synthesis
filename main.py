@@ -116,16 +116,22 @@ async def generate_response(request: ResponseGeneratorRequest):
             "neutral": """Example: "I'd take some time to weigh the different options carefully and thoughtfully, considering both my own needs and interests as well as the broader context of the situation and how it affects other people involved. There's usually a pragmatic middle ground that works reasonably well for everyone if you look for it. I try to be genuinely thoughtful and considerate about these things but also realistic and practical about what's actually feasible and what matters most to me personally in the long run." (80 words)"""
         }
         
-        # FORCE LENGTH with explicit instructions + example
-        prompt = f"""You MUST generate a response that is EXACTLY 70-80 words. This is CRITICAL.
+        # FORCE LENGTH with explicit instructions + example + SAFETY GUARDRAILS
+        prompt = f"""You are helping someone answer a personality assessment question. Generate a thoughtful, honest response that reflects personal values and decision-making style.
 
 QUESTION: "{request.question}"
 
-TONE: {request.tone}
+TONE GUIDANCE: {request.tone} (balanced, thoughtful, authentic)
 
+EXAMPLE RESPONSE STYLE:
 {tone_examples.get(request.tone, tone_examples['neutral'])}
 
-Now generate a SIMILAR LENGTH response (70-80 words like the example above) for the question. 
+Now generate a SIMILAR LENGTH response (70-80 words like the example above) that:
+- Is thoughtful, honest, and balanced
+- Reflects on personal values and decision-making approaches
+- Discusses how you would handle situations thoughtfully
+- Focuses on constructive problem-solving and consideration for others
+- Avoids any extreme positions or controversial content
 
 CRITICAL: Your response MUST be 70-80 words. Count carefully. Be detailed, thoughtful, and conversational. Match the example's length and style.
 
@@ -137,14 +143,14 @@ Write ONLY the response (no preamble, no quotation marks):"""
         model_name = os.getenv('GEMINI_MODEL', 'gemini-3-flash-preview')
         model = genai.GenerativeModel(model_name)
 
-        # FORCE maximum output!
+        # BALANCED settings for safe, consistent output
         response = model.generate_content(
             prompt,
             generation_config={
-                'temperature': 1.0,  # MAXIMUM for longest output!
-                'max_output_tokens': 400,  # Even more room!
-                'top_p': 1.0,  # Consider ALL tokens!
-                'top_k': 64,
+                'temperature': 0.7,  # Lower temperature for safer, more predictable output
+                'max_output_tokens': 400,
+                'top_p': 0.9,  # Slightly restricted for safety
+                'top_k': 40,
                 'candidate_count': 1
             },
             safety_settings=safety
