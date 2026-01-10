@@ -4419,6 +4419,7 @@
                                 <div onclick="document.getElementById('photo-a').click()" style="cursor: pointer; padding: 2rem; background: var(--blush); border: 2px dashed var(--gold); border-radius: 8px; text-align: center; transition: all 0.3s;">
                                     <div id="photo-a-preview" style="margin-bottom: 0.5rem; color: var(--slate);">📷 Your Photo</div>
                                     <span style="font-size: 0.85rem; color: var(--slate); opacity: 0.7;">Click to upload</span>
+                                    <div id="photo-a-status" style="margin-top: 0.5rem; font-size: 0.8rem; font-weight: 600;"></div>
                                 </div>
                             </div>
                             <div>
@@ -4426,6 +4427,7 @@
                                 <div onclick="document.getElementById('photo-b').click()" style="cursor: pointer; padding: 2rem; background: var(--blush); border: 2px dashed var(--gold); border-radius: 8px; text-align: center; transition: all 0.3s;">
                                     <div id="photo-b-preview" style="margin-bottom: 0.5rem; color: var(--slate);">📷 Partner's Photo</div>
                                     <span style="font-size: 0.85rem; color: var(--slate); opacity: 0.7;">Click to upload</span>
+                                    <div id="photo-b-status" style="margin-top: 0.5rem; font-size: 0.8rem; font-weight: 600;"></div>
                                 </div>
                             </div>
                         </div>
@@ -4446,9 +4448,11 @@
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                     <div onclick="document.getElementById('dna-file-a').click()" style="cursor: pointer; padding: 1.5rem; background: white; border: 2px dashed var(--gold); border-radius: 6px; text-align: center;">
                                         <div id="dna-file-a-name" style="font-size: 0.9rem; color: var(--slate);">📄 Your DNA file</div>
+                                        <div id="dna-a-status" style="margin-top: 0.5rem; font-size: 0.8rem; font-weight: 600;"></div>
                                     </div>
                                     <div onclick="document.getElementById('dna-file-b').click()" style="cursor: pointer; padding: 1.5rem; background: white; border: 2px dashed var(--gold); border-radius: 6px; text-align: center;">
                                         <div id="dna-file-b-name" style="font-size: 0.9rem; color: var(--slate);">📄 Partner's DNA file</div>
+                                        <div id="dna-b-status" style="margin-top: 0.5rem; font-size: 0.8rem; font-weight: 600;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -4471,30 +4475,34 @@
 
             <!-- PHASE 2: QUIZ PHASE -->
             <div id="quiz-phase" class="engine-phase" style="display: none;">
-                <div style="max-width: 700px; width: 100%;">
-                    <!-- Progress Bar -->
-                    <div style="margin-bottom: 2rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span style="font-size: 0.9rem; color: var(--slate); font-weight: 600;">Personality Assessment</span>
-                            <span id="quiz-progress-text" style="font-size: 0.9rem; color: var(--gold); font-weight: 600;">Question 1 of 20</span>
+                <div style="max-width: 900px; width: 100%;">
+                    <!-- User & Progress Header -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--gold-light); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div>
+                                <span style="color: var(--slate); font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Answering for:</span>
+                                <span id="current-user-name" style="color: var(--maroon); font-size: 1.2rem; font-weight: 700; font-family: 'Cormorant Garamond', serif;">Person 1</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span id="current-block-progress" style="color: var(--gold); font-size: 0.9rem; font-weight: 600;">Block 1 / 6</span>
+                            </div>
                         </div>
-                        <div style="height: 8px; background: var(--blush); border-radius: 10px; overflow: hidden;">
-                            <div id="quiz-progress-bar" style="height: 100%; width: 5%; background: linear-gradient(90deg, var(--maroon), var(--gold)); transition: width 0.3s;"></div>
-                        </div>
+                        <h3 id="block-title" style="color: var(--maroon); font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin: 0;">Block 1: Social & Interpersonal</h3>
                     </div>
 
-                    <!-- Question Card -->
-                    <div style="background: var(--card-bg); border: 1px solid var(--gold-light); border-radius: 12px; padding: 3rem;">
-                        <h3 id="quiz-question" style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--maroon); margin-bottom: 2rem; text-align: center; min-height: 60px;"></h3>
+                    <!-- Questions Container -->
+                    <div id="questions-container" style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+                        <!-- Questions will be inserted here by renderBlock() -->
+                    </div>
 
-                        <div id="quiz-options" style="display: flex; flex-direction: column; gap: 1rem;">
-                            <!-- Options will be inserted here -->
-                        </div>
-
-                        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                            <button onclick="previousQuestion()" id="prev-btn" style="flex: 1; padding: 1rem; background: transparent; border: 2px solid var(--gold); color: var(--maroon); border-radius: 8px; font-weight: 600; cursor: pointer; display: none;">← Previous</button>
-                            <button onclick="skipQuestion()" style="flex: 1; padding: 1rem; background: var(--blush); border: 1px solid var(--gold-light); color: var(--slate); border-radius: 8px; font-weight: 600; cursor: pointer;">Skip Question</button>
-                        </div>
+                    <!-- Navigation Buttons -->
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button onclick="skipBlock()" style="padding: 1rem 2rem; background: var(--blush); border: 1px solid var(--gold-light); color: var(--slate); border-radius: 8px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;">
+                            Skip Block
+                        </button>
+                        <button onclick="nextBlock()" style="padding: 1rem 2rem; background: linear-gradient(135deg, var(--maroon), var(--wine)); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;">
+                            Next Block →
+                        </button>
                     </div>
                 </div>
             </div>
@@ -5043,588 +5051,583 @@
             initForms();
         });
 
+
         // ============================================
-        // LOCAL NETWORK ENGINE - COMPLETE FUNCTIONALITY
+        // LOCAL NETWORK ENGINE - BACKEND INTEGRATED
         // ============================================
 
-        // Engine State
-        const engineState = {
-            nameA: '',
-            nameB: '',
-            genderA: '',
-            genderB: '',
-            photoA: null,
-            photoB: null,
-            dnaMethodA: 'none',
-            dnaMethodB: 'none',
-            dnaDataA: null,
-            dnaDataB: null,
-            hlaA: '',
-            hlaB: '',
-            currentQuestion: 0,
-            answers: [],
-            quizComplete: false,
-            results: null
-        };
+// ═══════════════════════════════════════════════════════════════
+// LOCAL NETWORK ENGINE - PROPER IMPLEMENTATION
+// Uses Felix's questions, backend API, Seven Deadly Sins framework
+// ═══════════════════════════════════════════════════════════════
 
-        // Personality Quiz Questions (20 questions)
-        const quizQuestions = [
-            {
-                question: "How do you typically spend your weekends?",
-                options: [
-                    { text: "Out socializing with friends", trait: "extraversion", value: 5 },
-                    { text: "Mix of social activities and alone time", trait: "extraversion", value: 3 },
-                    { text: "Quiet time at home, reading or hobbies", trait: "extraversion", value: 1 }
-                ]
-            },
-            {
-                question: "When facing a problem, you usually:",
-                options: [
-                    { text: "Rely on logic and analysis", trait: "thinking", value: 5 },
-                    { text: "Balance logic with feelings", trait: "thinking", value: 3 },
-                    { text: "Trust your gut feelings", trait: "thinking", value: 1 }
-                ]
-            },
-            {
-                question: "How do you approach new experiences?",
-                options: [
-                    { text: "Dive in headfirst, love novelty", trait: "openness", value: 5 },
-                    { text: "Open but cautious", trait: "openness", value: 3 },
-                    { text: "Prefer familiar routines", trait: "openness", value: 1 }
-                ]
-            },
-            {
-                question: "In group settings, you are more likely to:",
-                options: [
-                    { text: "Lead the conversation", trait: "extraversion", value: 5 },
-                    { text: "Contribute when interested", trait: "extraversion", value: 3 },
-                    { text: "Listen and observe", trait: "extraversion", value: 1 }
-                ]
-            },
-            {
-                question: "Your living space is usually:",
-                options: [
-                    { text: "Very organized and tidy", trait: "conscientiousness", value: 5 },
-                    { text: "Reasonably organized", trait: "conscientiousness", value: 3 },
-                    { text: "Creative chaos", trait: "conscientiousness", value: 1 }
-                ]
-            },
-            {
-                question: "When making decisions, you prefer to:",
-                options: [
-                    { text: "Research thoroughly first", trait: "conscientiousness", value: 5 },
-                    { text: "Get some info, then decide", trait: "conscientiousness", value: 3 },
-                    { text: "Go with your instinct", trait: "conscientiousness", value: 1 }
-                ]
-            },
-            {
-                question: "How do you handle stress?",
-                options: [
-                    { text: "Stay calm, work through it logically", trait: "neuroticism", value: 1 },
-                    { text: "Feel stressed but manage it", trait: "neuroticism", value: 3 },
-                    { text: "Get quite overwhelmed", trait: "neuroticism", value: 5 }
-                ]
-            },
-            {
-                question: "In friendships, you value:",
-                options: [
-                    { text: "Deep emotional connections", trait: "agreeableness", value: 5 },
-                    { text: "Balance of fun and depth", trait: "agreeableness", value: 3 },
-                    { text: "Shared activities and interests", trait: "agreeableness", value: 1 }
-                ]
-            },
-            {
-                question: "You would describe yourself as:",
-                options: [
-                    { text: "Very empathetic and compassionate", trait: "agreeableness", value: 5 },
-                    { text: "Caring but pragmatic", trait: "agreeableness", value: 3 },
-                    { text: "More logical than emotional", trait: "agreeableness", value: 1 }
-                ]
-            },
-            {
-                question: "When starting a new project:",
-                options: [
-                    { text: "Plan everything in detail", trait: "conscientiousness", value: 5 },
-                    { text: "Outline basics, adapt as you go", trait: "conscientiousness", value: 3 },
-                    { text: "Jump in and figure it out", trait: "conscientiousness", value: 1 }
-                ]
-            },
-            {
-                question: "Your ideal vacation would be:",
-                options: [
-                    { text: "Adventure and exploration", trait: "openness", value: 5 },
-                    { text: "Mix of relaxation and activities", trait: "openness", value: 3 },
-                    { text: "Relaxing at a familiar spot", trait: "openness", value: 1 }
-                ]
-            },
-            {
-                question: "In conflicts, you tend to:",
-                options: [
-                    { text: "Address issues directly", trait: "agreeableness", value: 1 },
-                    { text: "Seek compromise", trait: "agreeableness", value: 3 },
-                    { text: "Avoid confrontation", trait: "agreeableness", value: 5 }
-                ]
-            },
-            {
-                question: "Your energy levels are:",
-                options: [
-                    { text: "High and consistent", trait: "extraversion", value: 5 },
-                    { text: "Moderate, depends on situation", trait: "extraversion", value: 3 },
-                    { text: "Lower, need alone time to recharge", trait: "extraversion", value: 1 }
-                ]
-            },
-            {
-                question: "You prefer conversations that are:",
-                options: [
-                    { text: "Deep and philosophical", trait: "openness", value: 5 },
-                    { text: "Mix of light and meaningful", trait: "openness", value: 3 },
-                    { text: "Practical and straightforward", trait: "openness", value: 1 }
-                ]
-            },
-            {
-                question: "When things don't go as planned:",
-                options: [
-                    { text: "Adapt easily", trait: "neuroticism", value: 1 },
-                    { text: "Feel frustrated but adjust", trait: "neuroticism", value: 3 },
-                    { text: "Get quite upset", trait: "neuroticism", value: 5 }
-                ]
-            },
-            {
-                question: "You work best when:",
-                options: [
-                    { text: "With clear deadlines", trait: "conscientiousness", value: 5 },
-                    { text: "With some structure", trait: "conscientiousness", value: 3 },
-                    { text: "With complete freedom", trait: "conscientiousness", value: 1 }
-                ]
-            },
-            {
-                question: "In relationships, you need:",
-                options: [
-                    { text: "Constant communication", trait: "extraversion", value: 5 },
-                    { text: "Regular but balanced contact", trait: "extraversion", value: 3 },
-                    { text: "Independence with connection", trait: "extraversion", value: 1 }
-                ]
-            },
-            {
-                question: "Your approach to art and creativity is:",
-                options: [
-                    { text: "Love it, very important to me", trait: "openness", value: 5 },
-                    { text: "Appreciate it occasionally", trait: "openness", value: 3 },
-                    { text: "Not particularly interested", trait: "openness", value: 1 }
-                ]
-            },
-            {
-                question: "When helping others, you:",
-                options: [
-                    { text: "Put their needs before yours", trait: "agreeableness", value: 5 },
-                    { text: "Help while maintaining boundaries", trait: "agreeableness", value: 3 },
-                    { text: "Help when convenient", trait: "agreeableness", value: 1 }
-                ]
-            },
-            {
-                question: "Your overall mood is usually:",
-                options: [
-                    { text: "Very positive and upbeat", trait: "neuroticism", value: 1 },
-                    { text: "Stable with ups and downs", trait: "neuroticism", value: 3 },
-                    { text: "Often anxious or worried", trait: "neuroticism", value: 5 }
-                ]
-            }
-        ];
+const MIN_WORDS = 25;
+const MAX_WORDS = 150;
 
-        // DNA Method Toggle
-        function toggleDNAMethod(method) {
-            const uploadBtn = document.getElementById('dna-upload-btn');
-            const manualBtn = document.getElementById('dna-manual-btn');
-            const uploadSection = document.getElementById('dna-upload-section');
-            const manualSection = document.getElementById('dna-manual-section');
+// Sample photos for rating calibration
+const SAMPLE_PHOTOS = [
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400',
+    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400',
+    'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=400',
+    'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400',
+    'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400',
+    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400'
+];
 
-            if (method === 'upload') {
-                uploadBtn.classList.add('active');
-                manualBtn.classList.remove('active');
-                uploadBtn.style.background = 'var(--gold-light)';
-                uploadBtn.style.borderColor = 'var(--gold)';
-                uploadBtn.style.color = 'var(--maroon)';
-                manualBtn.style.background = 'transparent';
-                manualBtn.style.borderColor = 'var(--gold-light)';
-                manualBtn.style.color = 'var(--slate)';
-                uploadSection.style.display = 'block';
-                manualSection.style.display = 'none';
-            } else {
-                uploadBtn.classList.remove('active');
-                manualBtn.classList.add('active');
-                manualBtn.style.background = 'var(--gold-light)';
-                manualBtn.style.borderColor = 'var(--gold)';
-                manualBtn.style.color = 'var(--maroon)';
-                uploadBtn.style.background = 'transparent';
-                uploadBtn.style.borderColor = 'var(--gold-light)';
-                uploadBtn.style.color = 'var(--slate)';
-                uploadSection.style.display = 'none';
-                manualSection.style.display = 'block';
-            }
+// State management
+let QUESTIONS = {};
+let QUESTIONS_LOADED = false;
+
+const state = {
+    user1: "", user2: "",
+    userId1: "", userId2: "",
+    gender1: "", gender2: "",
+    hla1: "", hla2: "",
+    currentUser: 1,
+    currentBlock: 0,
+    blocks: [
+        "Block 1: Social & Interpersonal",
+        "Block 2: Stress & Problem-Solving",
+        "Block 3: Decision-Making & Values",
+        "Block 4: Conflict & Disagreement",
+        "Block 5: Time & Priorities",
+        "Block 6: Growth & Change"
+    ],
+    responses: {1: {}, 2: {}},
+    photoRatingIndex: 0,
+    ratingData: []
+};
+
+// Load Felix's questions from JSON
+async function loadQuestions() {
+    try {
+        console.log('📋 Loading questions from /data/felix_questions.json...');
+        const response = await fetch('/data/felix_questions.json');
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        // Photo Upload Handlers
-        document.addEventListener('DOMContentLoaded', function() {
-            const photoA = document.getElementById('photo-a');
-            const photoB = document.getElementById('photo-b');
+        const data = await response.json();
 
-            if (photoA) {
-                photoA.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            engineState.photoA = event.target.result;
-                            document.getElementById('photo-a-preview').innerHTML = `<img src="${event.target.result}" style="max-width: 100%; max-height: 80px; border-radius: 4px;">`;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
+        // Randomize questions within each block
+        QUESTIONS = {};
+        for (const [blockName, questions] of Object.entries(data.questions)) {
+            const shuffled = [...questions];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
+            QUESTIONS[blockName] = shuffled;
+        }
 
-            if (photoB) {
-                photoB.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            engineState.photoB = event.target.result;
-                            document.getElementById('photo-b-preview').innerHTML = `<img src="${event.target.result}" style="max-width: 100%; max-height: 80px; border-radius: 4px;">`;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
+        QUESTIONS_LOADED = true;
+        console.log('✅ Questions loaded and randomized');
+        return true;
 
-            // DNA File Handlers
-            const dnaFileA = document.getElementById('dna-file-a');
-            const dnaFileB = document.getElementById('dna-file-b');
+    } catch (error) {
+        console.error('❌ Failed to load questions:', error);
+        alert('Failed to load questionnaire. Please refresh the page.');
+        return false;
+    }
+}
 
-            if (dnaFileA) {
-                dnaFileA.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        engineState.dnaMethodA = 'file';
-                        document.getElementById('dna-file-a-name').textContent = file.name;
-                        // In real implementation, would process the file
-                    }
-                });
-            }
+// Upload image
+async function uploadImage(userId, fileInput, statusElement) {
+    const file = fileInput.files[0];
+    if (!file) return true;
 
-            if (dnaFileB) {
-                dnaFileB.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        engineState.dnaMethodB = 'file';
-                        document.getElementById('dna-file-b-name').textContent = file.name;
-                        // In real implementation, would process the file
-                    }
-                });
-            }
+    statusElement.textContent = "⏳ Uploading...";
+    statusElement.style.color = "#F59E0B";
+
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`/api/upload-image/${userId}`, {
+            method: 'POST',
+            body: formData
         });
 
-        // Start Quiz
-        function startQuiz() {
-            // Collect setup data
-            engineState.nameA = document.getElementById('name-a').value || 'Person A';
-            engineState.nameB = document.getElementById('name-b').value || 'Person B';
-            engineState.genderA = document.getElementById('gender-a').value || 'other';
-            engineState.genderB = document.getElementById('gender-b').value || 'other';
-            engineState.hlaA = document.getElementById('hla-a')?.value || '';
-            engineState.hlaB = document.getElementById('hla-b')?.value || '';
-
-            // Transition to quiz phase
-            document.getElementById('setup-phase').style.display = 'none';
-            document.getElementById('quiz-phase').style.display = 'flex';
-
-            // Load first question
-            loadQuestion(0);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
 
-        // Load Question
-        function loadQuestion(index) {
-            const question = quizQuestions[index];
-            const questionEl = document.getElementById('quiz-question');
-            const optionsEl = document.getElementById('quiz-options');
-            const progressText = document.getElementById('quiz-progress-text');
-            const progressBar = document.getElementById('quiz-progress-bar');
-            const prevBtn = document.getElementById('prev-btn');
+        const result = await response.json();
+        statusElement.textContent = "✅ Uploaded";
+        statusElement.style.color = "#10B981";
+        return true;
 
-            questionEl.textContent = question.question;
-            progressText.textContent = `Question ${index + 1} of ${quizQuestions.length}`;
-            progressBar.style.width = `${((index + 1) / quizQuestions.length) * 100}%`;
+    } catch (error) {
+        console.error('Image upload error:', error);
+        statusElement.textContent = `❌ Failed`;
+        statusElement.style.color = "#EF4444";
 
-            // Show/hide previous button
-            prevBtn.style.display = index > 0 ? 'block' : 'none';
+        if (confirm(`Image upload failed: ${error.message}\n\nContinue without photo analysis?`)) {
+            statusElement.textContent = "⚠️ Skipped";
+            statusElement.style.color = "#F59E0B";
+            return true;
+        }
+        return false;
+    }
+}
 
-            // Create options
-            optionsEl.innerHTML = '';
-            question.options.forEach((option, i) => {
-                const btn = document.createElement('button');
-                btn.textContent = option.text;
-                btn.style.cssText = 'padding: 1.25rem; background: var(--blush); border: 2px solid var(--gold-light); border-radius: 8px; color: var(--navy); font-weight: 500; cursor: pointer; transition: all 0.3s; text-align: left; font-family: "DM Sans", sans-serif;';
-                btn.onmouseover = function() {
-                    this.style.background = 'var(--gold-light)';
-                    this.style.borderColor = 'var(--gold)';
-                    this.style.transform = 'translateX(8px)';
-                };
-                btn.onmouseout = function() {
-                    this.style.background = 'var(--blush)';
-                    this.style.borderColor = 'var(--gold-light)';
-                    this.style.transform = 'translateX(0)';
-                };
-                btn.onclick = () => answerQuestion(option);
-                optionsEl.appendChild(btn);
-            });
+// Upload DNA
+async function uploadDNA(userId, fileInput, statusElement) {
+    const file = fileInput.files[0];
+    if (!file) return true;
 
-            engineState.currentQuestion = index;
+    statusElement.textContent = "⏳ Processing...";
+    statusElement.style.color = "#F59E0B";
+
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`/api/upload-dna/${userId}`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
 
-        // Answer Question
-        function answerQuestion(option) {
-            engineState.answers.push(option);
+        const result = await response.json();
+        statusElement.textContent = `✅ ${result.snps_extracted} SNPs`;
+        statusElement.style.color = "#10B981";
+        return true;
 
-            if (engineState.currentQuestion < quizQuestions.length - 1) {
-                loadQuestion(engineState.currentQuestion + 1);
+    } catch (error) {
+        console.error('DNA upload error:', error);
+        statusElement.textContent = `❌ Failed`;
+        statusElement.style.color = "#EF4444";
+
+        if (confirm(`DNA upload failed: ${error.message}\n\nContinue with manual HLA or skip genetic analysis?`)) {
+            statusElement.textContent = "⚠️ Skipped";
+            statusElement.style.color = "#F59E0B";
+            return true;
+        }
+        return false;
+    }
+}
+
+// Response generator with Gemini API
+async function generateResponse(questionId, questionText, tone) {
+    const textarea = document.getElementById(`answer-${questionId}`);
+    const spinner = document.getElementById(`spinner-${questionId}`);
+    const buttons = document.querySelectorAll(`[data-question="${questionId}"]`);
+
+    // Disable buttons and show spinner
+    buttons.forEach(btn => btn.disabled = true);
+    if (spinner) {
+        spinner.classList.remove('hidden');
+        spinner.innerHTML = '<div class="gen-spinner"></div>';
+    }
+
+    try {
+        const response = await fetch('/api/generate-response', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                question: questionText,
+                tone: tone
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        textarea.value = result.response;
+        textarea.dispatchEvent(new Event('input'));
+
+    } catch (error) {
+        console.error('Generate error:', error);
+        alert(`Failed to generate response: ${error.message}`);
+    } finally {
+        buttons.forEach(btn => btn.disabled = false);
+        if (spinner) {
+            spinner.classList.add('hidden');
+        }
+    }
+}
+
+// Start questionnaire
+async function startQuiz() {
+    if (!QUESTIONS_LOADED) {
+        alert('Questions not loaded yet. Please wait or refresh the page.');
+        return;
+    }
+
+    state.user1 = document.getElementById("name-a").value || "Person A";
+    state.user2 = document.getElementById("name-b").value || "Person B";
+    state.gender1 = document.getElementById("gender-a")?.value || "other";
+    state.gender2 = document.getElementById("gender-b")?.value || "other";
+    state.hla1 = document.getElementById("hla-a")?.value || "";
+    state.hla2 = document.getElementById("hla-b")?.value || "";
+    state.userId1 = `u1_${Date.now()}`;
+    state.userId2 = `u2_${Date.now() + 1}`;
+
+    // Upload images
+    const img1 = document.getElementById("photo-a");
+    const img2 = document.getElementById("photo-b");
+
+    if (img1?.files[0]) {
+        const result = await uploadImage(state.userId1, img1, document.getElementById("photo-a-status"));
+        if (!result) return;
+    }
+
+    if (img2?.files[0]) {
+        const result = await uploadImage(state.userId2, img2, document.getElementById("photo-b-status"));
+        if (!result) return;
+    }
+
+    // Upload DNA files
+    const dna1 = document.getElementById("dna-file-a");
+    const dna2 = document.getElementById("dna-file-b");
+
+    if (dna1?.files[0]) {
+        const result = await uploadDNA(state.userId1, dna1, document.getElementById("dna-a-status"));
+        if (!result) return;
+    }
+
+    if (dna2?.files[0]) {
+        const result = await uploadDNA(state.userId2, dna2, document.getElementById("dna-b-status"));
+        if (!result) return;
+    }
+
+    state.currentUser = 1;
+    state.currentBlock = 0;
+
+    // Go to quiz phase
+    document.getElementById('setup-phase').style.display = 'none';
+    document.getElementById('quiz-phase').style.display = 'flex';
+    renderBlock();
+}
+
+// Render current block
+function renderBlock() {
+    const blockName = state.blocks[state.currentBlock];
+    const questions = QUESTIONS[blockName] || [];
+
+    document.getElementById("current-user-name").textContent = state.currentUser === 1 ? state.user1 : state.user2;
+    document.getElementById("current-block-progress").textContent = `Block ${state.currentBlock + 1} / ${state.blocks.length}`;
+    document.getElementById("block-title").textContent = blockName;
+
+    const container = document.getElementById("questions-container");
+    container.innerHTML = "";
+
+    questions.forEach(q => {
+        const div = document.createElement("div");
+        div.className = "question-card";
+        div.innerHTML = `
+            <h4 style="color: var(--maroon); font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; margin-bottom: 0.5rem;">${q.title}</h4>
+            <p style="color: var(--slate); margin-bottom: 1rem;">${q.question}</p>
+            <textarea id="answer-${q.id}" placeholder="Type your response (25-150 words)..." style="width: 100%; min-height: 120px; padding: 1rem; background: var(--blush); border: 1px solid var(--gold-light); border-radius: 8px; color: var(--navy); font-family: 'DM Sans', sans-serif; resize: vertical;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div class="gen-buttons" style="display: flex; gap: 0.5rem;">
+                    <button class="gen-btn" data-question="${q.id}" onclick="generateResponse('${q.id}', \`${q.question.replace(/`/g, '').replace(/'/g, "\\'")}\`, 'positive')" type="button" style="padding: 0.5rem 1rem; background: var(--blush); border: 1px solid var(--gold-light); border-radius: 6px; color: var(--maroon); font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        👍 Gen+
+                    </button>
+                    <button class="gen-btn" data-question="${q.id}" onclick="generateResponse('${q.id}', \`${q.question.replace(/`/g, '').replace(/'/g, "\\'")}\`, 'negative')" type="button" style="padding: 0.5rem 1rem; background: var(--blush); border: 1px solid var(--gold-light); border-radius: 6px; color: var(--maroon); font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        👎 Gen-
+                    </button>
+                    <button class="gen-btn" data-question="${q.id}" onclick="generateResponse('${q.id}', \`${q.question.replace(/`/g, '').replace(/'/g, "\\'")}\`, 'neutral')" type="button" style="padding: 0.5rem 1rem; background: var(--blush); border: 1px solid var(--gold-light); border-radius: 6px; color: var(--maroon); font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        🎲 Neutral
+                    </button>
+                    <span id="spinner-${q.id}" class="hidden"></span>
+                </div>
+                <div id="wc-${q.id}" style="color: var(--slate); font-size: 0.9rem; font-weight: 600;">0 words</div>
+            </div>
+        `;
+        container.appendChild(div);
+
+        // Add word counter
+        const textarea = document.getElementById(`answer-${q.id}`);
+        textarea.addEventListener("input", () => {
+            const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const counter = document.getElementById(`wc-${q.id}`);
+            counter.textContent = `${words} words`;
+
+            if (words >= MIN_WORDS && words <= MAX_WORDS) {
+                counter.style.color = "var(--gold)";
             } else {
-                // Quiz complete - move to processing
-                engineState.quizComplete = true;
-                processCompatibility();
+                counter.style.color = "var(--slate)";
             }
-        }
+        });
+    });
+}
 
-        // Skip Question
-        function skipQuestion() {
-            engineState.answers.push({ trait: 'neutral', value: 3 });
+// Next block or user
+function nextBlock() {
+    // Save current block responses
+    const blockName = state.blocks[state.currentBlock];
+    const questions = QUESTIONS[blockName];
+    let answered = 0;
 
-            if (engineState.currentQuestion < quizQuestions.length - 1) {
-                loadQuestion(engineState.currentQuestion + 1);
-            } else {
-                engineState.quizComplete = true;
-                processCompatibility();
+    questions.forEach(q => {
+        const answer = document.getElementById(`answer-${q.id}`)?.value || "";
+        const words = answer.trim().split(/\s+/).filter(w => w.length > 0).length;
+        if (words >= MIN_WORDS && words <= MAX_WORDS) {
+            if (!state.responses[state.currentUser][q.id]) {
+                state.responses[state.currentUser][q.id] = {
+                    question: q.question,
+                    answer: answer
+                };
             }
+            answered++;
+        }
+    });
+
+    // Check if at least 1 valid answer
+    if (answered < 1) {
+        alert(`Please answer at least 1 question with ${MIN_WORDS}-${MAX_WORDS} words.`);
+        return;
+    }
+
+    // Move to next block or next user
+    if (state.currentBlock < state.blocks.length - 1) {
+        state.currentBlock++;
+        renderBlock();
+    } else if (state.currentUser === 1) {
+        // Switch to Person 2
+        state.currentUser = 2;
+        state.currentBlock = 0;
+        renderBlock();
+    } else {
+        // Both users complete, analyze
+        analyzeCompatibility();
+    }
+}
+
+function skipBlock() {
+    nextBlock();
+}
+
+// Analyze compatibility
+async function analyzeCompatibility() {
+    console.log('🔬 Starting compatibility analysis');
+
+    document.getElementById('quiz-phase').style.display = 'none';
+    document.getElementById('processing-phase').style.display = 'flex';
+
+    try {
+        // Submit profiles
+        const responses1 = Object.values(state.responses[1]);
+        const responses2 = Object.values(state.responses[2]);
+
+        updateProcessing("Submitting profiles...", 30);
+
+        // Submit Person 1
+        const submit1 = await fetch('/api/submit-profile', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                user_id: state.userId1,
+                user_name: state.user1,
+                responses: responses1,
+                hla_data: state.hla1
+            })
+        });
+
+        if (!submit1.ok) {
+            throw new Error(`Person 1 profile failed: ${submit1.status}`);
         }
 
-        // Previous Question
-        function previousQuestion() {
-            if (engineState.currentQuestion > 0) {
-                engineState.answers.pop();
-                loadQuestion(engineState.currentQuestion - 1);
-            }
+        updateProcessing("Processing personality analysis...", 60);
+
+        // Submit Person 2
+        const submit2 = await fetch('/api/submit-profile', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                user_id: state.userId2,
+                user_name: state.user2,
+                responses: responses2,
+                hla_data: state.hla2
+            })
+        });
+
+        if (!submit2.ok) {
+            throw new Error(`Person 2 profile failed: ${submit2.status}`);
         }
 
-        // Process Compatibility
-        async function processCompatibility() {
-            // Show processing phase
-            document.getElementById('quiz-phase').style.display = 'none';
-            document.getElementById('processing-phase').style.display = 'flex';
+        updateProcessing("Calculating compatibility...", 80);
 
-            const statusEl = document.getElementById('processing-status');
-            const percentEl = document.getElementById('processing-percent');
-            const loadingCircle = document.getElementById('loading-circle');
+        // Analyze
+        const analysisResponse = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                user_a_id: state.userId1,
+                user_b_id: state.userId2
+            })
+        });
 
-            // Simulate processing stages
-            const stages = [
-                { text: 'Analyzing visual chemistry...', percent: 20 },
-                { text: 'Processing personality traits...', percent: 40 },
-                { text: 'Calculating genetic compatibility...', percent: 60 },
-                { text: 'Computing resonance patterns...', percent: 80 },
-                { text: 'Finalizing compatibility score...', percent: 100 }
-            ];
-
-            for (let stage of stages) {
-                await new Promise(resolve => setTimeout(resolve, 800));
-                statusEl.textContent = stage.text;
-                percentEl.textContent = `${stage.percent}%`;
-                loadingCircle.style.strokeDashoffset = 283 - (283 * stage.percent / 100);
-            }
-
-            // Calculate results
-            await calculateResults();
-
-            // Show results
-            await new Promise(resolve => setTimeout(resolve, 500));
-            document.getElementById('processing-phase').style.display = 'none';
-            document.getElementById('results-phase').style.display = 'flex';
+        if (!analysisResponse.ok) {
+            throw new Error(`Analysis failed: ${analysisResponse.status}`);
         }
 
-        // Calculate Results
-        async function calculateResults() {
-            // Calculate personality scores
-            const traits = {
-                openness: 0,
-                conscientiousness: 0,
-                extraversion: 0,
-                agreeableness: 0,
-                neuroticism: 0
-            };
+        const result = await analysisResponse.json();
 
-            let counts = { ...traits };
-            Object.keys(counts).forEach(k => counts[k] = 0);
+        updateProcessing("Complete!", 100);
 
-            engineState.answers.forEach(answer => {
-                if (answer.trait in traits) {
-                    traits[answer.trait] += answer.value;
-                    counts[answer.trait]++;
-                }
-            });
+        // Display results
+        setTimeout(() => {
+            displayResults(result);
+        }, 1000);
 
-            // Average the scores
-            Object.keys(traits).forEach(trait => {
-                if (counts[trait] > 0) {
-                    traits[trait] = Math.round(traits[trait] / counts[trait]);
-                } else {
-                    traits[trait] = 3;
-                }
-            });
+    } catch (error) {
+        console.error('❌ Analysis error:', error);
+        alert(`Error during analysis: ${error.message}`);
+        document.getElementById('processing-phase').style.display = 'none';
+        document.getElementById('setup-phase').style.display = 'flex';
+    }
+}
 
-            // Calculate visual score (if photos provided)
-            let visualScore = engineState.photoA && engineState.photoB ? 75 + Math.random() * 20 : 65 + Math.random() * 15;
+function updateProcessing(status, percent) {
+    document.getElementById('processing-status').textContent = status;
+    document.getElementById('processing-percent').textContent = `${percent}%`;
+    const circle = document.getElementById('loading-circle');
+    if (circle) {
+        const circumference = 283;
+        const offset = circumference - (percent / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+    }
+}
 
-            // Calculate genetic score (if HLA provided)
-            let geneticScore = (engineState.hlaA && engineState.hlaB) ? 70 + Math.random() * 25 : 65 + Math.random() * 15;
+// Display results
+function displayResults(data) {
+    document.getElementById('processing-phase').style.display = 'none';
+    document.getElementById('results-phase').style.display = 'flex';
 
-            // Calculate personality compatibility
-            let personalityScore = 70 + Math.random() * 25;
+    // Update names
+    document.getElementById('profile-a-name').textContent = state.user1;
+    document.getElementById('profile-b-name').textContent = state.user2;
 
-            // Overall score (weighted average)
-            let overallScore = Math.round(
-                (visualScore * 0.3) +
-                (personalityScore * 0.4) +
-                (geneticScore * 0.3)
-            );
+    // Update overall score
+    document.getElementById('final-score').textContent = `${Math.round(data.overall_score)}%`;
 
-            // Store results
-            engineState.results = {
-                overall: overallScore,
-                visual: Math.round(visualScore),
-                personality: Math.round(personalityScore),
-                genetic: Math.round(geneticScore),
-                traits: traits
-            };
+    // Update traits (Seven Deadly Sins)
+    if (data.chart_data) {
+        updateTraits('traits-a', data.chart_data.p1_scores);
+        updateTraits('traits-b', data.chart_data.p2_scores);
+        updateRadarChart('radar-a', data.chart_data.p1_scores);
+        updateRadarChart('radar-b', data.chart_data.p2_scores);
+    }
 
-            // Update UI
-            displayResults();
-        }
+    // Update themes
+    if (data.analysis?.themes) {
+        const themesContainer = document.getElementById('connection-themes');
+        themesContainer.innerHTML = '';
+        data.analysis.themes.forEach(theme => {
+            const badge = document.createElement('span');
+            badge.className = 'theme-badge';
+            badge.textContent = theme;
+            badge.style.cssText = 'display: inline-block; padding: 0.5rem 1rem; background: var(--gold-light); border: 1px solid var(--gold); border-radius: 6px; color: var(--maroon); font-size: 0.85rem; margin: 0.25rem;';
+            themesContainer.appendChild(badge);
+        });
+    }
 
-        // Display Results
-        function displayResults() {
-            const results = engineState.results;
+    // Store IDs for download
+    window.currentAnalysis = {userId1: state.userId1, userId2: state.userId2};
+}
 
-            // Update names
-            document.getElementById('profile-a-name').textContent = engineState.nameA;
-            document.getElementById('profile-b-name').textContent = engineState.nameB;
+function updateTraits(elementId, scores) {
+    const traits = ['Greed', 'Pride', 'Lust', 'Wrath', 'Gluttony', 'Envy', 'Sloth'];
+    const container = document.getElementById(elementId);
+    container.innerHTML = '';
 
-            // Update overall score
-            document.getElementById('final-score').textContent = `${results.overall}%`;
+    const topTraits = scores
+        .map((score, i) => ({trait: traits[i], score}))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
 
-            // Update traits
-            const traitsA = document.getElementById('traits-a');
-            const traitsB = document.getElementById('traits-b');
+    topTraits.forEach(({trait}) => {
+        const tag = document.createElement('span');
+        tag.className = 'trait-tag';
+        tag.textContent = trait;
+        tag.style.cssText = 'display: inline-block; padding: 0.4rem 0.8rem; background: var(--maroon-light); border-radius: 4px; color: var(--maroon); font-size: 0.8rem; margin: 0.2rem;';
+        container.appendChild(tag);
+    });
+}
 
-            traitsA.innerHTML = `
-                <span class="trait-tag">Openness: ${results.traits.openness}/5</span>
-                <span class="trait-tag">${engineState.hlaA || 'HLA: N/A'}</span>
-                <span class="trait-tag">Visual: ${results.visual}%</span>
-            `;
+function updateRadarChart(elementId, scores) {
+    // Simplified radar chart update - scale to SVG coordinates
+    const element = document.getElementById(elementId);
+    if (!element) return;
 
-            traitsB.innerHTML = `
-                <span class="trait-tag">Openness: ${results.traits.openness}/5</span>
-                <span class="trait-tag">${engineState.hlaB || 'HLA: N/A'}</span>
-                <span class="trait-tag">Visual: ${results.visual}%</span>
-            `;
+    // Map 0-100 scores to radial points on pentagon
+    const centerX = 50, centerY = 50;
+    const angles = [0, 72, 144, 216, 288]; // Pentagon angles
+    const maxRadius = 30;
 
-            // Update connection themes
-            const themes = document.getElementById('connection-themes');
-            const themesList = [];
+    const points = scores.slice(0, 5).map((score, i) => {
+        const angle = (angles[i] - 90) * Math.PI / 180;
+        const radius = (score / 100) * maxRadius;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+        return `${x},${y}`;
+    }).join(' ');
 
-            if (results.genetic > 75) themesList.push('HLA Diversity');
-            if (results.personality > 75) themesList.push('Personality Resonance');
-            if (results.visual > 75) themesList.push('Visual Alignment');
-            if (themesList.length === 0) themesList.push('Balanced Compatibility');
+    element.setAttribute('points', points);
+}
 
-            themes.innerHTML = themesList.map(t => `<span class="theme-badge">${t}</span>`).join('');
-        }
+// Download report
+function downloadReport() {
+    if (!window.currentAnalysis) {
+        alert('No analysis available');
+        return;
+    }
 
-        // Download Report
-        function downloadReport() {
-            const results = engineState.results;
+    const {userId1, userId2} = window.currentAnalysis;
+    const url = `/api/download-report/${userId1}/${userId2}`;
+    window.location.href = url;
+}
 
-            const reportContent = `
-HARMONIA COMPATIBILITY REPORT
-Generated: ${new Date().toLocaleDateString()}
+// Reset engine
+function resetEngine() {
+    location.reload();
+}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Toggle DNA method
+function toggleDNAMethod(method) {
+    const uploadBtn = document.getElementById('dna-upload-btn');
+    const manualBtn = document.getElementById('dna-manual-btn');
+    const uploadSection = document.getElementById('dna-upload-section');
+    const manualSection = document.getElementById('dna-manual-section');
 
-PROFILES:
-  ${engineState.nameA} ↔ ${engineState.nameB}
+    if (method === 'upload') {
+        uploadBtn.classList.add('active');
+        manualBtn.classList.remove('active');
+        uploadBtn.style.background = 'var(--gold-light)';
+        uploadBtn.style.borderColor = 'var(--gold)';
+        manualBtn.style.background = 'transparent';
+        manualBtn.style.borderColor = 'var(--gold-light)';
+        uploadSection.style.display = 'block';
+        manualSection.style.display = 'none';
+    } else {
+        uploadBtn.classList.remove('active');
+        manualBtn.classList.add('active');
+        manualBtn.style.background = 'var(--gold-light)';
+        manualBtn.style.borderColor = 'var(--gold)';
+        uploadBtn.style.background = 'transparent';
+        uploadBtn.style.borderColor = 'var(--gold-light)';
+        uploadSection.style.display = 'none';
+        manualSection.style.display = 'block';
+    }
+}
 
-OVERALL COMPATIBILITY: ${results.overall}%
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-DIMENSION SCORES:
-  • Visual Chemistry: ${results.visual}%
-  • Personality Resonance: ${results.personality}%
-  • Genetic Harmony: ${results.genetic}%
-
-PERSONALITY TRAITS:
-  • Openness: ${results.traits.openness}/5
-  • Conscientiousness: ${results.traits.conscientiousness}/5
-  • Extraversion: ${results.traits.extraversion}/5
-  • Agreeableness: ${results.traits.agreeableness}/5
-  • Emotional Stability: ${6 - results.traits.neuroticism}/5
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-ANALYSIS SUMMARY:
-Your compatibility score of ${results.overall}% indicates ${
-    results.overall >= 80 ? 'excellent potential for a strong relationship' :
-    results.overall >= 65 ? 'good compatibility with areas of resonance' :
-    'moderate compatibility with room for growth'
-}.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Generated by Harmonia Engine
-© 2026 Harmonia Synthesis
-            `.trim();
-
-            const blob = new Blob([reportContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `harmonia-report-${engineState.nameA}-${engineState.nameB}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // Reset Engine
-        function resetEngine() {
-            // Reset state
-            Object.keys(engineState).forEach(key => {
-                if (typeof engineState[key] === 'string') engineState[key] = '';
-                else if (typeof engineState[key] === 'number') engineState[key] = 0;
-                else if (Array.isArray(engineState[key])) engineState[key] = [];
-                else engineState[key] = null;
-            });
-
-            // Reset UI
-            document.getElementById('results-phase').style.display = 'none';
-            document.getElementById('setup-phase').style.display = 'flex';
-
-            // Clear form inputs
-            document.getElementById('name-a').value = '';
-            document.getElementById('name-b').value = '';
-            document.getElementById('gender-a').value = '';
-            document.getElementById('gender-b').value = '';
-            if (document.getElementById('hla-a')) document.getElementById('hla-a').value = '';
-            if (document.getElementById('hla-b')) document.getElementById('hla-b').value = '';
-            document.getElementById('photo-a-preview').innerHTML = '📷 Your Photo';
-            document.getElementById('photo-b-preview').innerHTML = '📷 Partner\'s Photo';
-        }
-    </script>
+// Initialize
+document.addEventListener("DOMContentLoaded", async () => {
+    console.log('🚀 Initializing Local Network Engine...');
+    await loadQuestions();
+});    </script>
 </body>
 </html>
