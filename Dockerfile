@@ -34,20 +34,20 @@ RUN useradd -m -u 1000 harmonia && \
 # Switch to non-root user
 USER harmonia
 
-# Expose port
+# Expose port (Railway provides PORT env var)
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/api/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8000}/api/health || exit 1
 
-# Run with gunicorn
-CMD ["gunicorn", "main:app", \
-     "--workers", "4", \
-     "--worker-class", "uvicorn.workers.UvicornWorker", \
-     "--bind", "0.0.0.0:8000", \
-     "--timeout", "180", \
-     "--keep-alive", "5", \
-     "--access-logfile", "-", \
-     "--error-logfile", "-", \
-     "--log-level", "info"]
+# Use shell form to allow environment variable substitution
+CMD gunicorn main:app \
+     --workers 1 \
+     --worker-class uvicorn.workers.UvicornWorker \
+     --bind 0.0.0.0:${PORT:-8000} \
+     --timeout 180 \
+     --keep-alive 120 \
+     --access-logfile - \
+     --error-logfile - \
+     --log-level info
