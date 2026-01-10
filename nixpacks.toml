@@ -11,8 +11,8 @@ cmds = [
 cmds = [
   "mkdir -p harmonia_outputs",
   "mkdir -p data",
-  "chmod +x start.sh"
+  "chmod +x run.py"
 ]
 
 [start]
-cmd = "bash start.sh"
+cmd = "python3 run.py"
