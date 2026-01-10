@@ -581,9 +581,9 @@
         }
 
         .btn-primary:hover {
-            background: var(--magenta);
+            background: var(--maroon);
             transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(232, 74, 138, 0.3);
+            box-shadow: 0 6px 30px var(--maroon-light);
         }
 
         .btn-secondary {
@@ -1092,7 +1092,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: #22C55E;
+            color: var(--gold);
             font-size: 0.9rem;
             font-weight: 500;
         }
@@ -1100,7 +1100,7 @@
         .status-dot {
             width: 8px;
             height: 8px;
-            background: #22C55E;
+            background: var(--gold);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
@@ -1112,11 +1112,11 @@
 
         /* Enhanced Form Styling - Matches Marketing Pages */
         .engine-form {
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 3rem;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(30, 41, 59, 0.08);
+            border: 1px solid var(--gold-light);
             transition: all 0.4s ease;
         }
 
@@ -1166,9 +1166,9 @@
 
         .engine-input:focus {
             outline: none;
-            border-color: var(--magenta);
+            border-color: var(--maroon);
             background: white;
-            box-shadow: 0 0 0 3px rgba(232, 74, 138, 0.1);
+            box-shadow: 0 0 0 3px var(--maroon-light);
         }
 
         .engine-input::placeholder {
@@ -1184,7 +1184,8 @@
 
         [data-theme="dark"] .engine-input:focus {
             background: rgba(255,255,255,0.08);
-            box-shadow: 0 0 0 3px rgba(232, 74, 138, 0.2);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-light);
         }
 
         .engine-file-input {
@@ -1360,14 +1361,14 @@
         }
 
         .engine-btn.primary {
-            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            background: linear-gradient(135deg, var(--maroon), var(--wine));
             color: white;
-            box-shadow: 0 4px 15px rgba(232, 74, 138, 0.3);
+            box-shadow: 0 4px 15px rgba(114, 47, 55, 0.3);
         }
 
         .engine-btn.primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(232, 74, 138, 0.4);
+            box-shadow: 0 8px 25px rgba(114, 47, 55, 0.4);
         }
 
         .engine-btn.secondary {
@@ -1721,8 +1722,8 @@
 
         .overall-score {
             display: inline-block;
-            background: white;
-            border: 1px solid rgba(30, 41, 59, 0.1);
+            background: var(--card-bg);
+            border: 1px solid var(--gold-light);
             border-radius: 16px;
             padding: 1.5rem 3rem;
         }
@@ -1745,7 +1746,7 @@
         .score-value {
             font-size: 3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--magenta), var(--violet));
+            background: linear-gradient(135deg, var(--maroon), var(--gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -1758,8 +1759,8 @@
         }
 
         .result-card {
-            background: white;
-            border: 1px solid rgba(30, 41, 59, 0.1);
+            background: var(--card-bg);
+            border: 1px solid var(--gold-light);
             border-radius: 12px;
             padding: 1.5rem;
             text-align: center;
