@@ -114,12 +114,23 @@ class GeminiService:
             return None
     
     async def parse_response(self, question: str, answer: str) -> dict:
-        """Parse quiz."""
-        prompt = f"""Analyze for Seven Deadly Sins. Return ONLY JSON:
+        """Parse quiz for personality traits using neutral framework."""
+        prompt = f"""Analyze this response for personality traits across 7 dimensions. Return ONLY JSON:
 {{"greed": {{"score": X, "evidence": "..."}}, "pride": {{"score": X, "evidence": "..."}}, "lust": {{"score": X, "evidence": "..."}}, "wrath": {{"score": X, "evidence": "..."}}, "gluttony": {{"score": X, "evidence": "..."}}, "envy": {{"score": X, "evidence": "..."}}, "sloth": {{"score": X, "evidence": "..."}}}}
 
+Trait definitions (score 0-100):
+- greed: Ambition, material drive, resource focus, achievement orientation, acquisition desire
+- pride: Confidence, self-assurance, recognition of accomplishments, self-worth, leadership
+- lust: Passion, intensity, desire for experiences/power/connection, enthusiasm, drive for fulfillment
+- wrath: Assertiveness, directness, conflict approach, boundary setting, intensity in disagreements
+- gluttony: Indulgence, pleasure-seeking, sensory enjoyment, self-care, experiential focus
+- envy: Aspiration, social comparison, competitive drive, desire for growth, ambition through comparison
+- sloth: Ease preference, relaxation, energy conservation, pace preference, work-life balance focus
+
 Question: {question}
-Response: {answer}"""
+Response: {answer}
+
+Score each 0-100 based on evidence in the response."""
 
         try:
             print(f"\n📝 Parsing: {question[:50]}...")
@@ -143,21 +154,37 @@ Response: {answer}"""
     
     async def generate_full_analysis(self, profile_a, profile_b, visual_score, hla_score, visual_details, hla_details) -> dict:
         """FORCE comprehensive multi-paragraph analysis!"""
-        
-        print(f"\n🔮 REPORT: {profile_a['name']} & {profile_b['name']}")
-        
-        p1_sins = {k: v['score'] for k, v in profile_a['sins'].items()}
-        p2_sins = {k: v['score'] for k, v in profile_b['sins'].items()}
-        
-        # EXTREMELY DETAILED prompt with word count requirements!
-        prompt = f"""You are generating a COMPREHENSIVE compatibility analysis report. You MUST provide DETAILED, MULTI-PARAGRAPH responses.
 
-Person A ({profile_a['name']}): {p1_sins}
-Person B ({profile_b['name']}): {p2_sins}
+        print(f"\n🔮 REPORT: {profile_a['name']} & {profile_b['name']}")
+
+        p1_traits = {k: v['score'] for k, v in profile_a['sins'].items()}
+        p2_traits = {k: v['score'] for k, v in profile_b['sins'].items()}
+
+        # EXTREMELY DETAILED prompt with word count requirements - NEUTRAL LANGUAGE
+        prompt = f"""You are generating a COMPREHENSIVE romantic compatibility analysis report for two individuals. You MUST provide DETAILED, MULTI-PARAGRAPH responses.
+
+Person A ({profile_a['name']}) - Personality Profile:
+- Ambition/Drive: {p1_traits.get('greed', 0)}%
+- Confidence: {p1_traits.get('pride', 0)}%
+- Passion/Intensity: {p1_traits.get('lust', 0)}%
+- Assertiveness: {p1_traits.get('wrath', 0)}%
+- Indulgence: {p1_traits.get('gluttony', 0)}%
+- Aspiration: {p1_traits.get('envy', 0)}%
+- Ease Preference: {p1_traits.get('sloth', 0)}%
+
+Person B ({profile_b['name']}) - Personality Profile:
+- Ambition/Drive: {p2_traits.get('greed', 0)}%
+- Confidence: {p2_traits.get('pride', 0)}%
+- Passion/Intensity: {p2_traits.get('lust', 0)}%
+- Assertiveness: {p2_traits.get('wrath', 0)}%
+- Indulgence: {p2_traits.get('gluttony', 0)}%
+- Aspiration: {p2_traits.get('envy', 0)}%
+- Ease Preference: {p2_traits.get('sloth', 0)}%
+
 Visual Chemistry: {visual_score}%
 Genetic Harmony: {hla_score}%
 
-Generate DETAILED analysis. Return JSON with these EXACT fields:
+Generate DETAILED compatibility analysis. Return JSON with these EXACT fields:
 
 {{
   "themes": ["theme1", "theme2", "theme3"],
