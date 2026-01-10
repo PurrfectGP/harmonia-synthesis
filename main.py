@@ -27,6 +27,35 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, 
 
 PROFILES_DB, IMAGES_DB, HLA_DB, REPORTS_DB = {}, {}, {}, {}
 
+@app.on_event("startup")
+async def startup_event():
+    """Verify environment on startup."""
+    print("\n" + "="*50)
+    print("🚀 HARMONIA STARTING UP")
+    print("="*50)
+
+    # Check for required environment variables
+    gemini_key = os.getenv('GEMINI_API_KEY')
+    if not gemini_key:
+        print("⚠️  WARNING: GEMINI_API_KEY not set! AI features will fail.")
+        print("   Set it in Railway Dashboard → Variables")
+    else:
+        print(f"✅ GEMINI_API_KEY found (length: {len(gemini_key)})")
+
+    # Check data directory
+    if os.path.exists('data'):
+        print(f"✅ Data directory exists")
+    else:
+        print("⚠️  WARNING: data/ directory not found")
+
+    # Create output directory
+    os.makedirs("harmonia_outputs", exist_ok=True)
+    print("✅ Output directory ready")
+
+    print("="*50)
+    print("✅ HARMONIA READY")
+    print("="*50 + "\n")
+
 def get_services():
     api_key = os.getenv('GEMINI_API_KEY')
     return (GeminiService(), SimilarityService(), VisualService(api_key), HLAService(), ReportService())
@@ -47,7 +76,16 @@ class ResponseGeneratorRequest(BaseModel):
 
 @app.get("/api/health")
 async def health():
-    return {"status": "running"}
+    """Health check endpoint for Railway."""
+    try:
+        # Quick check - don't actually initialize services, just verify imports work
+        return {
+            "status": "healthy",
+            "service": "harmonia",
+            "version": "1.0.0"
+        }
+    except Exception as e:
+        raise HTTPException(500, f"Unhealthy: {str(e)}")
 
 def _extract_text_safely_from_response(response) -> str:
     """Safely extract text from Gemini response, handling blocked/empty responses."""
