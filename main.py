@@ -271,9 +271,9 @@ async def analyze(request: AnalysisRequest):
 
     ov = vr['mutual_attraction_score'] * 0.50 + ps * 0.35 + hr['compatibility_score'] * 0.15
 
-    # Use neutral trait keys (drive, confidence, passion, etc.)
+    # Backend uses neutral trait keys, but frontend displays original sin names
     trait_order = ["drive", "confidence", "passion", "assertiveness", "indulgence", "aspiration", "ease"]
-    trait_labels = ["Drive", "Confidence", "Passion", "Assertiveness", "Indulgence", "Aspiration", "Ease"]
+    trait_labels = ["Greed", "Pride", "Lust", "Wrath", "Gluttony", "Envy", "Sloth"]  # Display names for frontend
 
     return {
         "overall_score": round(ov, 1),

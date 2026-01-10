@@ -18,6 +18,17 @@ class ReportService:
 
     TRAIT_ORDER = ["drive", "confidence", "passion", "assertiveness", "indulgence", "aspiration", "ease"]
 
+    # Map neutral trait keys to original sin names for report display
+    SIN_NAMES = {
+        "drive": "Greed",
+        "confidence": "Pride",
+        "passion": "Lust",
+        "assertiveness": "Wrath",
+        "indulgence": "Gluttony",
+        "aspiration": "Envy",
+        "ease": "Sloth"
+    }
+
     TRAIT_DESCRIPTIONS = {
         "drive": "Ambition, goal pursuit, material focus, resource acquisition, achievement orientation",
         "confidence": "Self-assurance, leadership, recognition of accomplishments, self-worth, status",
@@ -268,7 +279,7 @@ class ReportService:
         
         # Detailed trait scores
         doc.add_heading('Personality Profile Comparison', level=2)
-        doc.add_paragraph("Detailed breakdown of personality traits across 7 core dimensions of Drive, Confidence, Passion, Assertiveness, Indulgence, Aspiration, and Ease:")
+        doc.add_paragraph("Detailed breakdown of personality traits across the Seven Deadly Sins framework, interpreted through neutral psychological dimensions:")
         doc.add_paragraph()
         
         trait_table = doc.add_table(rows=8, cols=5)
@@ -288,7 +299,8 @@ class ReportService:
             p2_score = p2['sins'].get(trait, {}).get('score', 0)
             diff = abs(p1_score - p2_score)
 
-            row[0].text = trait.capitalize()
+            # Show sin name in table
+            row[0].text = self.SIN_NAMES[trait]
             row[1].text = f"{p1_score:.2f}"
             row[2].text = f"{p2_score:.2f}"
             row[3].text = f"{diff:.2f}"
@@ -310,7 +322,10 @@ class ReportService:
         doc.add_paragraph()
         
         for trait in self.TRAIT_ORDER:
-            doc.add_heading(f"{trait.capitalize()}: {self.TRAIT_DESCRIPTIONS[trait]}", level=2)
+            # Show: "Greed (Drive): Ambition, goal pursuit, material focus..."
+            sin_name = self.SIN_NAMES[trait]
+            trait_capitalized = trait.capitalize()
+            doc.add_heading(f"{sin_name} ({trait_capitalized}): {self.TRAIT_DESCRIPTIONS[trait]}", level=2)
 
             # Person 1
             try:
@@ -351,8 +366,9 @@ class ReportService:
                 diff = abs(p1_score - p2_score)
                 compat_para = doc.add_paragraph()
                 compat_para.add_run("Compatibility Note: ").bold = True
+                sin_name_lower = self.SIN_NAMES[trait].lower()
                 if diff < 2.0:
-                    compat_para.add_run(f"Similar expression ({diff:.2f} difference) - shared approach to {trait}.")
+                    compat_para.add_run(f"Similar expression ({diff:.2f} difference) - shared approach to {sin_name_lower}.")
                 elif diff < 4.0:
                     compat_para.add_run(f"Complementary ({diff:.2f} difference) - balanced dynamic.")
                 else:
