@@ -5067,169 +5067,207 @@
             results: null
         };
 
-        // Personality Quiz Questions (20 questions)
-        const quizQuestions = [
-            {
-                question: "How do you typically spend your weekends?",
-                options: [
-                    { text: "Out socializing with friends", trait: "extraversion", value: 5 },
-                    { text: "Mix of social activities and alone time", trait: "extraversion", value: 3 },
-                    { text: "Quiet time at home, reading or hobbies", trait: "extraversion", value: 1 }
-                ]
-            },
-            {
-                question: "When facing a problem, you usually:",
-                options: [
-                    { text: "Rely on logic and analysis", trait: "thinking", value: 5 },
-                    { text: "Balance logic with feelings", trait: "thinking", value: 3 },
-                    { text: "Trust your gut feelings", trait: "thinking", value: 1 }
-                ]
-            },
-            {
-                question: "How do you approach new experiences?",
-                options: [
-                    { text: "Dive in headfirst, love novelty", trait: "openness", value: 5 },
-                    { text: "Open but cautious", trait: "openness", value: 3 },
-                    { text: "Prefer familiar routines", trait: "openness", value: 1 }
-                ]
-            },
-            {
-                question: "In group settings, you are more likely to:",
-                options: [
-                    { text: "Lead the conversation", trait: "extraversion", value: 5 },
-                    { text: "Contribute when interested", trait: "extraversion", value: 3 },
-                    { text: "Listen and observe", trait: "extraversion", value: 1 }
-                ]
-            },
-            {
-                question: "Your living space is usually:",
-                options: [
-                    { text: "Very organized and tidy", trait: "conscientiousness", value: 5 },
-                    { text: "Reasonably organized", trait: "conscientiousness", value: 3 },
-                    { text: "Creative chaos", trait: "conscientiousness", value: 1 }
-                ]
-            },
-            {
-                question: "When making decisions, you prefer to:",
-                options: [
-                    { text: "Research thoroughly first", trait: "conscientiousness", value: 5 },
-                    { text: "Get some info, then decide", trait: "conscientiousness", value: 3 },
-                    { text: "Go with your instinct", trait: "conscientiousness", value: 1 }
-                ]
-            },
-            {
-                question: "How do you handle stress?",
-                options: [
-                    { text: "Stay calm, work through it logically", trait: "neuroticism", value: 1 },
-                    { text: "Feel stressed but manage it", trait: "neuroticism", value: 3 },
-                    { text: "Get quite overwhelmed", trait: "neuroticism", value: 5 }
-                ]
-            },
-            {
-                question: "In friendships, you value:",
-                options: [
-                    { text: "Deep emotional connections", trait: "agreeableness", value: 5 },
-                    { text: "Balance of fun and depth", trait: "agreeableness", value: 3 },
-                    { text: "Shared activities and interests", trait: "agreeableness", value: 1 }
-                ]
-            },
-            {
-                question: "You would describe yourself as:",
-                options: [
-                    { text: "Very empathetic and compassionate", trait: "agreeableness", value: 5 },
-                    { text: "Caring but pragmatic", trait: "agreeableness", value: 3 },
-                    { text: "More logical than emotional", trait: "agreeableness", value: 1 }
-                ]
-            },
-            {
-                question: "When starting a new project:",
-                options: [
-                    { text: "Plan everything in detail", trait: "conscientiousness", value: 5 },
-                    { text: "Outline basics, adapt as you go", trait: "conscientiousness", value: 3 },
-                    { text: "Jump in and figure it out", trait: "conscientiousness", value: 1 }
-                ]
-            },
-            {
-                question: "Your ideal vacation would be:",
-                options: [
-                    { text: "Adventure and exploration", trait: "openness", value: 5 },
-                    { text: "Mix of relaxation and activities", trait: "openness", value: 3 },
-                    { text: "Relaxing at a familiar spot", trait: "openness", value: 1 }
-                ]
-            },
-            {
-                question: "In conflicts, you tend to:",
-                options: [
-                    { text: "Address issues directly", trait: "agreeableness", value: 1 },
-                    { text: "Seek compromise", trait: "agreeableness", value: 3 },
-                    { text: "Avoid confrontation", trait: "agreeableness", value: 5 }
-                ]
-            },
-            {
-                question: "Your energy levels are:",
-                options: [
-                    { text: "High and consistent", trait: "extraversion", value: 5 },
-                    { text: "Moderate, depends on situation", trait: "extraversion", value: 3 },
-                    { text: "Lower, need alone time to recharge", trait: "extraversion", value: 1 }
-                ]
-            },
-            {
-                question: "You prefer conversations that are:",
-                options: [
-                    { text: "Deep and philosophical", trait: "openness", value: 5 },
-                    { text: "Mix of light and meaningful", trait: "openness", value: 3 },
-                    { text: "Practical and straightforward", trait: "openness", value: 1 }
-                ]
-            },
-            {
-                question: "When things don't go as planned:",
-                options: [
-                    { text: "Adapt easily", trait: "neuroticism", value: 1 },
-                    { text: "Feel frustrated but adjust", trait: "neuroticism", value: 3 },
-                    { text: "Get quite upset", trait: "neuroticism", value: 5 }
-                ]
-            },
-            {
-                question: "You work best when:",
-                options: [
-                    { text: "With clear deadlines", trait: "conscientiousness", value: 5 },
-                    { text: "With some structure", trait: "conscientiousness", value: 3 },
-                    { text: "With complete freedom", trait: "conscientiousness", value: 1 }
-                ]
-            },
-            {
-                question: "In relationships, you need:",
-                options: [
-                    { text: "Constant communication", trait: "extraversion", value: 5 },
-                    { text: "Regular but balanced contact", trait: "extraversion", value: 3 },
-                    { text: "Independence with connection", trait: "extraversion", value: 1 }
-                ]
-            },
-            {
-                question: "Your approach to art and creativity is:",
-                options: [
-                    { text: "Love it, very important to me", trait: "openness", value: 5 },
-                    { text: "Appreciate it occasionally", trait: "openness", value: 3 },
-                    { text: "Not particularly interested", trait: "openness", value: 1 }
-                ]
-            },
-            {
-                question: "When helping others, you:",
-                options: [
-                    { text: "Put their needs before yours", trait: "agreeableness", value: 5 },
-                    { text: "Help while maintaining boundaries", trait: "agreeableness", value: 3 },
-                    { text: "Help when convenient", trait: "agreeableness", value: 1 }
-                ]
-            },
-            {
-                question: "Your overall mood is usually:",
-                options: [
-                    { text: "Very positive and upbeat", trait: "neuroticism", value: 1 },
-                    { text: "Stable with ups and downs", trait: "neuroticism", value: 3 },
-                    { text: "Often anxious or worried", trait: "neuroticism", value: 5 }
-                ]
+        // Personality Quiz Questions organized by trait (20 questions total, 2 randomly selected from each trait)
+        const quizQuestionsByTrait = {
+            extraversion: [
+                {
+                    question: "How do you typically spend your weekends?",
+                    options: [
+                        { text: "Out socializing with friends", trait: "extraversion", value: 5 },
+                        { text: "Mix of social activities and alone time", trait: "extraversion", value: 3 },
+                        { text: "Quiet time at home, reading or hobbies", trait: "extraversion", value: 1 }
+                    ]
+                },
+                {
+                    question: "In group settings, you are more likely to:",
+                    options: [
+                        { text: "Lead the conversation", trait: "extraversion", value: 5 },
+                        { text: "Contribute when interested", trait: "extraversion", value: 3 },
+                        { text: "Listen and observe", trait: "extraversion", value: 1 }
+                    ]
+                },
+                {
+                    question: "Your energy levels are:",
+                    options: [
+                        { text: "High and consistent", trait: "extraversion", value: 5 },
+                        { text: "Moderate, depends on situation", trait: "extraversion", value: 3 },
+                        { text: "Lower, need alone time to recharge", trait: "extraversion", value: 1 }
+                    ]
+                },
+                {
+                    question: "In relationships, you need:",
+                    options: [
+                        { text: "Constant communication", trait: "extraversion", value: 5 },
+                        { text: "Regular but balanced contact", trait: "extraversion", value: 3 },
+                        { text: "Independence with connection", trait: "extraversion", value: 1 }
+                    ]
+                }
+            ],
+            conscientiousness: [
+                {
+                    question: "Your living space is usually:",
+                    options: [
+                        { text: "Very organized and tidy", trait: "conscientiousness", value: 5 },
+                        { text: "Reasonably organized", trait: "conscientiousness", value: 3 },
+                        { text: "Creative chaos", trait: "conscientiousness", value: 1 }
+                    ]
+                },
+                {
+                    question: "When making decisions, you prefer to:",
+                    options: [
+                        { text: "Research thoroughly first", trait: "conscientiousness", value: 5 },
+                        { text: "Get some info, then decide", trait: "conscientiousness", value: 3 },
+                        { text: "Go with your instinct", trait: "conscientiousness", value: 1 }
+                    ]
+                },
+                {
+                    question: "When starting a new project:",
+                    options: [
+                        { text: "Plan everything in detail", trait: "conscientiousness", value: 5 },
+                        { text: "Outline basics, adapt as you go", trait: "conscientiousness", value: 3 },
+                        { text: "Jump in and figure it out", trait: "conscientiousness", value: 1 }
+                    ]
+                },
+                {
+                    question: "You work best when:",
+                    options: [
+                        { text: "With clear deadlines", trait: "conscientiousness", value: 5 },
+                        { text: "With some structure", trait: "conscientiousness", value: 3 },
+                        { text: "With complete freedom", trait: "conscientiousness", value: 1 }
+                    ]
+                }
+            ],
+            openness: [
+                {
+                    question: "How do you approach new experiences?",
+                    options: [
+                        { text: "Dive in headfirst, love novelty", trait: "openness", value: 5 },
+                        { text: "Open but cautious", trait: "openness", value: 3 },
+                        { text: "Prefer familiar routines", trait: "openness", value: 1 }
+                    ]
+                },
+                {
+                    question: "Your ideal vacation would be:",
+                    options: [
+                        { text: "Adventure and exploration", trait: "openness", value: 5 },
+                        { text: "Mix of relaxation and activities", trait: "openness", value: 3 },
+                        { text: "Relaxing at a familiar spot", trait: "openness", value: 1 }
+                    ]
+                },
+                {
+                    question: "You prefer conversations that are:",
+                    options: [
+                        { text: "Deep and philosophical", trait: "openness", value: 5 },
+                        { text: "Mix of light and meaningful", trait: "openness", value: 3 },
+                        { text: "Practical and straightforward", trait: "openness", value: 1 }
+                    ]
+                },
+                {
+                    question: "Your approach to art and creativity is:",
+                    options: [
+                        { text: "Love it, very important to me", trait: "openness", value: 5 },
+                        { text: "Appreciate it occasionally", trait: "openness", value: 3 },
+                        { text: "Not particularly interested", trait: "openness", value: 1 }
+                    ]
+                }
+            ],
+            agreeableness: [
+                {
+                    question: "In friendships, you value:",
+                    options: [
+                        { text: "Deep emotional connections", trait: "agreeableness", value: 5 },
+                        { text: "Balance of fun and depth", trait: "agreeableness", value: 3 },
+                        { text: "Shared activities and interests", trait: "agreeableness", value: 1 }
+                    ]
+                },
+                {
+                    question: "You would describe yourself as:",
+                    options: [
+                        { text: "Very empathetic and compassionate", trait: "agreeableness", value: 5 },
+                        { text: "Caring but pragmatic", trait: "agreeableness", value: 3 },
+                        { text: "More logical than emotional", trait: "agreeableness", value: 1 }
+                    ]
+                },
+                {
+                    question: "In conflicts, you tend to:",
+                    options: [
+                        { text: "Address issues directly", trait: "agreeableness", value: 1 },
+                        { text: "Seek compromise", trait: "agreeableness", value: 3 },
+                        { text: "Avoid confrontation", trait: "agreeableness", value: 5 }
+                    ]
+                },
+                {
+                    question: "When helping others, you:",
+                    options: [
+                        { text: "Put their needs before yours", trait: "agreeableness", value: 5 },
+                        { text: "Help while maintaining boundaries", trait: "agreeableness", value: 3 },
+                        { text: "Help when convenient", trait: "agreeableness", value: 1 }
+                    ]
+                }
+            ],
+            neuroticism: [
+                {
+                    question: "How do you handle stress?",
+                    options: [
+                        { text: "Stay calm, work through it logically", trait: "neuroticism", value: 1 },
+                        { text: "Feel stressed but manage it", trait: "neuroticism", value: 3 },
+                        { text: "Get quite overwhelmed", trait: "neuroticism", value: 5 }
+                    ]
+                },
+                {
+                    question: "When things don't go as planned:",
+                    options: [
+                        { text: "Adapt easily", trait: "neuroticism", value: 1 },
+                        { text: "Feel frustrated but adjust", trait: "neuroticism", value: 3 },
+                        { text: "Get quite upset", trait: "neuroticism", value: 5 }
+                    ]
+                },
+                {
+                    question: "Your overall mood is usually:",
+                    options: [
+                        { text: "Very positive and upbeat", trait: "neuroticism", value: 1 },
+                        { text: "Stable with ups and downs", trait: "neuroticism", value: 3 },
+                        { text: "Often anxious or worried", trait: "neuroticism", value: 5 }
+                    ]
+                },
+                {
+                    question: "When facing a problem, you usually:",
+                    options: [
+                        { text: "Stay composed and methodical", trait: "neuroticism", value: 1 },
+                        { text: "Feel some anxiety but push through", trait: "neuroticism", value: 3 },
+                        { text: "Feel quite anxious", trait: "neuroticism", value: 5 }
+                    ]
+                }
+            ]
+        };
+
+        // Randomly select 2 questions from each trait (10 questions total)
+        let quizQuestions = [];
+
+        function randomizeQuizQuestions() {
+            quizQuestions = [];
+            const traits = ['extraversion', 'conscientiousness', 'openness', 'agreeableness', 'neuroticism'];
+
+            traits.forEach(trait => {
+                const traitQuestions = [...quizQuestionsByTrait[trait]]; // Copy array
+                const selected = [];
+
+                // Randomly select 2 questions from this trait
+                for (let i = 0; i < 2; i++) {
+                    const randomIndex = Math.floor(Math.random() * traitQuestions.length);
+                    selected.push(traitQuestions[randomIndex]);
+                    traitQuestions.splice(randomIndex, 1); // Remove selected question
+                }
+
+                quizQuestions.push(...selected);
+            });
+
+            // Shuffle the final question order
+            for (let i = quizQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [quizQuestions[i], quizQuestions[j]] = [quizQuestions[j], quizQuestions[i]];
             }
-        ];
+        }
 
         // DNA Method Toggle
         function toggleDNAMethod(method) {
@@ -5332,6 +5370,11 @@
             engineState.genderB = document.getElementById('gender-b').value || 'other';
             engineState.hlaA = document.getElementById('hla-a')?.value || '';
             engineState.hlaB = document.getElementById('hla-b')?.value || '';
+
+            // Reset answers and randomize quiz questions
+            engineState.answers = [];
+            engineState.currentQuestion = 0;
+            randomizeQuizQuestions();
 
             // Transition to quiz phase
             document.getElementById('setup-phase').style.display = 'none';
