@@ -255,25 +255,41 @@ async def analyze(request: AnalysisRequest):
     if request.user_a_id in IMAGES_DB and request.user_b_id in IMAGES_DB:
         vr = s[2].calculate_mutual_attraction(IMAGES_DB[request.user_a_id]['features'], IMAGES_DB[request.user_b_id]['features'])
     
+    # Calculate compatibility scores
     hr = {'compatibility_score': 50.0}
     if request.user_a_id in HLA_DB and request.user_b_id in HLA_DB:
         hr = s[3].calculate_hla_compatibility(HLA_DB[request.user_a_id], HLA_DB[request.user_b_id])
-    
+
     ps = s[1].calculate_perceived_similarity(p1['sins'], p2['sins'])
     an = await s[0].generate_full_analysis(p1, p2, vr['mutual_attraction_score'], hr['compatibility_score'], vr, hr)
-    
+
+    # Create reports directory
     os.makedirs("harmonia_outputs", exist_ok=True)
     rf = f"harmonia_outputs/report_{request.user_a_id}_{request.user_b_id}.docx"
     s[4].generate_full_report(p1, p2, an, vr, hr, ps, {'visual': 50, 'personality': 35, 'hla': 15}, rf)
     REPORTS_DB[f"{request.user_a_id}_{request.user_b_id}"] = rf
-    
+
     ov = vr['mutual_attraction_score'] * 0.50 + ps * 0.35 + hr['compatibility_score'] * 0.15
-    
+
+    # Use neutral trait keys (drive, confidence, passion, etc.)
+    trait_order = ["drive", "confidence", "passion", "assertiveness", "indulgence", "aspiration", "ease"]
+    trait_labels = ["Drive", "Confidence", "Passion", "Assertiveness", "Indulgence", "Aspiration", "Ease"]
+
     return {
         "overall_score": round(ov, 1),
-        "components": {"visual": {"score": vr['mutual_attraction_score']}, "personality": {"score": ps}, "hla": {"score": hr['compatibility_score']}},
+        "components": {
+            "visual": {"score": vr['mutual_attraction_score']},
+            "personality": {"score": ps},
+            "hla": {"score": hr['compatibility_score']}
+        },
         "analysis": an,
-        "chart_data": {"labels": ["Greed", "Pride", "Lust", "Wrath", "Gluttony", "Envy", "Sloth"], "p1_name": p1['name'], "p2_name": p2['name'], "p1_scores": [p1['sins'][x]['score'] for x in ["greed", "pride", "lust", "wrath", "gluttony", "envy", "sloth"]], "p2_scores": [p2['sins'][x]['score'] for x in ["greed", "pride", "lust", "wrath", "gluttony", "envy", "sloth"]]}
+        "chart_data": {
+            "labels": trait_labels,
+            "p1_name": p1['name'],
+            "p2_name": p2['name'],
+            "p1_scores": [p1['sins'].get(trait, {}).get('score', 0) for trait in trait_order],
+            "p2_scores": [p2['sins'].get(trait, {}).get('score', 0) for trait in trait_order]
+        }
     }
 
 @app.get("/api/download-report/{user_a_id}/{user_b_id}")
