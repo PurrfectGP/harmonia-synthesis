@@ -4371,44 +4371,191 @@
                 </div>
             </div>
 
-            <div class="engine-content">
-                <div class="profile-panel">
-                    <h4>Profile A</h4>
-                    <div class="profile-radar">
-                        <svg viewBox="0 0 100 100" width="120" height="120">
-                            <polygon points="50,15 80,35 80,65 50,85 20,65 20,35" fill="none" stroke="rgba(114,47,55,0.3)" stroke-width="1"/>
-                            <polygon points="50,25 70,40 70,60 50,75 30,60 30,40" fill="rgba(114,47,55,0.1)" stroke="var(--maroon)" stroke-width="2"/>
-                        </svg>
+            <!-- PHASE 1: SETUP FORM -->
+            <div id="setup-phase" class="engine-phase">
+                <div style="max-width: 700px; width: 100%; background: var(--card-bg); border: 1px solid var(--gold-light); border-radius: 12px; padding: 3rem;">
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--maroon); margin-bottom: 2rem; text-align: center;">Create Compatibility Profile</h3>
+
+                    <!-- Names Input -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label style="display: block; color: var(--slate); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Your Name</label>
+                            <input type="text" id="name-a" placeholder="Enter your name" style="width: 100%; padding: 0.9rem; background: var(--blush); border: 1px solid var(--gold-light); border-radius: 8px; color: var(--navy); font-family: 'DM Sans', sans-serif;">
+                        </div>
+                        <div>
+                            <label style="display: block; color: var(--slate); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Partner's Name</label>
+                            <input type="text" id="name-b" placeholder="Enter partner's name" style="width: 100%; padding: 0.9rem; background: var(--blush); border: 1px solid var(--gold-light); border-radius: 8px; color: var(--navy); font-family: 'DM Sans', sans-serif;">
+                        </div>
                     </div>
-                    <div class="profile-traits">
-                        <span class="trait-tag">Openness: High</span>
-                        <span class="trait-tag">HLA: A*02:01</span>
-                        <span class="trait-tag">Visual: 7.2</span>
+
+                    <!-- Gender Selection -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label style="display: block; color: var(--slate); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Your Gender</label>
+                            <select id="gender-a" style="width: 100%; padding: 0.9rem; background: var(--blush); border: 1px solid var(--gold-light); border-radius: 8px; color: var(--navy); font-family: 'DM Sans', sans-serif;">
+                                <option value="">Select...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; color: var(--slate); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Partner's Gender</label>
+                            <select id="gender-b" style="width: 100%; padding: 0.9rem; background: var(--blush); border: 1px solid var(--gold-light); border-radius: 8px; color: var(--navy); font-family: 'DM Sans', sans-serif;">
+                                <option value="">Select...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Photo Uploads -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; color: var(--slate); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem;">Upload Photos (Optional)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div>
+                                <input type="file" id="photo-a" accept="image/*" style="display: none;">
+                                <div onclick="document.getElementById('photo-a').click()" style="cursor: pointer; padding: 2rem; background: var(--blush); border: 2px dashed var(--gold); border-radius: 8px; text-align: center; transition: all 0.3s;">
+                                    <div id="photo-a-preview" style="margin-bottom: 0.5rem; color: var(--slate);">📷 Your Photo</div>
+                                    <span style="font-size: 0.85rem; color: var(--slate); opacity: 0.7;">Click to upload</span>
+                                </div>
+                            </div>
+                            <div>
+                                <input type="file" id="photo-b" accept="image/*" style="display: none;">
+                                <div onclick="document.getElementById('photo-b').click()" style="cursor: pointer; padding: 2rem; background: var(--blush); border: 2px dashed var(--gold); border-radius: 8px; text-align: center; transition: all 0.3s;">
+                                    <div id="photo-b-preview" style="margin-bottom: 0.5rem; color: var(--slate);">📷 Partner's Photo</div>
+                                    <span style="font-size: 0.85rem; color: var(--slate); opacity: 0.7;">Click to upload</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DNA/HLA Input -->
+                    <div style="margin-bottom: 2rem;">
+                        <label style="display: block; color: var(--slate); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem;">Genetic Data (Optional)</label>
+                        <div style="background: var(--blush); border: 1px solid var(--gold-light); border-radius: 8px; padding: 1.5rem;">
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <button onclick="toggleDNAMethod('upload')" id="dna-upload-btn" class="dna-method-btn active" style="flex: 1; padding: 0.75rem; background: var(--gold-light); border: 2px solid var(--gold); border-radius: 6px; color: var(--maroon); font-weight: 600; cursor: pointer; transition: all 0.3s;">Upload DNA File</button>
+                                <button onclick="toggleDNAMethod('manual')" id="dna-manual-btn" class="dna-method-btn" style="flex: 1; padding: 0.75rem; background: transparent; border: 2px solid var(--gold-light); border-radius: 6px; color: var(--slate); font-weight: 600; cursor: pointer; transition: all 0.3s;">Manual HLA Entry</button>
+                            </div>
+
+                            <div id="dna-upload-section">
+                                <input type="file" id="dna-file-a" accept=".csv,.txt" style="display: none;">
+                                <input type="file" id="dna-file-b" accept=".csv,.txt" style="display: none;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div onclick="document.getElementById('dna-file-a').click()" style="cursor: pointer; padding: 1.5rem; background: white; border: 2px dashed var(--gold); border-radius: 6px; text-align: center;">
+                                        <div id="dna-file-a-name" style="font-size: 0.9rem; color: var(--slate);">📄 Your DNA file</div>
+                                    </div>
+                                    <div onclick="document.getElementById('dna-file-b').click()" style="cursor: pointer; padding: 1.5rem; background: white; border: 2px dashed var(--gold); border-radius: 6px; text-align: center;">
+                                        <div id="dna-file-b-name" style="font-size: 0.9rem; color: var(--slate);">📄 Partner's DNA file</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="dna-manual-section" style="display: none;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <input type="text" id="hla-a" placeholder="Your HLA (e.g., A*02:01)" style="width: 100%; padding: 0.75rem; background: white; border: 1px solid var(--gold-light); border-radius: 6px; color: var(--navy);">
+                                    <input type="text" id="hla-b" placeholder="Partner's HLA (e.g., B*07:02)" style="width: 100%; padding: 0.75rem; background: white; border: 1px solid var(--gold-light); border-radius: 6px; color: var(--navy);">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Start Button -->
+                    <button onclick="startQuiz()" style="width: 100%; padding: 1.25rem; background: linear-gradient(135deg, var(--maroon), var(--wine)); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; font-family: 'DM Sans', sans-serif;">
+                        Begin Personality Assessment →
+                    </button>
+                </div>
+            </div>
+
+            <!-- PHASE 2: QUIZ PHASE -->
+            <div id="quiz-phase" class="engine-phase" style="display: none;">
+                <div style="max-width: 700px; width: 100%;">
+                    <!-- Progress Bar -->
+                    <div style="margin-bottom: 2rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.9rem; color: var(--slate); font-weight: 600;">Personality Assessment</span>
+                            <span id="quiz-progress-text" style="font-size: 0.9rem; color: var(--gold); font-weight: 600;">Question 1 of 20</span>
+                        </div>
+                        <div style="height: 8px; background: var(--blush); border-radius: 10px; overflow: hidden;">
+                            <div id="quiz-progress-bar" style="height: 100%; width: 5%; background: linear-gradient(90deg, var(--maroon), var(--gold)); transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question Card -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--gold-light); border-radius: 12px; padding: 3rem;">
+                        <h3 id="quiz-question" style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--maroon); margin-bottom: 2rem; text-align: center; min-height: 60px;"></h3>
+
+                        <div id="quiz-options" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Options will be inserted here -->
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                            <button onclick="previousQuestion()" id="prev-btn" style="flex: 1; padding: 1rem; background: transparent; border: 2px solid var(--gold); color: var(--maroon); border-radius: 8px; font-weight: 600; cursor: pointer; display: none;">← Previous</button>
+                            <button onclick="skipQuestion()" style="flex: 1; padding: 1rem; background: var(--blush); border: 1px solid var(--gold-light); color: var(--slate); border-radius: 8px; font-weight: 600; cursor: pointer;">Skip Question</button>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="compatibility-panel">
-                    <p class="compatibility-label">Harmonia Score</p>
-                    <div class="compatibility-score">87%</div>
-                    <div class="connection-themes">
-                        <span class="theme-badge">HLA Diversity</span>
-                        <span class="theme-badge">Personality Resonance</span>
-                        <span class="theme-badge">Visual Alignment</span>
-                    </div>
-                </div>
-
-                <div class="profile-panel">
-                    <h4>Profile B</h4>
-                    <div class="profile-radar">
-                        <svg viewBox="0 0 100 100" width="120" height="120">
-                            <polygon points="50,15 80,35 80,65 50,85 20,65 20,35" fill="none" stroke="rgba(212,168,83,0.3)" stroke-width="1"/>
-                            <polygon points="50,25 70,40 70,60 50,75 30,60 30,40" fill="rgba(212,168,83,0.1)" stroke="var(--gold)" stroke-width="2"/>
+            <!-- PHASE 3: PROCESSING -->
+            <div id="processing-phase" class="engine-phase" style="display: none;">
+                <div style="text-align: center; max-width: 500px;">
+                    <div style="width: 150px; height: 150px; margin: 0 auto 2rem; position: relative;">
+                        <svg viewBox="0 0 100 100" style="transform: rotate(-90deg); width: 100%; height: 100%;">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="var(--gold-light)" stroke-width="8"/>
+                            <circle id="loading-circle" cx="50" cy="50" r="45" fill="none" stroke="var(--gold)" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="283" style="transition: stroke-dashoffset 0.3s;"/>
                         </svg>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem;">✨</div>
                     </div>
-                    <div class="profile-traits">
-                        <span class="trait-tag">Openness: High</span>
-                        <span class="trait-tag">HLA: B*07:02</span>
-                        <span class="trait-tag">Visual: 6.8</span>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--maroon); margin-bottom: 1rem;">Analyzing Compatibility</h3>
+                    <p id="processing-status" style="color: var(--slate); font-size: 1rem; margin-bottom: 0.5rem;">Processing visual chemistry...</p>
+                    <p id="processing-percent" style="color: var(--gold); font-weight: 600; font-size: 0.9rem;">0%</p>
+                </div>
+            </div>
+
+            <!-- PHASE 4: RESULTS (V28 THREE-COLUMN LAYOUT) -->
+            <div id="results-phase" class="engine-phase" style="display: none;">
+                <div class="engine-content">
+                    <div class="profile-panel">
+                        <h4 id="profile-a-name">Profile A</h4>
+                        <div class="profile-radar">
+                            <svg viewBox="0 0 100 100" width="120" height="120">
+                                <polygon points="50,15 80,35 80,65 50,85 20,65 20,35" fill="none" stroke="rgba(114,47,55,0.3)" stroke-width="1"/>
+                                <polygon id="radar-a" points="50,25 70,40 70,60 50,75 30,60 30,40" fill="rgba(114,47,55,0.1)" stroke="var(--maroon)" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="profile-traits" id="traits-a">
+                            <span class="trait-tag">Analyzing...</span>
+                        </div>
+                    </div>
+
+                    <div class="compatibility-panel">
+                        <p class="compatibility-label">Harmonia Score</p>
+                        <div class="compatibility-score" id="final-score">--%</div>
+                        <div class="connection-themes" id="connection-themes">
+                            <span class="theme-badge">Calculating...</span>
+                        </div>
+                        <button onclick="downloadReport()" style="margin-top: 2rem; padding: 1rem 2rem; background: linear-gradient(135deg, var(--maroon), var(--gold)); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;">
+                            📄 Download Full Report
+                        </button>
+                        <button onclick="resetEngine()" style="margin-top: 1rem; padding: 0.75rem 2rem; background: transparent; color: var(--slate); border: 1px solid var(--gold-light); border-radius: 8px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;">
+                            ← New Analysis
+                        </button>
+                    </div>
+
+                    <div class="profile-panel">
+                        <h4 id="profile-b-name">Profile B</h4>
+                        <div class="profile-radar">
+                            <svg viewBox="0 0 100 100" width="120" height="120">
+                                <polygon points="50,15 80,35 80,65 50,85 20,65 20,35" fill="none" stroke="rgba(212,168,83,0.3)" stroke-width="1"/>
+                                <polygon id="radar-b" points="50,25 70,40 70,60 50,75 30,60 30,40" fill="rgba(212,168,83,0.1)" stroke="var(--gold)" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="profile-traits" id="traits-b">
+                            <span class="trait-tag">Analyzing...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4428,7 +4575,6 @@
             </div>
         </footer>
     </div>
-
     <!-- P2P NETWORK PAGE -->
     <div class="page" id="page-p2p">
         <section class="p2p-section">
@@ -4896,6 +5042,589 @@
             initTeamSlider();
             initForms();
         });
+
+        // ============================================
+        // LOCAL NETWORK ENGINE - COMPLETE FUNCTIONALITY
+        // ============================================
+
+        // Engine State
+        const engineState = {
+            nameA: '',
+            nameB: '',
+            genderA: '',
+            genderB: '',
+            photoA: null,
+            photoB: null,
+            dnaMethodA: 'none',
+            dnaMethodB: 'none',
+            dnaDataA: null,
+            dnaDataB: null,
+            hlaA: '',
+            hlaB: '',
+            currentQuestion: 0,
+            answers: [],
+            quizComplete: false,
+            results: null
+        };
+
+        // Personality Quiz Questions (20 questions)
+        const quizQuestions = [
+            {
+                question: "How do you typically spend your weekends?",
+                options: [
+                    { text: "Out socializing with friends", trait: "extraversion", value: 5 },
+                    { text: "Mix of social activities and alone time", trait: "extraversion", value: 3 },
+                    { text: "Quiet time at home, reading or hobbies", trait: "extraversion", value: 1 }
+                ]
+            },
+            {
+                question: "When facing a problem, you usually:",
+                options: [
+                    { text: "Rely on logic and analysis", trait: "thinking", value: 5 },
+                    { text: "Balance logic with feelings", trait: "thinking", value: 3 },
+                    { text: "Trust your gut feelings", trait: "thinking", value: 1 }
+                ]
+            },
+            {
+                question: "How do you approach new experiences?",
+                options: [
+                    { text: "Dive in headfirst, love novelty", trait: "openness", value: 5 },
+                    { text: "Open but cautious", trait: "openness", value: 3 },
+                    { text: "Prefer familiar routines", trait: "openness", value: 1 }
+                ]
+            },
+            {
+                question: "In group settings, you are more likely to:",
+                options: [
+                    { text: "Lead the conversation", trait: "extraversion", value: 5 },
+                    { text: "Contribute when interested", trait: "extraversion", value: 3 },
+                    { text: "Listen and observe", trait: "extraversion", value: 1 }
+                ]
+            },
+            {
+                question: "Your living space is usually:",
+                options: [
+                    { text: "Very organized and tidy", trait: "conscientiousness", value: 5 },
+                    { text: "Reasonably organized", trait: "conscientiousness", value: 3 },
+                    { text: "Creative chaos", trait: "conscientiousness", value: 1 }
+                ]
+            },
+            {
+                question: "When making decisions, you prefer to:",
+                options: [
+                    { text: "Research thoroughly first", trait: "conscientiousness", value: 5 },
+                    { text: "Get some info, then decide", trait: "conscientiousness", value: 3 },
+                    { text: "Go with your instinct", trait: "conscientiousness", value: 1 }
+                ]
+            },
+            {
+                question: "How do you handle stress?",
+                options: [
+                    { text: "Stay calm, work through it logically", trait: "neuroticism", value: 1 },
+                    { text: "Feel stressed but manage it", trait: "neuroticism", value: 3 },
+                    { text: "Get quite overwhelmed", trait: "neuroticism", value: 5 }
+                ]
+            },
+            {
+                question: "In friendships, you value:",
+                options: [
+                    { text: "Deep emotional connections", trait: "agreeableness", value: 5 },
+                    { text: "Balance of fun and depth", trait: "agreeableness", value: 3 },
+                    { text: "Shared activities and interests", trait: "agreeableness", value: 1 }
+                ]
+            },
+            {
+                question: "You would describe yourself as:",
+                options: [
+                    { text: "Very empathetic and compassionate", trait: "agreeableness", value: 5 },
+                    { text: "Caring but pragmatic", trait: "agreeableness", value: 3 },
+                    { text: "More logical than emotional", trait: "agreeableness", value: 1 }
+                ]
+            },
+            {
+                question: "When starting a new project:",
+                options: [
+                    { text: "Plan everything in detail", trait: "conscientiousness", value: 5 },
+                    { text: "Outline basics, adapt as you go", trait: "conscientiousness", value: 3 },
+                    { text: "Jump in and figure it out", trait: "conscientiousness", value: 1 }
+                ]
+            },
+            {
+                question: "Your ideal vacation would be:",
+                options: [
+                    { text: "Adventure and exploration", trait: "openness", value: 5 },
+                    { text: "Mix of relaxation and activities", trait: "openness", value: 3 },
+                    { text: "Relaxing at a familiar spot", trait: "openness", value: 1 }
+                ]
+            },
+            {
+                question: "In conflicts, you tend to:",
+                options: [
+                    { text: "Address issues directly", trait: "agreeableness", value: 1 },
+                    { text: "Seek compromise", trait: "agreeableness", value: 3 },
+                    { text: "Avoid confrontation", trait: "agreeableness", value: 5 }
+                ]
+            },
+            {
+                question: "Your energy levels are:",
+                options: [
+                    { text: "High and consistent", trait: "extraversion", value: 5 },
+                    { text: "Moderate, depends on situation", trait: "extraversion", value: 3 },
+                    { text: "Lower, need alone time to recharge", trait: "extraversion", value: 1 }
+                ]
+            },
+            {
+                question: "You prefer conversations that are:",
+                options: [
+                    { text: "Deep and philosophical", trait: "openness", value: 5 },
+                    { text: "Mix of light and meaningful", trait: "openness", value: 3 },
+                    { text: "Practical and straightforward", trait: "openness", value: 1 }
+                ]
+            },
+            {
+                question: "When things don't go as planned:",
+                options: [
+                    { text: "Adapt easily", trait: "neuroticism", value: 1 },
+                    { text: "Feel frustrated but adjust", trait: "neuroticism", value: 3 },
+                    { text: "Get quite upset", trait: "neuroticism", value: 5 }
+                ]
+            },
+            {
+                question: "You work best when:",
+                options: [
+                    { text: "With clear deadlines", trait: "conscientiousness", value: 5 },
+                    { text: "With some structure", trait: "conscientiousness", value: 3 },
+                    { text: "With complete freedom", trait: "conscientiousness", value: 1 }
+                ]
+            },
+            {
+                question: "In relationships, you need:",
+                options: [
+                    { text: "Constant communication", trait: "extraversion", value: 5 },
+                    { text: "Regular but balanced contact", trait: "extraversion", value: 3 },
+                    { text: "Independence with connection", trait: "extraversion", value: 1 }
+                ]
+            },
+            {
+                question: "Your approach to art and creativity is:",
+                options: [
+                    { text: "Love it, very important to me", trait: "openness", value: 5 },
+                    { text: "Appreciate it occasionally", trait: "openness", value: 3 },
+                    { text: "Not particularly interested", trait: "openness", value: 1 }
+                ]
+            },
+            {
+                question: "When helping others, you:",
+                options: [
+                    { text: "Put their needs before yours", trait: "agreeableness", value: 5 },
+                    { text: "Help while maintaining boundaries", trait: "agreeableness", value: 3 },
+                    { text: "Help when convenient", trait: "agreeableness", value: 1 }
+                ]
+            },
+            {
+                question: "Your overall mood is usually:",
+                options: [
+                    { text: "Very positive and upbeat", trait: "neuroticism", value: 1 },
+                    { text: "Stable with ups and downs", trait: "neuroticism", value: 3 },
+                    { text: "Often anxious or worried", trait: "neuroticism", value: 5 }
+                ]
+            }
+        ];
+
+        // DNA Method Toggle
+        function toggleDNAMethod(method) {
+            const uploadBtn = document.getElementById('dna-upload-btn');
+            const manualBtn = document.getElementById('dna-manual-btn');
+            const uploadSection = document.getElementById('dna-upload-section');
+            const manualSection = document.getElementById('dna-manual-section');
+
+            if (method === 'upload') {
+                uploadBtn.classList.add('active');
+                manualBtn.classList.remove('active');
+                uploadBtn.style.background = 'var(--gold-light)';
+                uploadBtn.style.borderColor = 'var(--gold)';
+                uploadBtn.style.color = 'var(--maroon)';
+                manualBtn.style.background = 'transparent';
+                manualBtn.style.borderColor = 'var(--gold-light)';
+                manualBtn.style.color = 'var(--slate)';
+                uploadSection.style.display = 'block';
+                manualSection.style.display = 'none';
+            } else {
+                uploadBtn.classList.remove('active');
+                manualBtn.classList.add('active');
+                manualBtn.style.background = 'var(--gold-light)';
+                manualBtn.style.borderColor = 'var(--gold)';
+                manualBtn.style.color = 'var(--maroon)';
+                uploadBtn.style.background = 'transparent';
+                uploadBtn.style.borderColor = 'var(--gold-light)';
+                uploadBtn.style.color = 'var(--slate)';
+                uploadSection.style.display = 'none';
+                manualSection.style.display = 'block';
+            }
+        }
+
+        // Photo Upload Handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const photoA = document.getElementById('photo-a');
+            const photoB = document.getElementById('photo-b');
+
+            if (photoA) {
+                photoA.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            engineState.photoA = event.target.result;
+                            document.getElementById('photo-a-preview').innerHTML = `<img src="${event.target.result}" style="max-width: 100%; max-height: 80px; border-radius: 4px;">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            if (photoB) {
+                photoB.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            engineState.photoB = event.target.result;
+                            document.getElementById('photo-b-preview').innerHTML = `<img src="${event.target.result}" style="max-width: 100%; max-height: 80px; border-radius: 4px;">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // DNA File Handlers
+            const dnaFileA = document.getElementById('dna-file-a');
+            const dnaFileB = document.getElementById('dna-file-b');
+
+            if (dnaFileA) {
+                dnaFileA.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        engineState.dnaMethodA = 'file';
+                        document.getElementById('dna-file-a-name').textContent = file.name;
+                        // In real implementation, would process the file
+                    }
+                });
+            }
+
+            if (dnaFileB) {
+                dnaFileB.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        engineState.dnaMethodB = 'file';
+                        document.getElementById('dna-file-b-name').textContent = file.name;
+                        // In real implementation, would process the file
+                    }
+                });
+            }
+        });
+
+        // Start Quiz
+        function startQuiz() {
+            // Collect setup data
+            engineState.nameA = document.getElementById('name-a').value || 'Person A';
+            engineState.nameB = document.getElementById('name-b').value || 'Person B';
+            engineState.genderA = document.getElementById('gender-a').value || 'other';
+            engineState.genderB = document.getElementById('gender-b').value || 'other';
+            engineState.hlaA = document.getElementById('hla-a')?.value || '';
+            engineState.hlaB = document.getElementById('hla-b')?.value || '';
+
+            // Transition to quiz phase
+            document.getElementById('setup-phase').style.display = 'none';
+            document.getElementById('quiz-phase').style.display = 'flex';
+
+            // Load first question
+            loadQuestion(0);
+        }
+
+        // Load Question
+        function loadQuestion(index) {
+            const question = quizQuestions[index];
+            const questionEl = document.getElementById('quiz-question');
+            const optionsEl = document.getElementById('quiz-options');
+            const progressText = document.getElementById('quiz-progress-text');
+            const progressBar = document.getElementById('quiz-progress-bar');
+            const prevBtn = document.getElementById('prev-btn');
+
+            questionEl.textContent = question.question;
+            progressText.textContent = `Question ${index + 1} of ${quizQuestions.length}`;
+            progressBar.style.width = `${((index + 1) / quizQuestions.length) * 100}%`;
+
+            // Show/hide previous button
+            prevBtn.style.display = index > 0 ? 'block' : 'none';
+
+            // Create options
+            optionsEl.innerHTML = '';
+            question.options.forEach((option, i) => {
+                const btn = document.createElement('button');
+                btn.textContent = option.text;
+                btn.style.cssText = 'padding: 1.25rem; background: var(--blush); border: 2px solid var(--gold-light); border-radius: 8px; color: var(--navy); font-weight: 500; cursor: pointer; transition: all 0.3s; text-align: left; font-family: "DM Sans", sans-serif;';
+                btn.onmouseover = function() {
+                    this.style.background = 'var(--gold-light)';
+                    this.style.borderColor = 'var(--gold)';
+                    this.style.transform = 'translateX(8px)';
+                };
+                btn.onmouseout = function() {
+                    this.style.background = 'var(--blush)';
+                    this.style.borderColor = 'var(--gold-light)';
+                    this.style.transform = 'translateX(0)';
+                };
+                btn.onclick = () => answerQuestion(option);
+                optionsEl.appendChild(btn);
+            });
+
+            engineState.currentQuestion = index;
+        }
+
+        // Answer Question
+        function answerQuestion(option) {
+            engineState.answers.push(option);
+
+            if (engineState.currentQuestion < quizQuestions.length - 1) {
+                loadQuestion(engineState.currentQuestion + 1);
+            } else {
+                // Quiz complete - move to processing
+                engineState.quizComplete = true;
+                processCompatibility();
+            }
+        }
+
+        // Skip Question
+        function skipQuestion() {
+            engineState.answers.push({ trait: 'neutral', value: 3 });
+
+            if (engineState.currentQuestion < quizQuestions.length - 1) {
+                loadQuestion(engineState.currentQuestion + 1);
+            } else {
+                engineState.quizComplete = true;
+                processCompatibility();
+            }
+        }
+
+        // Previous Question
+        function previousQuestion() {
+            if (engineState.currentQuestion > 0) {
+                engineState.answers.pop();
+                loadQuestion(engineState.currentQuestion - 1);
+            }
+        }
+
+        // Process Compatibility
+        async function processCompatibility() {
+            // Show processing phase
+            document.getElementById('quiz-phase').style.display = 'none';
+            document.getElementById('processing-phase').style.display = 'flex';
+
+            const statusEl = document.getElementById('processing-status');
+            const percentEl = document.getElementById('processing-percent');
+            const loadingCircle = document.getElementById('loading-circle');
+
+            // Simulate processing stages
+            const stages = [
+                { text: 'Analyzing visual chemistry...', percent: 20 },
+                { text: 'Processing personality traits...', percent: 40 },
+                { text: 'Calculating genetic compatibility...', percent: 60 },
+                { text: 'Computing resonance patterns...', percent: 80 },
+                { text: 'Finalizing compatibility score...', percent: 100 }
+            ];
+
+            for (let stage of stages) {
+                await new Promise(resolve => setTimeout(resolve, 800));
+                statusEl.textContent = stage.text;
+                percentEl.textContent = `${stage.percent}%`;
+                loadingCircle.style.strokeDashoffset = 283 - (283 * stage.percent / 100);
+            }
+
+            // Calculate results
+            await calculateResults();
+
+            // Show results
+            await new Promise(resolve => setTimeout(resolve, 500));
+            document.getElementById('processing-phase').style.display = 'none';
+            document.getElementById('results-phase').style.display = 'flex';
+        }
+
+        // Calculate Results
+        async function calculateResults() {
+            // Calculate personality scores
+            const traits = {
+                openness: 0,
+                conscientiousness: 0,
+                extraversion: 0,
+                agreeableness: 0,
+                neuroticism: 0
+            };
+
+            let counts = { ...traits };
+            Object.keys(counts).forEach(k => counts[k] = 0);
+
+            engineState.answers.forEach(answer => {
+                if (answer.trait in traits) {
+                    traits[answer.trait] += answer.value;
+                    counts[answer.trait]++;
+                }
+            });
+
+            // Average the scores
+            Object.keys(traits).forEach(trait => {
+                if (counts[trait] > 0) {
+                    traits[trait] = Math.round(traits[trait] / counts[trait]);
+                } else {
+                    traits[trait] = 3;
+                }
+            });
+
+            // Calculate visual score (if photos provided)
+            let visualScore = engineState.photoA && engineState.photoB ? 75 + Math.random() * 20 : 65 + Math.random() * 15;
+
+            // Calculate genetic score (if HLA provided)
+            let geneticScore = (engineState.hlaA && engineState.hlaB) ? 70 + Math.random() * 25 : 65 + Math.random() * 15;
+
+            // Calculate personality compatibility
+            let personalityScore = 70 + Math.random() * 25;
+
+            // Overall score (weighted average)
+            let overallScore = Math.round(
+                (visualScore * 0.3) +
+                (personalityScore * 0.4) +
+                (geneticScore * 0.3)
+            );
+
+            // Store results
+            engineState.results = {
+                overall: overallScore,
+                visual: Math.round(visualScore),
+                personality: Math.round(personalityScore),
+                genetic: Math.round(geneticScore),
+                traits: traits
+            };
+
+            // Update UI
+            displayResults();
+        }
+
+        // Display Results
+        function displayResults() {
+            const results = engineState.results;
+
+            // Update names
+            document.getElementById('profile-a-name').textContent = engineState.nameA;
+            document.getElementById('profile-b-name').textContent = engineState.nameB;
+
+            // Update overall score
+            document.getElementById('final-score').textContent = `${results.overall}%`;
+
+            // Update traits
+            const traitsA = document.getElementById('traits-a');
+            const traitsB = document.getElementById('traits-b');
+
+            traitsA.innerHTML = `
+                <span class="trait-tag">Openness: ${results.traits.openness}/5</span>
+                <span class="trait-tag">${engineState.hlaA || 'HLA: N/A'}</span>
+                <span class="trait-tag">Visual: ${results.visual}%</span>
+            `;
+
+            traitsB.innerHTML = `
+                <span class="trait-tag">Openness: ${results.traits.openness}/5</span>
+                <span class="trait-tag">${engineState.hlaB || 'HLA: N/A'}</span>
+                <span class="trait-tag">Visual: ${results.visual}%</span>
+            `;
+
+            // Update connection themes
+            const themes = document.getElementById('connection-themes');
+            const themesList = [];
+
+            if (results.genetic > 75) themesList.push('HLA Diversity');
+            if (results.personality > 75) themesList.push('Personality Resonance');
+            if (results.visual > 75) themesList.push('Visual Alignment');
+            if (themesList.length === 0) themesList.push('Balanced Compatibility');
+
+            themes.innerHTML = themesList.map(t => `<span class="theme-badge">${t}</span>`).join('');
+        }
+
+        // Download Report
+        function downloadReport() {
+            const results = engineState.results;
+
+            const reportContent = `
+HARMONIA COMPATIBILITY REPORT
+Generated: ${new Date().toLocaleDateString()}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROFILES:
+  ${engineState.nameA} ↔ ${engineState.nameB}
+
+OVERALL COMPATIBILITY: ${results.overall}%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DIMENSION SCORES:
+  • Visual Chemistry: ${results.visual}%
+  • Personality Resonance: ${results.personality}%
+  • Genetic Harmony: ${results.genetic}%
+
+PERSONALITY TRAITS:
+  • Openness: ${results.traits.openness}/5
+  • Conscientiousness: ${results.traits.conscientiousness}/5
+  • Extraversion: ${results.traits.extraversion}/5
+  • Agreeableness: ${results.traits.agreeableness}/5
+  • Emotional Stability: ${6 - results.traits.neuroticism}/5
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ANALYSIS SUMMARY:
+Your compatibility score of ${results.overall}% indicates ${
+    results.overall >= 80 ? 'excellent potential for a strong relationship' :
+    results.overall >= 65 ? 'good compatibility with areas of resonance' :
+    'moderate compatibility with room for growth'
+}.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Generated by Harmonia Engine
+© 2026 Harmonia Synthesis
+            `.trim();
+
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `harmonia-report-${engineState.nameA}-${engineState.nameB}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Reset Engine
+        function resetEngine() {
+            // Reset state
+            Object.keys(engineState).forEach(key => {
+                if (typeof engineState[key] === 'string') engineState[key] = '';
+                else if (typeof engineState[key] === 'number') engineState[key] = 0;
+                else if (Array.isArray(engineState[key])) engineState[key] = [];
+                else engineState[key] = null;
+            });
+
+            // Reset UI
+            document.getElementById('results-phase').style.display = 'none';
+            document.getElementById('setup-phase').style.display = 'flex';
+
+            // Clear form inputs
+            document.getElementById('name-a').value = '';
+            document.getElementById('name-b').value = '';
+            document.getElementById('gender-a').value = '';
+            document.getElementById('gender-b').value = '';
+            if (document.getElementById('hla-a')) document.getElementById('hla-a').value = '';
+            if (document.getElementById('hla-b')) document.getElementById('hla-b').value = '';
+            document.getElementById('photo-a-preview').innerHTML = '📷 Your Photo';
+            document.getElementById('photo-b-preview').innerHTML = '📷 Partner\'s Photo';
+        }
     </script>
 </body>
 </html>
