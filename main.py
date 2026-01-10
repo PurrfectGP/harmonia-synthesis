@@ -49,22 +49,62 @@ class ResponseGeneratorRequest(BaseModel):
 async def health():
     return {"status": "running"}
 
+def _extract_text_safely_from_response(response) -> str:
+    """Safely extract text from Gemini response, handling blocked/empty responses."""
+    try:
+        # Check if response has candidates
+        if not response.candidates:
+            print("⚠️  No candidates in response")
+            return None
+
+        # Check the first candidate
+        candidate = response.candidates[0]
+
+        # Check finish reason
+        finish_reason = candidate.finish_reason
+        if finish_reason == 2:  # SAFETY
+            print(f"⚠️  Response blocked by safety filters")
+            return None
+        elif finish_reason == 3:  # RECITATION
+            print(f"⚠️  Response blocked due to recitation")
+            return None
+        elif finish_reason not in [0, 1]:  # 0=UNSPECIFIED, 1=STOP (normal completion)
+            print(f"⚠️  Unexpected finish_reason: {finish_reason}")
+            return None
+
+        # Try to get text
+        if hasattr(candidate.content, 'parts') and candidate.content.parts:
+            text = ''.join(part.text for part in candidate.content.parts if hasattr(part, 'text'))
+            if text.strip():
+                return text.strip()
+
+        # Fallback to response.text if available
+        if hasattr(response, 'text') and response.text:
+            return response.text.strip()
+
+        print("⚠️  Response has no text content")
+        return None
+
+    except Exception as e:
+        print(f"⚠️  Error extracting text: {e}")
+        return None
+
 @app.post("/api/generate-response")
 async def generate_response(request: ResponseGeneratorRequest):
     """FORCE 70-80 word responses with detailed examples!"""
     print(f"\n🤖 GEN: {request.question[:50]}... ({request.tone})")
-    
+
     # 80-word fallbacks
     fb = {
         "positive": "I'd probably approach this situation thoughtfully and carefully, trying to find a solution that genuinely works for everyone involved while still staying true to my own core values and principles. Balance is really important to me in situations like this, and I genuinely aim to be considerate and understanding of others while also maintaining my own boundaries and being authentic to who I am as a person. I think finding that middle ground where everyone feels heard and respected makes the most sense.",
         "negative": "I'd prioritize what makes sense for me in this situation without overthinking it too much or getting caught up in worrying about everyone else's opinions. I'm pretty direct and straightforward about my boundaries and preferences, and I don't waste a lot of unnecessary energy worrying about what other people might think about my choices or decisions. Being honest with myself and others tends to work out better in my experience than constantly trying to please everyone or meet their expectations.",
         "neutral": "I'd take some time to weigh the different options carefully and thoughtfully, considering both my own needs and interests as well as the broader context of the situation and how it affects other people involved. There's usually a pragmatic middle ground that works reasonably well for everyone if you look for it. I try to be genuinely thoughtful and considerate about these things but also realistic and practical about what's actually feasible and what matters most to me personally in the long run."
     }
-    
+
     try:
         import google.generativeai as genai
         genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-        
+
         safety = [{"category": c, "threshold": "BLOCK_NONE"} for c in ["HARM_CATEGORY_HARASSMENT", "HARM_CATEGORY_HATE_SPEECH", "HARM_CATEGORY_SEXUALLY_EXPLICIT", "HARM_CATEGORY_DANGEROUS_CONTENT"]]
         
         # FORCE LONG with multiple examples!
@@ -91,10 +131,12 @@ CRITICAL: Your response MUST be 70-80 words. Count carefully. Be detailed, thoug
 
 Write ONLY the response (no preamble, no quotation marks):"""
         
-        print(f"🔮 Flash (FORCED LONG)")
-        
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        
+        print(f"🔮 Gemini (FORCED LONG)")
+
+        # Use model from environment or default to Gemini 3 Flash (fast with Pro reasoning)
+        model_name = os.getenv('GEMINI_MODEL', 'gemini-3-flash-preview')
+        model = genai.GenerativeModel(model_name)
+
         # FORCE maximum output!
         response = model.generate_content(
             prompt,
@@ -107,9 +149,15 @@ Write ONLY the response (no preamble, no quotation marks):"""
             },
             safety_settings=safety
         )
-        
-        text = response.text.strip()
-        
+
+        text = _extract_text_safely_from_response(response)
+
+        # If empty response, use fallback immediately
+        if not text:
+            print(f"❌ Empty response from Gemini API, using fallback")
+            t = fb.get(request.tone, fb['neutral'])
+            return JSONResponse({"status": "fallback", "response": t, "word_count": len(t.split()), "reason": "empty_response"})
+
         # Remove quotes if model added them
         if text.startswith('"') and text.endswith('"'):
             text = text[1:-1]

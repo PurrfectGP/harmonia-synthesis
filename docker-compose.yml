@@ -1,16 +1,52 @@
-# Harmonia Synthesis - Docker Compose
 version: '3.8'
 
 services:
   harmonia:
     build: .
+    container_name: harmonia-app
+    restart: unless-stopped
     ports:
       - "8000:8000"
-    environment:
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - VISUAL_WEIGHT=${VISUAL_WEIGHT:-50}
-      - PERSONALITY_WEIGHT=${PERSONALITY_WEIGHT:-35}
-      - HLA_WEIGHT=${HLA_WEIGHT:-15}
+    env_file:
+      - .env
     volumes:
+      # Persist data directories
+      - ./data:/app/data
+      - ./uploads:/app/uploads
       - ./harmonia_outputs:/app/harmonia_outputs
-    restart: unless-stopped
+      - ./logs:/app/logs
+    networks:
+      - harmonia-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+networks:
+  harmonia-network:
+    driver: bridge
+
+# Optional: Add watchtower for automatic updates
+# Uncomment the section below if you want auto-updates
+
+# watchtower:
+#   image: containrrr/watchtower
+#   container_name: watchtower
+#   restart: unless-stopped
+#   volumes:
+#     - /var/run/docker.sock:/var/run/docker.sock
+#   command: --interval 300 --cleanup
+#   networks:
+#     - harmonia-network
