@@ -116,16 +116,16 @@ class GeminiService:
     async def parse_response(self, question: str, answer: str) -> dict:
         """Parse quiz for personality traits using neutral framework."""
         prompt = f"""Analyze this response for personality traits across 7 dimensions. Return ONLY JSON:
-{{"greed": {{"score": X, "evidence": "..."}}, "pride": {{"score": X, "evidence": "..."}}, "lust": {{"score": X, "evidence": "..."}}, "wrath": {{"score": X, "evidence": "..."}}, "gluttony": {{"score": X, "evidence": "..."}}, "envy": {{"score": X, "evidence": "..."}}, "sloth": {{"score": X, "evidence": "..."}}}}
+{{"drive": {{"score": X, "evidence": "..."}}, "confidence": {{"score": X, "evidence": "..."}}, "passion": {{"score": X, "evidence": "..."}}, "assertiveness": {{"score": X, "evidence": "..."}}, "indulgence": {{"score": X, "evidence": "..."}}, "aspiration": {{"score": X, "evidence": "..."}}, "ease": {{"score": X, "evidence": "..."}}}}
 
 Trait definitions (score 0-100):
-- greed: Ambition, material drive, resource focus, achievement orientation, acquisition desire
-- pride: Confidence, self-assurance, recognition of accomplishments, self-worth, leadership
-- lust: Passion, intensity, desire for experiences/power/connection, enthusiasm, drive for fulfillment
-- wrath: Assertiveness, directness, conflict approach, boundary setting, intensity in disagreements
-- gluttony: Indulgence, pleasure-seeking, sensory enjoyment, self-care, experiential focus
-- envy: Aspiration, social comparison, competitive drive, desire for growth, ambition through comparison
-- sloth: Ease preference, relaxation, energy conservation, pace preference, work-life balance focus
+- drive: Ambition, material focus, resource acquisition, achievement orientation, goal pursuit
+- confidence: Self-assurance, recognition of accomplishments, self-worth, leadership qualities
+- passion: Intensity, desire for experiences/power/connection, enthusiasm, fulfillment pursuit
+- assertiveness: Directness, conflict approach, boundary setting, intensity in disagreements
+- indulgence: Pleasure-seeking, sensory enjoyment, self-care, experiential focus
+- aspiration: Social comparison, competitive drive, desire for growth, ambition through comparison
+- ease: Relaxation preference, energy conservation, pace preference, work-life balance focus
 
 Question: {question}
 Response: {answer}
@@ -142,7 +142,7 @@ Score each 0-100 based on evidence in the response."""
 
             if not text:
                 print(f"❌ All models returned empty responses\n")
-                return {sin: {'score': 0, 'evidence': 'N/A'} for sin in ["greed", "pride", "lust", "wrath", "gluttony", "envy", "sloth"]}
+                return {trait: {'score': 0, 'evidence': 'N/A'} for trait in ["drive", "confidence", "passion", "assertiveness", "indulgence", "aspiration", "ease"]}
 
             cleaned = re.sub(r'^```json\s*|^```\s*|\s*```$', '', text.strip())
             result = json.loads(cleaned)
@@ -150,7 +150,7 @@ Score each 0-100 based on evidence in the response."""
             return result
         except Exception as e:
             print(f"❌ {e}\n")
-            return {sin: {'score': 0, 'evidence': 'N/A'} for sin in ["greed", "pride", "lust", "wrath", "gluttony", "envy", "sloth"]}
+            return {trait: {'score': 0, 'evidence': 'N/A'} for trait in ["drive", "confidence", "passion", "assertiveness", "indulgence", "aspiration", "ease"]}
     
     async def generate_full_analysis(self, profile_a, profile_b, visual_score, hla_score, visual_details, hla_details) -> dict:
         """FORCE comprehensive multi-paragraph analysis!"""
@@ -164,22 +164,22 @@ Score each 0-100 based on evidence in the response."""
         prompt = f"""You are generating a COMPREHENSIVE romantic compatibility analysis report for two individuals. You MUST provide DETAILED, MULTI-PARAGRAPH responses.
 
 Person A ({profile_a['name']}) - Personality Profile:
-- Ambition/Drive: {p1_traits.get('greed', 0)}%
-- Confidence: {p1_traits.get('pride', 0)}%
-- Passion/Intensity: {p1_traits.get('lust', 0)}%
-- Assertiveness: {p1_traits.get('wrath', 0)}%
-- Indulgence: {p1_traits.get('gluttony', 0)}%
-- Aspiration: {p1_traits.get('envy', 0)}%
-- Ease Preference: {p1_traits.get('sloth', 0)}%
+- Drive: {p1_traits.get('drive', 0)}%
+- Confidence: {p1_traits.get('confidence', 0)}%
+- Passion: {p1_traits.get('passion', 0)}%
+- Assertiveness: {p1_traits.get('assertiveness', 0)}%
+- Indulgence: {p1_traits.get('indulgence', 0)}%
+- Aspiration: {p1_traits.get('aspiration', 0)}%
+- Ease: {p1_traits.get('ease', 0)}%
 
 Person B ({profile_b['name']}) - Personality Profile:
-- Ambition/Drive: {p2_traits.get('greed', 0)}%
-- Confidence: {p2_traits.get('pride', 0)}%
-- Passion/Intensity: {p2_traits.get('lust', 0)}%
-- Assertiveness: {p2_traits.get('wrath', 0)}%
-- Indulgence: {p2_traits.get('gluttony', 0)}%
-- Aspiration: {p2_traits.get('envy', 0)}%
-- Ease Preference: {p2_traits.get('sloth', 0)}%
+- Drive: {p2_traits.get('drive', 0)}%
+- Confidence: {p2_traits.get('confidence', 0)}%
+- Passion: {p2_traits.get('passion', 0)}%
+- Assertiveness: {p2_traits.get('assertiveness', 0)}%
+- Indulgence: {p2_traits.get('indulgence', 0)}%
+- Aspiration: {p2_traits.get('aspiration', 0)}%
+- Ease: {p2_traits.get('ease', 0)}%
 
 Visual Chemistry: {visual_score}%
 Genetic Harmony: {hla_score}%

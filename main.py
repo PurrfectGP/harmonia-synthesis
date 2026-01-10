@@ -222,20 +222,20 @@ async def upload_dna(user_id: str, file: UploadFile = File(...)):
 @app.post("/api/submit-profile")
 async def submit_profile(request: ProfileRequest):
     s = get_services()
-    sins = {x: {'score': 0, 'evidence': ''} for x in ["greed", "pride", "lust", "wrath", "gluttony", "envy", "sloth"]}
-    
+    traits = {x: {'score': 0, 'evidence': ''} for x in ["drive", "confidence", "passion", "assertiveness", "indulgence", "aspiration", "ease"]}
+
     for r in request.responses:
         res = await s[0].parse_response(r['question'], r['answer'])
-        for sin, data in res.items():
-            sins[sin]['score'] += data.get('score', 0)
+        for trait, data in res.items():
+            traits[trait]['score'] += data.get('score', 0)
             if data.get('evidence'):
-                sins[sin]['evidence'] = data['evidence']
-    
+                traits[trait]['evidence'] = data['evidence']
+
     if request.responses:
-        for sin in sins:
-            sins[sin]['score'] /= len(request.responses)
-    
-    PROFILES_DB[request.user_id] = {"name": request.user_name, "sins": sins, "raw_responses": request.responses}
+        for trait in traits:
+            traits[trait]['score'] /= len(request.responses)
+
+    PROFILES_DB[request.user_id] = {"name": request.user_name, "sins": traits, "raw_responses": request.responses}
     if request.hla_data:
         HLA_DB[request.user_id] = s[3].parse_hla_input(request.hla_data)
     return {"status": "profile_created", "user_id": request.user_id}

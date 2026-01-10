@@ -16,16 +16,16 @@ logger = logging.getLogger(__name__)
 class ReportService:
     """Generate comprehensive 25-30 page Word reports with maximum detail."""
 
-    SIN_ORDER = ["greed", "pride", "lust", "wrath", "gluttony", "envy", "sloth"]
-    
-    SIN_DESCRIPTIONS = {
-        "greed": "Material possessions, resources, control over outcomes",
-        "pride": "Self-image, status, being right, perfectionism",
-        "lust": "Passion, intensity, immediate gratification, sensory experiences",
-        "wrath": "Conflict response, boundaries, justice, emotional reactivity",
-        "gluttony": "Indulgence, pleasure-seeking, moderation challenges",
-        "envy": "Comparison with others, competition, validation needs",
-        "sloth": "Energy management, effort avoidance, procrastination"
+    TRAIT_ORDER = ["drive", "confidence", "passion", "assertiveness", "indulgence", "aspiration", "ease"]
+
+    TRAIT_DESCRIPTIONS = {
+        "drive": "Ambition, goal pursuit, material focus, resource acquisition, achievement orientation",
+        "confidence": "Self-assurance, leadership, recognition of accomplishments, self-worth, status",
+        "passion": "Intensity, enthusiasm, desire for experiences/power/connection, fulfillment pursuit",
+        "assertiveness": "Directness, conflict approach, boundary setting, emotional intensity, justice",
+        "indulgence": "Pleasure-seeking, sensory enjoyment, self-care, experiential focus, moderation",
+        "aspiration": "Competitive drive, social comparison, desire for growth, validation needs, ambition",
+        "ease": "Relaxation preference, energy conservation, pace management, work-life balance, effort optimization"
     }
 
     def _add_colored_heading(self, doc, text, level=1, color=None):
@@ -281,18 +281,18 @@ class ReportService:
         tt_headers[3].text = "Difference"
         tt_headers[4].text = "Compatibility"
         
-        for i, sin in enumerate(self.SIN_ORDER, 1):
+        for i, trait in enumerate(self.TRAIT_ORDER, 1):
             row = trait_table.rows[i].cells
-            
-            p1_score = p1['sins'].get(sin, {}).get('score', 0)
-            p2_score = p2['sins'].get(sin, {}).get('score', 0)
+
+            p1_score = p1['sins'].get(trait, {}).get('score', 0)
+            p2_score = p2['sins'].get(trait, {}).get('score', 0)
             diff = abs(p1_score - p2_score)
-            
-            row[0].text = sin.capitalize()
+
+            row[0].text = trait.capitalize()
             row[1].text = f"{p1_score:.2f}"
             row[2].text = f"{p2_score:.2f}"
             row[3].text = f"{diff:.2f}"
-            
+
             # Compatibility assessment
             if diff < 2.0:
                 row[4].text = "✓ Highly Similar"
@@ -309,19 +309,19 @@ class ReportService:
         doc.add_paragraph("Complete breakdown with evidence from questionnaire responses:")
         doc.add_paragraph()
         
-        for sin in self.SIN_ORDER:
-            doc.add_heading(f"{sin.capitalize()}: {self.SIN_DESCRIPTIONS[sin]}", level=2)
-            
+        for trait in self.TRAIT_ORDER:
+            doc.add_heading(f"{trait.capitalize()}: {self.TRAIT_DESCRIPTIONS[trait]}", level=2)
+
             # Person 1
             try:
-                p1_score = round(p1['sins'][sin]['score'], 2)
-                p1_evidence = p1['sins'][sin].get('evidence', 'No evidence recorded')
-                
+                p1_score = round(p1['sins'][trait]['score'], 2)
+                p1_evidence = p1['sins'][trait].get('evidence', 'No evidence recorded')
+
                 p1_para = doc.add_paragraph()
                 p1_run = p1_para.add_run(f"{p1['name']}: {p1_score:+.2f}")
                 p1_run.bold = True
                 p1_run.font.color.rgb = RGBColor(232, 74, 138)
-                
+
                 ev_para = doc.add_paragraph()
                 ev_para.add_run("Evidence: ").italic = True
                 ev_para.add_run(f'"{p1_evidence}"')
@@ -331,28 +331,28 @@ class ReportService:
 
             # Person 2
             try:
-                p2_score = round(p2['sins'][sin]['score'], 2)
-                p2_evidence = p2['sins'][sin].get('evidence', 'No evidence recorded')
-                
+                p2_score = round(p2['sins'][trait]['score'], 2)
+                p2_evidence = p2['sins'][trait].get('evidence', 'No evidence recorded')
+
                 p2_para = doc.add_paragraph()
                 p2_run = p2_para.add_run(f"{p2['name']}: {p2_score:+.2f}")
                 p2_run.bold = True
                 p2_run.font.color.rgb = RGBColor(139, 92, 246)
-                
+
                 ev_para = doc.add_paragraph()
                 ev_para.add_run("Evidence: ").italic = True
                 ev_para.add_run(f'"{p2_evidence}"')
                 ev_para.paragraph_format.left_indent = Inches(0.5)
             except (KeyError, TypeError):
                 doc.add_paragraph(f"{p2['name']}: No data")
-            
+
             # Compatibility note
             try:
                 diff = abs(p1_score - p2_score)
                 compat_para = doc.add_paragraph()
                 compat_para.add_run("Compatibility Note: ").bold = True
                 if diff < 2.0:
-                    compat_para.add_run(f"Similar expression ({diff:.2f} difference) - shared approach to {sin}.")
+                    compat_para.add_run(f"Similar expression ({diff:.2f} difference) - shared approach to {trait}.")
                 elif diff < 4.0:
                     compat_para.add_run(f"Complementary ({diff:.2f} difference) - balanced dynamic.")
                 else:
