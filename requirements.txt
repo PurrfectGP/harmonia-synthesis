@@ -1,14 +1,25 @@
-# OLD SDK (current - works with gemini_service_WORKING.py)
-google-generativeai
+# Google Gemini AI
+google-generativeai>=0.3.0
 
-# Core dependencies
-fastapi
-uvicorn[standard]
-python-multipart
-python-docx
-pillow
-numpy
+# FastAPI Core
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
 
-# Optional but recommended
-pydantic
-aiofiles
+# Document Generation
+python-docx>=1.1.0
+
+# Image Processing
+pillow>=10.0.0
+
+# Scientific Computing
+numpy>=1.24.0
+
+# Data Validation
+pydantic>=2.0.0
+
+# Async File Operations
+aiofiles>=23.0.0
+
+# Environment Variables
+python-dotenv>=1.0.0

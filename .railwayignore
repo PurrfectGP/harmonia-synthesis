@@ -1,0 +1,48 @@
+# Version Control
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation
+*.md
+!README.md
+DEPLOYMENT*.md
+
+# Frontend Build (if you have one)
+node_modules/
+
+# Deployment configs for other platforms
+Dockerfile
+docker-compose.yml
+fly.toml
+vercel.json
+render.yaml
+
+# Test files
+tests/
+*.test.py
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
