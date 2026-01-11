@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmonia Quiz - Kinetic Scroll Experience</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+--cream: #FAF6F1; --blush: #F5EDE6; --rose: #EFE5DC; --card-bg: #F0E8DF;
+--gold: #D4A853; --gold-light: rgba(212,168,83,0.15); --gold-champagne: #E8C97A;
+--maroon: #722F37; --maroon-deep: #5C1A1B; --wine: #8B3A3A;
+--navy: #1E293B; --slate: #475569;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Scroll-driven animations - 2026 CSS */
+@supports (animation-timeline: scroll()) {
+.scroll-reveal { animation: scroll-reveal linear; animation-timeline: view(); animation-range: entry 0% cover 30%; }
+@keyframes scroll-reveal { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); }}
+}
+
+body {
+font-family: 'DM Sans', sans-serif;
+background: linear-gradient(180deg, var(--cream) 0%, var(--blush) 50%, var(--rose) 100%);
+color: var(--navy);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* Kinetic Typography - 2026 trend */
+.kinetic-title {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(3rem, 8vw, 6rem);
+font-weight: 700;
+background: linear-gradient(135deg, var(--maroon), var(--gold-champagne), var(--maroon-deep));
+background-size: 200% 200%;
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+animation: gradient-shift 8s ease infinite, letter-spacing-shift 4s ease-in-out infinite;
+text-align: center;
+line-height: 1;
+letter-spacing: -0.02em;
+}
+
+@keyframes gradient-shift {
+0%, 100% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+}
+
+@keyframes letter-spacing-shift {
+0%, 100% { letter-spacing: -0.02em; }
+50% { letter-spacing: 0.02em; }
+}
+
+/* Parallax container */
+.parallax-container {
+height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 40px;
+position: relative;
+overflow: hidden;
+}
+
+/* Floating orbs - GPU accelerated */
+.orb {
+position: absolute;
+border-radius: 50%;
+filter: blur(60px);
+opacity: 0.3;
+will-change: transform;
+animation: float-orb 20s ease-in-out infinite;
+}
+
+.orb-1 { width: 400px; height: 400px; background: var(--maroon); top: -200px; left: -200px; animation-delay: 0s; }
+.orb-2 { width: 500px; height: 500px; background: var(--gold); bottom: -250px; right: -250px; animation-delay: -7s; }
+.orb-3 { width: 300px; height: 300px; background: var(--wine); top: 50%; left: 50%; animation-delay: -14s; }
+
+@keyframes float-orb {
+0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+33% { transform: translate(150px, -100px) rotate(120deg) scale(1.1); }
+66% { transform: translate(-100px, 150px) rotate(240deg) scale(0.9); }
+}
+
+/* Modern card with backdrop blur */
+.glass-card {
+position: relative;
+background: rgba(255, 255, 255, 0.85);
+backdrop-filter: blur(30px) saturate(180%);
+-webkit-backdrop-filter: blur(30px) saturate(180%);
+border: 1px solid rgba(212, 168, 83, 0.2);
+border-radius: 24px;
+padding: 60px;
+max-width: 900px;
+width: 100%;
+box-shadow: 0 20px 80px rgba(114, 47, 55, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+z-index: 10;
+}
+
+/* Phase transitions */
+.phase { display: none; opacity: 0; }
+.phase.active {
+display: block;
+animation: phase-enter 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes phase-enter {
+0% { opacity: 0; transform: scale(0.9) translateY(50px); }
+100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Form styling with micro-interactions */
+.input-wrapper {
+position: relative;
+margin-bottom: 32px;
+}
+
+.input-wrapper input,
+.input-wrapper select,
+.input-wrapper textarea {
+width: 100%;
+padding: 18px 24px;
+background: rgba(250, 246, 241, 0.6);
+border: 2px solid transparent;
+border-radius: 16px;
+font-family: inherit;
+font-size: 1.05rem;
+color: var(--navy);
+transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.input-wrapper input:focus,
+.input-wrapper select:focus,
+.input-wrapper textarea:focus {
+outline: none;
+background: white;
+border-color: var(--gold);
+transform: translateY(-2px);
+box-shadow: 0 10px 40px rgba(212, 168, 83, 0.25), 0 0 0 4px var(--gold-light);
+}
+
+.input-wrapper label {
+position: absolute;
+left: 24px;
+top: -10px;
+background: linear-gradient(90deg, var(--cream), var(--blush));
+padding: 4px 12px;
+border-radius: 12px;
+font-size: 0.85rem;
+font-weight: 600;
+color: var(--maroon);
+backdrop-filter: blur(10px);
+}
+
+.grid-2 {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 30px;
+}
+
+/* Morphing button - 2026 micro-interaction */
+.btn-morph {
+width: 100%;
+padding: 22px;
+background: linear-gradient(135deg, var(--maroon), var(--wine));
+color: white;
+border: none;
+border-radius: 16px;
+font-size: 1.15rem;
+font-weight: 600;
+cursor: pointer;
+font-family: inherit;
+position: relative;
+overflow: hidden;
+transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+box-shadow: 0 10px 40px rgba(114, 47, 55, 0.3);
+}
+
+.btn-morph::before {
+content: '';
+position: absolute;
+top: 50%;
+left: 50%;
+width: 0;
+height: 0;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.3);
+transform: translate(-50%, -50%);
+transition: width 0.6s, height 0.6s;
+}
+
+.btn-morph:hover::before {
+width: 300px;
+height: 300px;
+}
+
+.btn-morph:hover {
+transform: translateY(-4px) scale(1.02);
+box-shadow: 0 20px 60px rgba(114, 47, 55, 0.4);
+}
+
+.btn-morph:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+transform: none;
+}
+
+/* Progress with animated gradient */
+.progress-container {
+background: rgba(212, 168, 83, 0.15);
+backdrop-filter: blur(10px);
+height: 12px;
+border-radius: 12px;
+overflow: hidden;
+margin: 30px 0;
+box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+height: 100%;
+background: linear-gradient(90deg, var(--gold), var(--gold-champagne), var(--maroon));
+background-size: 200% 100%;
+border-radius: 12px;
+width: 0%;
+transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+position: relative;
+overflow: hidden;
+animation: progress-shine 3s infinite;
+box-shadow: 0 0 20px rgba(212, 168, 83, 0.6);
+}
+
+@keyframes progress-shine {
+0% { background-position: 0% 50%; }
+100% { background-position: 200% 50%; }
+}
+
+/* Question card with depth */
+.question-card {
+background: white;
+border-radius: 20px;
+padding: 50px;
+margin-bottom: 35px;
+box-shadow: 0 15px 60px rgba(114, 47, 55, 0.12);
+position: relative;
+overflow: hidden;
+animation: card-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.question-card::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, transparent, rgba(212, 168, 83, 0.1), transparent);
+animation: card-shine 3s infinite;
+}
+
+@keyframes card-shine {
+0% { left: -100%; }
+100% { left: 100%; }
+}
+
+@keyframes card-pop {
+0% { transform: scale(0.8) rotateX(20deg); opacity: 0; }
+100% { transform: scale(1) rotateX(0); opacity: 1; }
+}
+
+.q-badge {
+display: inline-block;
+background: linear-gradient(135deg, var(--gold), var(--gold-champagne));
+color: var(--maroon-deep);
+padding: 10px 24px;
+border-radius: 50px;
+font-size: 0.85rem;
+font-weight: 700;
+letter-spacing: 1px;
+text-transform: uppercase;
+margin-bottom: 25px;
+box-shadow: 0 6px 24px rgba(212, 168, 83, 0.35);
+animation: badge-float 3s ease-in-out infinite;
+}
+
+@keyframes badge-float {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-5px); }
+}
+
+.q-title {
+font-family: 'Cormorant Garamond', serif;
+font-size: 2.8rem;
+color: var(--maroon);
+margin-bottom: 20px;
+font-weight: 700;
+line-height: 1.2;
+}
+
+.q-text {
+font-size: 1.2rem;
+color: var(--slate);
+line-height: 1.75;
+margin-bottom: 30px;
+}
+
+textarea {
+min-height: 180px;
+resize: vertical;
+}
+
+.word-counter {
+text-align: right;
+color: var(--slate);
+font-size: 0.95rem;
+margin-top: 12px;
+font-weight: 500;
+transition: all 0.3s;
+}
+
+.word-counter.success {
+color: var(--gold);
+font-weight: 700;
+animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+0%, 100% { text-shadow: 0 0 10px rgba(212, 168, 83, 0.5); }
+50% { text-shadow: 0 0 20px rgba(212, 168, 83, 0.8); }
+}
+
+/* Loading orb */
+.loading-orb {
+width: 200px;
+height: 200px;
+margin: 0 auto 50px;
+position: relative;
+}
+
+.orb-spinner {
+width: 100%;
+height: 100%;
+border-radius: 50%;
+background: linear-gradient(135deg, var(--gold), var(--maroon), var(--wine));
+background-size: 400% 400%;
+animation: orb-rotate 4s ease-in-out infinite, gradient-shift 8s ease infinite;
+box-shadow: 0 0 60px rgba(212, 168, 83, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.3);
+position: relative;
+}
+
+.orb-spinner::before {
+content: '✨';
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-size: 4rem;
+animation: emoji-pulse 2s ease-in-out infinite;
+}
+
+@keyframes orb-rotate {
+0%, 100% { transform: rotate(0deg) scale(1); }
+50% { transform: rotate(180deg) scale(1.1); }
+}
+
+@keyframes emoji-pulse {
+0%, 100% { transform: translate(-50%, -50%) scale(1); }
+50% { transform: translate(-50%, -50%) scale(1.2); }
+}
+
+/* Results grid */
+.results-grid {
+display: grid;
+grid-template-columns: 1fr 1.2fr 1fr;
+gap: 40px;
+margin-top: 50px;
+}
+
+.profile-card {
+background: white;
+border-radius: 20px;
+padding: 50px;
+text-align: center;
+box-shadow: 0 15px 60px rgba(114, 47, 55, 0.12);
+transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.profile-card:hover {
+transform: translateY(-10px) scale(1.02);
+box-shadow: 0 25px 80px rgba(114, 47, 55, 0.2);
+}
+
+.score-card {
+background: linear-gradient(135deg, var(--maroon), var(--wine));
+border-radius: 20px;
+padding: 70px 50px;
+text-align: center;
+color: white;
+box-shadow: 0 25px 80px rgba(114, 47, 55, 0.35);
+position: relative;
+overflow: hidden;
+}
+
+.score-card::before {
+content: '';
+position: absolute;
+top: -50%;
+right: -50%;
+width: 100%;
+height: 100%;
+background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent);
+animation: score-glow 5s ease-in-out infinite;
+}
+
+@keyframes score-glow {
+0%, 100% { transform: translate(0, 0); }
+50% { transform: translate(-30%, 30%); }
+}
+
+.score-number {
+font-size: 8rem;
+font-weight: 700;
+line-height: 1;
+text-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+position: relative;
+z-index: 1;
+}
+
+@media (max-width: 768px) {
+.grid-2, .results-grid { grid-template-columns: 1fr; }
+.glass-card { padding: 40px 30px; }
+.q-title { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- SETUP -->
+<div class="parallax-container">
+<div class="phase active scroll-reveal" id="setup">
+<div class="glass-card">
+<h1 class="kinetic-title" style="margin-bottom: 15px;">Harmonia</h1>
+<p style="text-align: center; color: var(--slate); font-size: 1.15rem; margin-bottom: 50px;">Discover Your Compatibility</p>
+
+<div class="grid-2">
+<div class="input-wrapper"><label>Your Name</label><input type="text" id="na"></div>
+<div class="input-wrapper"><label>Partner's Name</label><input type="text" id="nb"></div>
+</div>
+
+<div class="grid-2">
+<div class="input-wrapper"><label>Your Gender</label><select id="ga"><option>Male</option><option>Female</option><option>Other</option></select></div>
+<div class="input-wrapper"><label>Partner's Gender</label><select id="gb"><option>Male</option><option>Female</option><option>Other</option></select></div>
+</div>
+
+<button class="btn-morph" onclick="start()">Begin Assessment →</button>
+</div>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div class="parallax-container" style="display: none;">
+<div class="phase" id="quiz">
+<div class="glass-card" style="max-width: 1000px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+<div><div style="font-size: 0.9rem; color: var(--slate); margin-bottom: 5px;">Answering for:</div>
+<div id="cu" style="font-size: 2rem; font-weight: 700; color: var(--maroon); font-family: 'Cormorant Garamond', serif;">Person 1</div></div>
+<div id="pt" style="color: var(--gold); font-weight: 700; font-size: 1.2rem;">1 / 6</div>
+</div>
+
+<div class="progress-container"><div class="progress-fill" id="pb"></div></div>
+
+<div class="question-card scroll-reveal">
+<span class="q-badge" id="qn">QUESTION 1</span>
+<h2 class="q-title" id="qt">The Stranger's Story</h2>
+<p class="q-text" id="qp">At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?</p>
+<div class="input-wrapper"><textarea id="ans" placeholder="Share your thoughts..."></textarea></div>
+<div class="word-counter" id="wc">0 words</div>
+</div>
+
+<div style="display: flex; gap: 20px; justify-content: flex-end;">
+<button class="btn-morph" style="width: auto; padding: 18px 40px; background: rgba(255,255,255,0.7); color: var(--slate);" onclick="skip()">Skip</button>
+<button class="btn-morph" style="width: auto; padding: 18px 40px;" id="nb" onclick="next()" disabled>Next →</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- PROCESSING -->
+<div class="parallax-container" style="display: none;">
+<div class="phase" id="proc">
+<div class="glass-card" style="text-align: center; max-width: 600px;">
+<div class="loading-orb"><div class="orb-spinner"></div></div>
+<h2 style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: var(--maroon); margin-bottom: 20px; font-weight: 700;">Analyzing</h2>
+<p id="st" style="color: var(--slate); font-size: 1.2rem; margin-bottom: 10px;">Processing profiles...</p>
+<p id="pc" style="color: var(--gold); font-weight: 700; font-size: 1.2rem;">0%</p>
+</div>
+</div>
+</div>
+
+<!-- RESULTS -->
+<div class="parallax-container" style="display: none;">
+<div class="phase" id="res">
+<div style="max-width: 1400px; width: 100%;">
+<h1 class="kinetic-title" style="margin-bottom: 60px;">Your Results</h1>
+<div class="results-grid">
+<div class="profile-card scroll-reveal">
+<h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 30px; font-weight: 700;">Alex</h3>
+<svg viewBox="0 0 100 100" width="140" height="140" style="margin: 30px 0;">
+<polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="rgba(212,168,83,0.3)" stroke-width="2"/>
+<polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="rgba(114,47,55,0.2)" stroke="var(--maroon)" stroke-width="3"/>
+</svg>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+<span style="padding: 8px 18px; background: var(--gold-light); border-radius: 20px; font-size: 0.9rem; font-weight: 600; color: var(--maroon);">Greed</span>
+<span style="padding: 8px 18px; background: var(--gold-light); border-radius: 20px; font-size: 0.9rem; font-weight: 600; color: var(--maroon);">Pride</span>
+</div>
+</div>
+
+<div class="score-card scroll-reveal">
+<div style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.9; position: relative; z-index: 1;">Harmonia Score</div>
+<div class="score-number">87<span style="font-size: 5rem;">%</span></div>
+<div style="margin-top: 20px; opacity: 0.9; position: relative; z-index: 1;">Excellent Match</div>
+<button class="btn-morph" style="background: white; color: var(--maroon); margin-top: 40px; position: relative; z-index: 1;">Download Report</button>
+</div>
+
+<div class="profile-card scroll-reveal">
+<h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--maroon); margin-bottom: 30px; font-weight: 700;">Jordan</h3>
+<svg viewBox="0 0 100 100" width="140" height="140" style="margin: 30px 0;">
+<polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="rgba(212,168,83,0.3)" stroke-width="2"/>
+<polygon points="50,25 70,37 72,63 50,75 28,63 30,37" fill="rgba(212,168,83,0.2)" stroke="var(--gold)" stroke-width="3"/>
+</svg>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+<span style="padding: 8px 18px; background: var(--gold-light); border-radius: 20px; font-size: 0.9rem; font-weight: 600; color: var(--maroon);">Wrath</span>
+<span style="padding: 8px 18px; background: var(--gold-light); border-radius: 20px; font-size: 0.9rem; font-weight: 600; color: var(--maroon);">Envy</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const qs=[{t:"The Stranger's Story",p:"At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?"},{t:"The Unexpected Expense",p:"Your car needs a $1,200 repair you didn't budget for. Walk me through your thought process."},{t:"The Found Wallet",p:"You find a wallet with $300 cash in a parking lot. What do you do and why?"},{t:"The Customer Service Call",p:"You've been on hold for 45 minutes about a billing error that's clearly the company's fault. When someone finally answers, how do you handle the conversation?"},{t:"The Friend Crisis",p:"Your best friend calls with an emergency the same night as a planned date you've been looking forward to. What's your thinking process?"},{t:"The Mistake Made",p:"You realize you've made a significant mistake at work that no one else has noticed yet. What do you do?"}];
+let cq=0,usr=1;
+const containers=document.querySelectorAll('.parallax-container');
+function showContainer(idx){containers.forEach((c,i)=>c.style.display=i===idx?'flex':'none');}
+function start(){if(!document.getElementById('na').value||!document.getElementById('nb').value){alert('Please enter both names');return;}
+showContainer(1);document.getElementById('quiz').classList.add('active');document.getElementById('cu').textContent=document.getElementById('na').value;updateQ();}
+function updateQ(){const q=qs[cq];document.getElementById('qn').textContent=`QUESTION ${cq+1}`;document.getElementById('qt').textContent=q.t;document.getElementById('qp').textContent=q.p;document.getElementById('ans').value='';document.getElementById('wc').textContent='0 words';document.getElementById('nb').disabled=true;document.getElementById('pt').textContent=`${cq+1} / 6`;document.getElementById('pb').style.width=`${((cq+1)/6)*100}%`;}
+document.getElementById('ans').addEventListener('input',(e)=>{const w=e.target.value.trim()?e.target.value.trim().split(/\s+/).length:0;const c=document.getElementById('wc');c.textContent=`${w} words`;c.classList.toggle('success',w>=25&&w<=150);document.getElementById('nb').disabled=w<25||w>150;});
+function next(){cq++;if(cq<6){updateQ();}else if(usr===1){usr=2;cq=0;document.getElementById('cu').textContent=document.getElementById('nb').value;updateQ();}else{showContainer(2);document.getElementById('proc').classList.add('active');let p=0;const int=setInterval(()=>{p+=5;document.getElementById('pc').textContent=`${p}%`;if(p<30)document.getElementById('st').textContent='Processing profiles...';else if(p<70)document.getElementById('st').textContent='Analyzing compatibility...';else document.getElementById('st').textContent='Generating insights...';if(p>=100){clearInterval(int);setTimeout(()=>{showContainer(3);document.getElementById('res').classList.add('active');},500);}},80);}}
+function skip(){next();}
+</script>
+</body>
+</html>
