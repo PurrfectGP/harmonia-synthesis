@@ -1,0 +1,544 @@
+/**
+ * Harmonia Design System - Base Styles
+ *
+ * Foundation styles for typography, paper grain texture,
+ * and professional full-page centering using modern Flexbox/Grid patterns
+ *
+ * Philosophy: Scientific Humanism
+ * - Not a laboratory (sterile/clinical)
+ * - Not a casino (neon/dopamine)
+ * - A classical instrument (astrolabe, manuscript, brass telescope)
+ */
+
+/* ============================================
+   GOOGLE FONTS IMPORT
+   Cormorant Garamond (Display) + DM Sans (Body)
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* ============================================
+   BODY - Foundation with Paper Grain Texture
+   ============================================ */
+
+body {
+  /* Typography */
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--parchment-900);
+
+  /* Background - Warm Parchment */
+  background-color: var(--parchment-50);
+
+  /* Paper grain texture overlay */
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+
+  /* Smooth transitions */
+  transition: background-color var(--transition-slow);
+
+  /* Professional full-page centering using Flexbox */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Allow content to flow naturally */
+  align-items: stretch; /* Full width by default */
+
+  /* Full viewport height */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+
+  /* Safe area insets for mobile devices (notches, etc.) */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ============================================
+   MAIN CONTENT WRAPPER
+   Provides professional centering for all page content
+   ============================================ */
+
+main {
+  /* Flexbox centering for content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  /* Allow main to grow and fill space */
+  flex: 1;
+
+  /* Padding for breathing room */
+  padding: var(--space-8) var(--space-4);
+
+  /* Full width */
+  width: 100%;
+}
+
+/* ============================================
+   TYPOGRAPHY - Headings (Cormorant Garamond)
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--parchment-900);
+  letter-spacing: var(--tracking-tight);
+}
+
+h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-6);
+}
+
+h2 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-5);
+}
+
+h3 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-4);
+}
+
+h4 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-3);
+}
+
+h5 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-3);
+}
+
+h6 {
+  font-size: var(--text-base);
+  margin-bottom: var(--space-2);
+}
+
+/* Responsive heading sizes */
+@media (min-width: 768px) {
+  h1 {
+    font-size: var(--text-5xl);
+  }
+
+  h2 {
+    font-size: var(--text-4xl);
+  }
+
+  h3 {
+    font-size: var(--text-3xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: var(--text-6xl);
+  }
+}
+
+/* ============================================
+   TYPOGRAPHY - Body Text (DM Sans)
+   ============================================ */
+
+p {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--parchment-900);
+  margin-bottom: var(--space-4);
+}
+
+/* Lead paragraph (larger, for introductions) */
+.lead {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--mediterranean-500);
+}
+
+/* Small text (metadata, captions) */
+small,
+.text-sm {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.text-xs {
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+}
+
+/* ============================================
+   LINKS - Underlined Style
+   ============================================ */
+
+a {
+  color: var(--mediterranean-500);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(var(--mediterranean-500-rgb), 0.3);
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--mediterranean-600);
+  border-bottom-color: var(--mediterranean-600);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--champagne-400);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   BUTTONS - Base Styles
+   ============================================ */
+
+button,
+.btn {
+  /* Typography */
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-normal);
+
+  /* Spacing */
+  padding: var(--space-3) var(--space-6);
+
+  /* Border radius (not pills, slight rounding) */
+  border-radius: var(--radius-md);
+
+  /* Transitions */
+  transition: background-color var(--transition-base),
+              color var(--transition-base),
+              transform var(--transition-fast),
+              box-shadow var(--transition-base);
+
+  /* Cursor */
+  cursor: pointer;
+
+  /* Remove default appearance */
+  -webkit-appearance: none;
+  appearance: none;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+
+  /* Center content */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  /* Text no-wrap */
+  white-space: nowrap;
+}
+
+/* Primary button - Mediterranean Blue */
+.btn-primary {
+  background-color: var(--mediterranean-500);
+  color: var(--parchment-50);
+  border: 1px solid var(--mediterranean-500);
+}
+
+.btn-primary:hover {
+  background-color: var(--mediterranean-600);
+  border-color: var(--mediterranean-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Secondary button - Outlined */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--mediterranean-500);
+  border: 1px solid var(--mediterranean-500);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(var(--mediterranean-500-rgb), 0.1);
+  border-color: var(--mediterranean-600);
+  color: var(--mediterranean-600);
+}
+
+/* Accent button - Gold Champagne (for high-value actions) */
+.btn-accent {
+  background-color: var(--champagne-400);
+  color: var(--parchment-900);
+  border: 1px solid var(--champagne-400);
+}
+
+.btn-accent:hover {
+  background-color: var(--champagne-500);
+  border-color: var(--champagne-500);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-spark);
+}
+
+.btn-accent:active {
+  transform: translateY(0);
+}
+
+/* Disabled button state */
+button:disabled,
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ============================================
+   INPUTS - Underlined Style (Paper Form)
+   ============================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+textarea {
+  /* Typography */
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--parchment-900);
+
+  /* Spacing */
+  padding: var(--space-3) 0;
+
+  /* Border - Bottom only (underlined style) */
+  border: none;
+  border-bottom: 1px solid var(--parchment-200);
+
+  /* Background */
+  background-color: transparent;
+
+  /* Full width */
+  width: 100%;
+
+  /* Transitions */
+  transition: border-color var(--transition-base);
+}
+
+/* Focus state - Mediterranean Blue underline */
+input:focus,
+textarea:focus {
+  border-bottom-color: var(--mediterranean-500);
+  outline: none;
+}
+
+/* Input with error */
+input.error,
+textarea.error {
+  border-bottom-color: var(--danger-500);
+}
+
+/* ============================================
+   LABELS - Form Labels
+   ============================================ */
+
+label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--mediterranean-500);
+  margin-bottom: var(--space-2);
+  display: block;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+/* ============================================
+   GLASSMORPHISM - Vellum/Lens Glass Effect
+   ============================================ */
+
+.glass-panel {
+  background-color: rgba(var(--parchment-100-rgb), 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(var(--champagne-400-rgb), 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card - Thick cream stationery */
+.card {
+  background-color: var(--parchment-100);
+  border: 1px solid rgba(var(--parchment-200-rgb), 0.5);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-base);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   DIVIDERS - Hairline Borders
+   ============================================ */
+
+hr,
+.divider {
+  border: none;
+  height: 1px;
+  background-color: var(--parchment-200);
+  margin: var(--space-8) 0;
+}
+
+/* Gold divider (for emphasis) */
+.divider-gold {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(var(--champagne-400-rgb), 0.3) 20%,
+    rgba(var(--champagne-400-rgb), 0.6) 50%,
+    rgba(var(--champagne-400-rgb), 0.3) 80%,
+    transparent
+  );
+}
+
+/* ============================================
+   UTILITY CLASSES - Common Patterns
+   ============================================ */
+
+/* Centered text */
+.text-center {
+  text-align: center;
+}
+
+/* Color utilities */
+.text-mediterranean {
+  color: var(--mediterranean-500);
+}
+
+.text-champagne {
+  color: var(--champagne-400);
+}
+
+.text-danger {
+  color: var(--danger-500);
+}
+
+/* Font family utilities */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Professional full-page center (for single-card layouts) */
+.center-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  padding: var(--space-8);
+}
+
+/* Grid center (modern approach) */
+.grid-center {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Container with max-width and centered */
+.container-centered {
+  width: 100%;
+  max-width: var(--max-width-6xl);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+/* ============================================
+   FOCUS STYLES - Accessibility
+   ============================================ */
+
+*:focus-visible {
+  outline: 2px solid var(--champagne-400);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   LOADING SPINNER - For "Labor Illusion"
+   ============================================ */
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(var(--mediterranean-500-rgb), 0.2);
+  border-top-color: var(--champagne-400);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   RESPONSIVE - Tablet and Mobile
+   ============================================ */
+
+@media (max-width: 1024px) {
+  body {
+    min-height: auto;
+  }
+
+  main {
+    padding: var(--space-6) var(--space-3);
+  }
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .card {
+    padding: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .card {
+    padding: var(--space-4);
+  }
+
+  button,
+  .btn {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+  }
+}

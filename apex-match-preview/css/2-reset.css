@@ -1,0 +1,322 @@
+/**
+ * Harmonia Design System - CSS Reset
+ *
+ * Modern, minimal browser normalization
+ * Creates a consistent foundation across all browsers
+ * Focuses on usability and accessibility
+ */
+
+/* ============================================
+   BOX SIZING - Border Box for All Elements
+   ============================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ============================================
+   REMOVE DEFAULT MARGINS & PADDING
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   HTML & BODY - Foundation
+   ============================================ */
+
+html {
+  /* Smooth scrolling for anchor links */
+  scroll-behavior: smooth;
+
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
+
+  /* Enable iOS Safari full viewport height */
+  height: 100%;
+  height: -webkit-fill-available;
+
+  /* Prevent text size adjustment on orientation change (iOS) */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  /* Minimum height to fill viewport */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
+
+  /* Better font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Improve text rendering */
+  text-rendering: optimizeLegibility;
+
+  /* Natural line height */
+  line-height: var(--leading-normal);
+
+  /* Minimum width to prevent extreme narrowness */
+  min-width: 320px;
+}
+
+/* ============================================
+   TEXT ELEMENTS - Overflow Handling
+   ============================================ */
+
+p, h1, h2, h3, h4, h5, h6,
+span, a, li, blockquote {
+  /* Prevent text overflow */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  /* Hyphenation for better text flow */
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+/* ============================================
+   HEADINGS - Reset Sizes
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  /* Remove default sizes - will be set in base.css */
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* ============================================
+   LISTS - Remove Default Styles
+   ============================================ */
+
+ul, ol {
+  list-style: none;
+}
+
+/* ============================================
+   LINKS - Remove Default Styles
+   ============================================ */
+
+a {
+  /* Remove default underline */
+  text-decoration: none;
+
+  /* Inherit color from parent */
+  color: inherit;
+
+  /* Remove touch highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================
+   BUTTONS - Reset Appearance
+   ============================================ */
+
+button {
+  /* Remove default button styles */
+  background: none;
+  border: none;
+  padding: 0;
+
+  /* Inherit font */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+  /* Pointer cursor */
+  cursor: pointer;
+
+  /* Remove touch highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
+
+  /* Remove default focus outline (custom will be added in base.css) */
+  outline: none;
+}
+
+/* Disabled state for buttons */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ============================================
+   FORM ELEMENTS - Normalize Appearance
+   ============================================ */
+
+input,
+textarea,
+select {
+  /* Inherit font */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+  /* Remove default appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* Remove default borders and backgrounds */
+  background: none;
+  border: none;
+
+  /* Remove default focus outline (custom will be added in base.css) */
+  outline: none;
+
+  /* Remove touch highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove spinners from number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Remove default search input styling */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+/* ============================================
+   MEDIA ELEMENTS - Responsive Images & Videos
+   ============================================ */
+
+img,
+picture,
+video,
+canvas,
+svg {
+  /* Make images responsive by default */
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============================================
+   TABLES - Reset Spacing
+   ============================================ */
+
+table {
+  /* Remove spacing between cells */
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* ============================================
+   FIELDSET & LEGEND - Reset
+   ============================================ */
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+/* ============================================
+   HR - Horizontal Rule Reset
+   ============================================ */
+
+hr {
+  /* Remove default border */
+  border: none;
+
+  /* Will be styled in base.css if needed */
+  height: 1px;
+  background: transparent;
+}
+
+/* ============================================
+   ACCESSIBILITY - Focus Visible
+   ============================================ */
+
+/*
+ * Remove focus outline for mouse users,
+ * but keep it for keyboard navigation
+ */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  /* Custom focus styles will be applied in base.css */
+  outline: 2px solid var(--champagne-400);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   SELECTION - Custom Text Selection
+   ============================================ */
+
+::selection {
+  background-color: rgba(var(--champagne-400-rgb), 0.3);
+  color: var(--parchment-900);
+}
+
+::-moz-selection {
+  background-color: rgba(var(--champagne-400-rgb), 0.3);
+  color: var(--parchment-900);
+}
+
+/* ============================================
+   SCROLLBAR - Custom Styling (WebKit)
+   ============================================ */
+
+/* Scrollbar track */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--parchment-50);
+}
+
+/* Scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--mediterranean-500-rgb), 0.3);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--mediterranean-500-rgb), 0.5);
+}
+
+/* ============================================
+   PREFERS REDUCED MOTION
+   Respect user accessibility preferences
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* Remove all animations and transitions */
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
