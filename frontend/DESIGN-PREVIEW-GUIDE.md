@@ -1,5 +1,23 @@
 # Harmonia Local Network - Design Preview Guide
 
+## 🌟 NEW: Anthropic-Inspired Design (RECOMMENDED)
+
+**Based on Anthropic.com's design philosophy**
+
+The latest design (`design-preview-anthropic-inspired.html`) embodies Anthropic's clean, professional, content-first approach:
+
+- ✨ Full viewport sections (100vh phases)
+- ✨ Maximum whitespace and generous padding
+- ✨ Minimal shadows (barely noticeable)
+- ✨ Clean sans-serif typography
+- ✨ Simple, purposeful animations
+- ✨ Professional and approachable
+- ✨ Lets content speak for itself
+
+**This is the recommended design for the testing pool.**
+
+---
+
 ## How to View
 
 **No deployment needed!** Simply open any HTML file directly in your browser:
@@ -8,12 +26,87 @@
 cd frontend
 
 # Option 1: Open in default browser
+open design-preview-anthropic-inspired.html  # RECOMMENDED
 open design-preview-1-minimal.html
 open design-preview-2-luxurious.html
 
 # Option 2: Drag and drop into browser
 # Just drag any .html file into Chrome/Firefox/Safari
 ```
+
+---
+
+## 🎯 Anthropic-Inspired Design (`design-preview-anthropic-inspired.html`)
+
+### Design Philosophy
+**Content-first, professional, spacious - inspired by Anthropic.com**
+
+Clean, breathable layouts that prioritize readability and user focus. Maximum whitespace, minimal distractions, purposeful interactions.
+
+### Key Features
+- **Layout**: Full viewport sections (100vh), maximum breathing room
+- **Colors**: Flat colors, minimal gradients, cream background
+- **Typography**:
+  - Primary: DM Sans (professional sans-serif)
+  - Headings: 4rem for h1, 2.5rem for h2 (large, readable)
+  - Secondary: Cormorant Garamond for elegance
+  - Moderate weights (400-600, no heavy)
+- **Animations**:
+  - Simple fades (0.6s ease)
+  - Subtle slides (20px translateY)
+  - Minimal transforms (-1 to -2px hover lifts)
+  - Smooth spinner (1s linear rotation)
+- **Spacing**:
+  - Sections: 80px padding
+  - Cards: 48px padding
+  - Gaps: 32px between elements
+  - Form fields: 16-18px input padding
+- **Shadows**: Barely visible (0 1px 3px rgba(0,0,0,0.05))
+- **Borders**: 1px with rgba(0,0,0,0.1) - very subtle
+- **Border Radius**: Moderate (8-16px)
+
+### Anthropic Design Principles Applied
+1. **Whitespace is content** - Generous spacing throughout
+2. **Typography hierarchy** - Clear size differences, readable
+3. **Minimal visual noise** - No unnecessary effects
+4. **Professional sans-serif** - DM Sans for modern feel
+5. **Subtle interactions** - Purposeful, not flashy
+6. **Clean borders** - Thin, low opacity
+7. **Flat colors** - Limited gradients
+8. **Content focus** - Design serves content, not vice versa
+
+### What Makes This Different
+
+**vs Design 1 (Minimal):**
+- Anthropic has MUCH more whitespace (80px vs 60px)
+- Full viewport sections (100vh) vs centered containers
+- Flatter shadows (1px vs 2px blur)
+- Cleaner borders (1px vs 2px)
+- More professional (less decorative)
+
+**vs Design 2 (Luxurious):**
+- NO gradients on text
+- NO shimmer/glow effects
+- NO complex animations
+- MUCH lighter shadows
+- Simpler, cleaner overall
+
+### Best For
+- Professional, serious brand positioning
+- Users who value clarity and readability
+- Testing pool (establishes trust and professionalism)
+- Accessible, inclusive design
+- Letting the questions and content shine
+- Modern tech/startup aesthetic
+- Users familiar with clean SaaS interfaces
+
+### Perfect Match For Harmonia Because
+- Scientific credibility (clean = serious)
+- Focus on substance over style
+- Professional compatibility assessment
+- Respects user's time and attention
+- Accessible to all demographics
+- Won't feel dated in 6 months
 
 ---
 
