@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia Local Network - Anthropic-Inspired Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Harmonia Colors */
+            --cream: #FAF6F1;
+            --blush: #F5EDE6;
+            --rose: #EFE5DC;
+            --card-bg: #F0E8DF;
+            --gold: #D4A853;
+            --gold-light: rgba(212, 168, 83, 0.15);
+            --gold-champagne: #E8C97A;
+            --maroon: #722F37;
+            --maroon-deep: #5C1A1B;
+            --maroon-light: rgba(114, 47, 55, 0.12);
+            --wine: #8B3A3A;
+            --navy: #1E293B;
+            --slate: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Anthropic-style: Clean, spacious, full-page layouts */
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--navy);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Full viewport sections - Anthropic style */
+        .phase {
+            min-height: 100vh;
+            width: 100%;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            padding: 80px 40px;
+        }
+
+        .phase.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Centered content containers */
+        .phase-inner {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Anthropic-style typography */
+        h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 4rem;
+            font-weight: 600;
+            color: var(--maroon);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--slate);
+            line-height: 1.5;
+            max-width: 600px;
+            margin-bottom: 48px;
+        }
+
+        /* Clean section headers */
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--maroon);
+            line-height: 1.2;
+        }
+
+        /* Anthropic-style cards: Clean, subtle shadows */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Form elements - Clean and spacious */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        label {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--navy);
+        }
+
+        input, select, textarea {
+            padding: 16px 18px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--navy);
+            background: var(--cream);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--maroon);
+            box-shadow: 0 0 0 3px var(--maroon-light);
+        }
+
+        /* Anthropic-style buttons: Simple, clear, purposeful */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 32px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--maroon);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--maroon-deep);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(114, 47, 55, 0.25);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--slate);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--slate);
+        }
+
+        /* Upload areas - Minimal, clean */
+        .upload-section {
+            margin: 48px 0;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .upload-box {
+            background: white;
+            border: 2px dashed rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 48px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-box:hover {
+            border-color: var(--gold);
+            background: var(--blush);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .upload-text {
+            font-size: 0.9375rem;
+            color: var(--slate);
+        }
+
+        /* Quiz phase - Spacious question cards */
+        .quiz-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .quiz-progress {
+            margin-bottom: 48px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .user-badge {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--slate);
+        }
+
+        .user-name-display {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--maroon);
+        }
+
+        .question-count {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gold);
+        }
+
+        /* Minimal progress bar */
+        .progress-track {
+            height: 4px;
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Question card - Anthropic's spacious style */
+        .question-wrapper {
+            animation: fadeSlideIn 0.5s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-meta {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--maroon);
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .question-body {
+            font-size: 1.125rem;
+            color: var(--slate);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        textarea {
+            min-height: 180px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .word-counter {
+            text-align: right;
+            margin-top: 12px;
+            font-size: 0.875rem;
+            color: var(--slate);
+        }
+
+        .word-counter.success {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 40px;
+        }
+
+        /* Processing - Minimal and clean */
+        .processing-wrapper {
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .spinner-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 48px;
+            position: relative;
+        }
+
+        .spinner {
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(0, 0, 0, 0.06);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .processing-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--maroon);
+            margin-bottom: 16px;
+        }
+
+        .processing-status {
+            font-size: 1rem;
+            color: var(--slate);
+            margin-bottom: 8px;
+        }
+
+        .processing-percent {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gold);
+        }
+
+        /* Results - Clean three-column layout */
+        .results-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .profile-card {
+            text-align: center;
+        }
+
+        .profile-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--maroon);
+            margin-bottom: 32px;
+        }
+
+        .radar-container {
+            margin: 32px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .trait-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .trait-item {
+            padding: 8px 16px;
+            background: var(--blush);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--maroon);
+        }
+
+        .score-card-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+
+        .score-display {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 6rem;
+            font-weight: 600;
+            color: var(--maroon);
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .score-description {
+            font-size: 1rem;
+            color: var(--slate);
+            margin-bottom: 48px;
+        }
+
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            .phase {
+                padding: 60px 32px;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid, .upload-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .question-title {
+                font-size: 1.75rem;
+            }
+
+            .phase {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PHASE 1: SETUP -->
+    <div class="phase active" id="phase-setup">
+        <div class="phase-inner">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="section-header">
+                    <div class="section-label">Compatibility Assessment</div>
+                    <h1>Create Your Profile</h1>
+                    <p class="subtitle">Answer thoughtfully to receive a comprehensive compatibility analysis based on personality, visual chemistry, and genetic factors.</p>
+                </div>
+
+                <div class="card">
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="name-a">Your Name</label>
+                            <input type="text" id="name-a" placeholder="Enter your name">
+                        </div>
+                        <div class="form-field">
+                            <label for="name-b">Partner's Name</label>
+                            <input type="text" id="name-b" placeholder="Enter partner's name">
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="gender-a">Your Gender</label>
+                            <select id="gender-a">
+                                <option value="">Select...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="gender-b">Partner's Gender</label>
+                            <select id="gender-b">
+                                <option value="">Select...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="upload-section">
+                        <label style="display: block; margin-bottom: 16px;">Photos (Optional)</label>
+                        <div class="upload-grid">
+                            <div class="upload-box">
+                                <div class="upload-icon">📷</div>
+                                <div class="upload-text">Your Photo</div>
+                            </div>
+                            <div class="upload-box">
+                                <div class="upload-icon">📷</div>
+                                <div class="upload-text">Partner's Photo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; margin-top: 48px;">
+                        <button class="btn btn-primary" onclick="startQuiz()">
+                            Begin Assessment
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHASE 2: QUIZ -->
+    <div class="phase" id="phase-quiz">
+        <div class="phase-inner">
+            <div class="quiz-wrapper">
+                <div class="quiz-progress">
+                    <div class="progress-header">
+                        <div>
+                            <div class="user-badge">Answering for</div>
+                            <div class="user-name-display" id="current-user">Person 1</div>
+                        </div>
+                        <div class="question-count" id="progress-text">Question 1 of 6</div>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-bar"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="question-wrapper" id="question-wrapper">
+                        <div class="question-meta" id="q-meta">Question 1 · Social & Interpersonal</div>
+                        <h2 class="question-title" id="q-title">The Stranger's Story</h2>
+                        <p class="question-body" id="q-body">At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?</p>
+                        <div class="form-field">
+                            <textarea id="answer" placeholder="Type your response here..."></textarea>
+                            <div class="word-counter" id="word-count">0 words · Minimum 25 words</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-controls">
+                    <button class="btn btn-secondary" onclick="skipQuestion()">Skip</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>
+                        Next
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHASE 3: PROCESSING -->
+    <div class="phase" id="phase-processing">
+        <div class="phase-inner">
+            <div class="processing-wrapper">
+                <div class="spinner-container">
+                    <div class="spinner"></div>
+                </div>
+                <h2 class="processing-title">Analyzing Compatibility</h2>
+                <p class="processing-status" id="status-text">Processing personality profiles...</p>
+                <p class="processing-percent" id="percent-text">0%</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHASE 4: RESULTS -->
+    <div class="phase" id="phase-results">
+        <div class="phase-inner">
+            <div class="section-header" style="text-align: center; max-width: 800px; margin: 0 auto 64px;">
+                <div class="section-label">Compatibility Analysis</div>
+                <h1 style="margin: 0 auto;">Your Results</h1>
+            </div>
+
+            <div class="results-wrapper">
+                <div class="results-grid">
+                    <div class="profile-card card">
+                        <h3 class="profile-name">Alex</h3>
+                        <div class="radar-container">
+                            <svg viewBox="0 0 100 100" width="140" height="140">
+                                <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+                                <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="var(--maroon-light)" stroke="var(--maroon)" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="trait-list">
+                            <div class="trait-item">Greed</div>
+                            <div class="trait-item">Pride</div>
+                            <div class="trait-item">Lust</div>
+                        </div>
+                    </div>
+
+                    <div class="score-card-wrapper">
+                        <div class="score-label">Harmonia Score</div>
+                        <div class="score-display">87<span style="font-size: 3rem;">%</span></div>
+                        <p class="score-description">Excellent compatibility across all dimensions</p>
+                        <div class="action-group">
+                            <button class="btn btn-primary" style="width: 100%;">
+                                Download Report
+                            </button>
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="resetDemo()">
+                                New Analysis
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-card card">
+                        <h3 class="profile-name">Jordan</h3>
+                        <div class="radar-container">
+                            <svg viewBox="0 0 100 100" width="140" height="140">
+                                <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+                                <polygon points="50,25 70,37 72,63 50,75 28,63 30,37" fill="var(--gold-light)" stroke="var(--gold)" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="trait-list">
+                            <div class="trait-item">Wrath</div>
+                            <div class="trait-item">Gluttony</div>
+                            <div class="trait-item">Envy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {title: "The Stranger's Story", text: "At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?", category: "Social & Interpersonal"},
+            {title: "The Unexpected Expense", text: "Your car needs a $1,200 repair you didn't budget for. Walk me through your thought process.", category: "Stress & Problem-Solving"},
+            {title: "The Found Wallet", text: "You find a wallet with $300 cash in a parking lot. What do you do and why?", category: "Decision-Making & Values"},
+            {title: "The Customer Service Call", text: "You've been on hold for 45 minutes about a billing error that's clearly the company's fault. When someone finally answers, how do you handle the conversation?", category: "Conflict & Disagreement"},
+            {title: "The Friend Crisis", text: "Your best friend calls with an emergency the same night as a planned date you've been looking forward to. What's your thinking process?", category: "Time & Priorities"},
+            {title: "The Mistake Made", text: "You realize you've made a significant mistake at work that no one else has noticed yet. What do you do?", category: "Growth & Change"}
+        ];
+
+        let currentQ = 0;
+        let currentUser = 1;
+
+        function startQuiz() {
+            const nameA = document.getElementById('name-a').value;
+            const nameB = document.getElementById('name-b').value;
+
+            if (!nameA || !nameB) {
+                alert('Please enter both names');
+                return;
+            }
+
+            switchPhase('phase-setup', 'phase-quiz');
+            document.getElementById('current-user').textContent = nameA;
+            updateQuestion();
+        }
+
+        function updateQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('q-meta').textContent = `Question ${currentQ + 1} · ${q.category}`;
+            document.getElementById('q-title').textContent = q.title;
+            document.getElementById('q-body').textContent = q.text;
+            document.getElementById('answer').value = '';
+            document.getElementById('word-count').textContent = '0 words · Minimum 25 words';
+            document.getElementById('next-btn').disabled = true;
+            document.getElementById('progress-text').textContent = `Question ${currentQ + 1} of 6`;
+            document.getElementById('progress-bar').style.width = `${((currentQ + 1) / 6) * 100}%`;
+        }
+
+        document.getElementById('answer').addEventListener('input', (e) => {
+            const text = e.target.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            const counter = document.getElementById('word-count');
+
+            if (words >= 25 && words <= 150) {
+                counter.textContent = `${words} words`;
+                counter.classList.add('success');
+            } else if (words > 150) {
+                counter.textContent = `${words} words · ${words - 150} over limit`;
+                counter.classList.remove('success');
+            } else {
+                counter.textContent = `${words} words · ${25 - words} more needed`;
+                counter.classList.remove('success');
+            }
+
+            document.getElementById('next-btn').disabled = words < 25 || words > 150;
+        });
+
+        function nextQuestion() {
+            currentQ++;
+            if (currentQ < 6) {
+                updateQuestion();
+            } else if (currentUser === 1) {
+                currentUser = 2;
+                currentQ = 0;
+                document.getElementById('current-user').textContent = document.getElementById('name-b').value;
+                updateQuestion();
+            } else {
+                startProcessing();
+            }
+        }
+
+        function skipQuestion() {
+            nextQuestion();
+        }
+
+        function startProcessing() {
+            switchPhase('phase-quiz', 'phase-processing');
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                document.getElementById('percent-text').textContent = `${progress}%`;
+
+                if (progress < 30) {
+                    document.getElementById('status-text').textContent = 'Processing personality profiles...';
+                } else if (progress < 70) {
+                    document.getElementById('status-text').textContent = 'Analyzing compatibility patterns...';
+                } else {
+                    document.getElementById('status-text').textContent = 'Generating insights...';
+                }
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => showResults(), 500);
+                }
+            }, 80);
+        }
+
+        function showResults() {
+            switchPhase('phase-processing', 'phase-results');
+        }
+
+        function switchPhase(from, to) {
+            const fromEl = document.getElementById(from);
+            const toEl = document.getElementById(to);
+
+            fromEl.style.opacity = '0';
+            setTimeout(() => {
+                fromEl.classList.remove('active');
+                toEl.classList.add('active');
+                setTimeout(() => {
+                    toEl.style.opacity = '1';
+                }, 50);
+            }, 300);
+        }
+
+        function resetDemo() {
+            currentQ = 0;
+            currentUser = 1;
+            switchPhase('phase-results', 'phase-setup');
+        }
+    </script>
+</body>
+</html>
