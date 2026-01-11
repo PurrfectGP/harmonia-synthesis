@@ -1,0 +1,745 @@
+/**
+ * Harmonia Apex Match - Animation Keyframes Library
+ *
+ * Comprehensive keyframe animations for all modules and components
+ * Based on research from:
+ * - https://easings.net/
+ * - https://csswolf.com/radar-scanner-animation-effect-in-css-no-js/
+ * - https://exnrt.com/blog/programming/dna-animation-using-html-css/
+ * - https://codersblock.com/blog/creating-glow-effects-with-css/
+ * - https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animations
+ *
+ * Cross-referenced with Harmonia Specification (README.md sections 3-7)
+ */
+
+/* =============================================================================
+   MODULE TRANSITIONS
+   Smooth page/module navigation animations
+   ============================================================================= */
+
+@keyframes module-fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes module-fade-out {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes module-slide-in-right {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes module-slide-out-left {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+/* =============================================================================
+   DNA HELIX ROTATION
+   3D rotation animation for biometric/genetic elements
+   Spec: Module 4 - Analysis Theater (Genomic Sequencing)
+   ============================================================================= */
+
+@keyframes dna-rotate-y {
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+@keyframes dna-rotate-x {
+    0% {
+        transform: rotateX(0deg);
+    }
+    100% {
+        transform: rotateX(360deg);
+    }
+}
+
+@keyframes dna-rotate-3d {
+    0% {
+        transform: rotateY(0deg) rotateX(0deg);
+    }
+    50% {
+        transform: rotateY(180deg) rotateX(10deg);
+    }
+    100% {
+        transform: rotateY(360deg) rotateX(0deg);
+    }
+}
+
+@keyframes helix-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* HLA marker glow */
+@keyframes hla-marker-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 1);
+    }
+}
+
+/* =============================================================================
+   CARD & PARTICLE EFFECTS
+   Dissolve animations for quiz cards and transitions
+   Spec: Module 3 - Assessment (Card Stack Dissolve)
+   ============================================================================= */
+
+@keyframes card-dissolve {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+@keyframes particle-float-up {
+    0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100px) translateX(var(--particle-x, 0));
+    }
+}
+
+@keyframes particle-burst {
+    0% {
+        opacity: 1;
+        transform: scale(1) translate(0, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0) translate(var(--burst-x, 50px), var(--burst-y, -50px));
+    }
+}
+
+@keyframes gold-dust-sparkle {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* =============================================================================
+   RADAR SCANNING ANIMATION
+   Rotating scanner for psychometric radar charts
+   Spec: Module 4 - Analysis Theater (Psychometric Triangulation)
+   ============================================================================= */
+
+@keyframes radar-scan {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes radar-sweep {
+    0% {
+        transform: rotate(0deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: rotate(360deg);
+        opacity: 0.8;
+    }
+}
+
+@keyframes radar-ping {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@keyframes radar-ripple {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+/* =============================================================================
+   LIQUID FILL & WAVE ANIMATIONS
+   Vertical fill progress and wave motion
+   Spec: Module 1 - Biometric Seal, Module 3 - Progress Tube
+   ============================================================================= */
+
+@keyframes liquid-fill-up {
+    0% {
+        height: 0%;
+    }
+    100% {
+        height: var(--fill-height, 100%);
+    }
+}
+
+@keyframes wave-motion {
+    0% {
+        transform: translateX(0) translateZ(0);
+    }
+    50% {
+        transform: translateX(-25%) translateZ(0);
+    }
+    100% {
+        transform: translateX(-50%) translateZ(0);
+    }
+}
+
+@keyframes wave-undulate {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes ink-flow {
+    0% {
+        height: 0%;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    100% {
+        height: 100%;
+        opacity: 1;
+    }
+}
+
+/* Vertical tube fill with wave top */
+@keyframes tube-fill {
+    0% {
+        height: 0%;
+    }
+    100% {
+        height: 100%;
+    }
+}
+
+/* =============================================================================
+   GOLD GLOW & SHIMMER EFFECTS
+   Luxury accents and highlight animations
+   Spec: Used throughout for champagne/gold elements
+   ============================================================================= */
+
+@keyframes gold-glow {
+    0%, 100% {
+        box-shadow:
+            0 0 10px rgba(212, 175, 55, 0.3),
+            0 0 20px rgba(212, 175, 55, 0.2),
+            0 0 30px rgba(212, 175, 55, 0.1);
+    }
+    50% {
+        box-shadow:
+            0 0 20px rgba(212, 175, 55, 0.5),
+            0 0 40px rgba(212, 175, 55, 0.3),
+            0 0 60px rgba(212, 175, 55, 0.2);
+    }
+}
+
+@keyframes gold-shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+@keyframes champagne-bubble {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+@keyframes glow-pulse {
+    0%, 100% {
+        opacity: 1;
+        filter: brightness(1);
+    }
+    50% {
+        opacity: 0.8;
+        filter: brightness(1.2);
+    }
+}
+
+/* Golden hour background glow */
+@keyframes golden-hour {
+    0% {
+        background: linear-gradient(135deg, #fef6e4 0%, #f5e6c8 100%);
+    }
+    50% {
+        background: linear-gradient(135deg, #fff8e7 0%, #f7e8ca 100%);
+    }
+    100% {
+        background: linear-gradient(135deg, #fef6e4 0%, #f5e6c8 100%);
+    }
+}
+
+/* =============================================================================
+   INK & PAPER EFFECTS
+   Tactile, handwritten feel animations
+   Spec: Module 3 - Progress Indicator (Ink Well)
+   ============================================================================= */
+
+@keyframes ink-spread {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pen-stroke {
+    0% {
+        stroke-dashoffset: 1000;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes paper-fold {
+    0% {
+        transform: rotateY(0deg);
+    }
+    50% {
+        transform: rotateY(90deg);
+    }
+    100% {
+        transform: rotateY(180deg);
+    }
+}
+
+@keyframes ink-drip {
+    0% {
+        transform: translateY(0) scaleY(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(20px) scaleY(1.5);
+        opacity: 0;
+    }
+}
+
+/* =============================================================================
+   LOADING & PROCESSING ANIMATIONS
+   Labor Illusion effects for analysis theater
+   Spec: Module 4 - The "Labor Illusion" Loading Screen
+   ============================================================================= */
+
+@keyframes spinner-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes processing-dots {
+    0%, 20% {
+        content: '.';
+    }
+    40% {
+        content: '..';
+    }
+    60%, 100% {
+        content: '...';
+    }
+}
+
+@keyframes progress-bar-fill {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: var(--progress-width, 100%);
+    }
+}
+
+@keyframes sequential-fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sequential loading with delays */
+.sequential-item:nth-child(1) {
+    animation: sequential-fade-in 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) 0s forwards;
+}
+
+.sequential-item:nth-child(2) {
+    animation: sequential-fade-in 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s forwards;
+}
+
+.sequential-item:nth-child(3) {
+    animation: sequential-fade-in 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) 0.4s forwards;
+}
+
+.sequential-item:nth-child(4) {
+    animation: sequential-fade-in 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s forwards;
+}
+
+/* Matrix-style text streams */
+@keyframes matrix-stream {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+/* =============================================================================
+   FACE MESH & MORPHING ANIMATIONS
+   SVG path transitions for visual calibration
+   Spec: Module 4 - Analysis Theater (Visual Calibration)
+   ============================================================================= */
+
+@keyframes face-mesh-pulse {
+    0%, 100% {
+        stroke-opacity: 0.3;
+    }
+    50% {
+        stroke-opacity: 0.8;
+    }
+}
+
+@keyframes wireframe-glow {
+    0%, 100% {
+        stroke: rgba(42, 78, 108, 0.5);
+        filter: drop-shadow(0 0 2px rgba(42, 78, 108, 0.3));
+    }
+    50% {
+        stroke: rgba(42, 78, 108, 1);
+        filter: drop-shadow(0 0 8px rgba(42, 78, 108, 0.6));
+    }
+}
+
+@keyframes morph-transition {
+    0% {
+        d: path('var(--path-from)');
+    }
+    100% {
+        d: path('var(--path-to)');
+    }
+}
+
+/* =============================================================================
+   SYNTHESIS & EXPLOSION EFFECTS
+   Final animation stage when revealing results
+   Spec: Module 4 - Analysis Theater (Synthesis)
+   ============================================================================= */
+
+@keyframes synthesis-collapse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(0.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes synthesis-explosion {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes shockwave {
+    0% {
+        transform: scale(0);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+@keyframes golden-point-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+    }
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 0 40px rgba(212, 175, 55, 1);
+    }
+}
+
+/* =============================================================================
+   FLOATING & HOVER EFFECTS
+   Subtle micro-interactions for UI elements
+   ============================================================================= */
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes gentle-bob {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes gentle-sway {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(5px);
+    }
+}
+
+/* =============================================================================
+   REVEAL & DISCLOSURE ANIMATIONS
+   Phased content disclosure (Time/Type Matching)
+   ============================================================================= */
+
+@keyframes reveal-from-bottom {
+    0% {
+        clip-path: inset(100% 0 0 0);
+    }
+    100% {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes reveal-from-center {
+    0% {
+        clip-path: circle(0% at 50% 50%);
+    }
+    100% {
+        clip-path: circle(100% at 50% 50%);
+    }
+}
+
+@keyframes text-reveal {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+        filter: blur(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* =============================================================================
+   ENTRANCE ANIMATIONS FOR COMPONENTS
+   Component-specific entry effects
+   ============================================================================= */
+
+@keyframes input-focus-line {
+    0% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes label-float-up {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-1.5rem) scale(0.85);
+        opacity: 1;
+    }
+}
+
+@keyframes button-press {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* =============================================================================
+   ACCESSIBILITY: REDUCED MOTION
+   Respect user preferences for reduced motion
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    /* Keep essential feedback animations but simplify */
+    .results-match-score,
+    .gold-glow,
+    .glow-pulse {
+        animation: none;
+    }
+}
+
+/* =============================================================================
+   UTILITY ANIMATION CLASSES
+   Quick-apply animation utilities
+   ============================================================================= */
+
+.animate-fade-in {
+    animation: module-fade-in 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.animate-slide-in {
+    animation: module-slide-in-right 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(212, 175, 55, 0.3) 50%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: gold-shimmer 2s linear infinite;
+}
+
+.animate-dna-rotate {
+    animation: dna-rotate-y 3s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
+    transform-style: preserve-3d;
+}
+
+.animate-radar-scan {
+    animation: radar-scan 4s linear infinite;
+}
+
+.animate-ink-flow {
+    animation: ink-flow 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
