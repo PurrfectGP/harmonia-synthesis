@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia Quiz - Design Preview</title>
+    <style>
+        :root {
+            --maroon: #800020;
+            --maroon-dark: #5C0017;
+            --maroon-light: #A6002A;
+            --cream: #FFF8E7;
+            --gold: #D4AF37;
+            --charcoal: #2C2C2C;
+            --transition-speed: 0.6s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 50%, var(--maroon-light) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--cream);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header */
+        .quiz-header {
+            background: var(--maroon);
+            color: var(--cream);
+            padding: 32px;
+            text-align: center;
+            position: relative;
+        }
+
+        .quiz-header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .quiz-header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gold);
+            width: 0%;
+            transition: width var(--transition-speed) ease;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .progress-text {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        /* Question Slides Container */
+        .slides-wrapper {
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+        }
+
+        .question-slide {
+            position: absolute;
+            width: 100%;
+            padding: 48px 40px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all var(--transition-speed) cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: none;
+        }
+
+        .question-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+            position: relative;
+        }
+
+        .question-slide.prev {
+            transform: translateX(-100%);
+        }
+
+        /* Question Card */
+        .question-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(128, 0, 32, 0.1);
+            margin-bottom: 32px;
+        }
+
+        .question-number {
+            color: var(--gold);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .question-title {
+            color: var(--maroon);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .question-text {
+            color: var(--charcoal);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Answer Input */
+        .answer-input {
+            background: white;
+            border: 2px solid #E5E5E5;
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            font-size: 1rem;
+            font-family: inherit;
+            line-height: 1.6;
+            resize: vertical;
+            min-height: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--maroon);
+            box-shadow: 0 0 0 4px rgba(128, 0, 32, 0.1);
+        }
+
+        /* Word Counter */
+        .word-counter {
+            margin-top: 12px;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .word-counter.golden {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .word-counter.warning {
+            color: #F59E0B;
+        }
+
+        .word-counter.error {
+            color: #EF4444;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-prev {
+            background: #E5E5E5;
+            color: var(--charcoal);
+        }
+
+        .btn-prev:hover:not(:disabled) {
+            background: #D4D4D4;
+            transform: translateX(-4px);
+        }
+
+        .btn-next {
+            background: var(--maroon);
+            color: var(--cream);
+            margin-left: auto;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: var(--maroon-dark);
+            transform: translateX(4px);
+            box-shadow: 0 8px 20px rgba(128, 0, 32, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Completion Screen */
+        .completion-screen {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .completion-screen h2 {
+            color: var(--maroon);
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .completion-screen p {
+            color: var(--charcoal);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: scaleIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .checkmark::after {
+            content: "✓";
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Confetti Animation */
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            top: -10px;
+            animation: confetti-fall 3s linear forwards;
+            z-index: 9999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quiz-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .question-slide {
+                padding: 32px 24px;
+            }
+
+            .question-card {
+                padding: 24px;
+            }
+
+            .question-title {
+                font-size: 1.25rem;
+            }
+
+            .btn {
+                padding: 14px 24px;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Pulse animation for next button */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .btn-next.pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <!-- Header -->
+        <div class="quiz-header">
+            <h1>Personality Assessment</h1>
+            <p>Answer thoughtfully - there are no right or wrong answers</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Question 1 of 6</div>
+        </div>
+
+        <!-- Question Slides -->
+        <div class="slides-wrapper" id="slidesWrapper">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Sample questions (Felix's 6 fixed questions)
+        const questions = [
+            {
+                block: "Social & Interpersonal",
+                title: "The Stranger's Story",
+                question: "At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?"
+            },
+            {
+                block: "Stress & Problem-Solving",
+                title: "The Unexpected Expense",
+                question: "Your car needs a $1,200 repair you didn't budget for. Walk me through your thought process."
+            },
+            {
+                block: "Decision-Making & Values",
+                title: "The Found Wallet",
+                question: "You find a wallet with $300 cash in a parking lot. What do you do and why?"
+            },
+            {
+                block: "Conflict & Disagreement",
+                title: "The Customer Service Call",
+                question: "You've been on hold for 45 minutes about a billing error that's clearly the company's fault. When someone finally answers, how do you handle the conversation?"
+            },
+            {
+                block: "Time & Priorities",
+                title: "The Friend Crisis",
+                question: "Your best friend calls with an emergency the same night as a planned date you've been looking forward to. What's your thinking process?"
+            },
+            {
+                block: "Growth & Change",
+                title: "The Mistake Made",
+                question: "You realize you've made a significant mistake at work that no one else has noticed yet. What do you do?"
+            }
+        ];
+
+        let currentQuestion = 0;
+        const answers = [];
+        const MIN_WORDS = 25;
+        const MAX_WORDS = 150;
+
+        // Initialize quiz
+        function initQuiz() {
+            const slidesWrapper = document.getElementById('slidesWrapper');
+
+            // Create question slides
+            questions.forEach((q, index) => {
+                const slide = createQuestionSlide(q, index);
+                slidesWrapper.appendChild(slide);
+            });
+
+            // Show first question
+            document.querySelector('.question-slide').classList.add('active');
+            updateProgress();
+        }
+
+        // Create question slide HTML
+        function createQuestionSlide(q, index) {
+            const slide = document.createElement('div');
+            slide.className = 'question-slide';
+            slide.innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">Question ${index + 1} • ${q.block}</div>
+                    <h2 class="question-title">${q.title}</h2>
+                    <p class="question-text">${q.question}</p>
+                </div>
+
+                <textarea
+                    class="answer-input"
+                    placeholder="Share your thoughts here... (${MIN_WORDS}-${MAX_WORDS} words)"
+                    data-question="${index}"
+                ></textarea>
+
+                <div class="word-counter" id="counter-${index}">
+                    0 words (minimum ${MIN_WORDS} words)
+                </div>
+
+                <div class="nav-buttons">
+                    ${index > 0 ? '<button class="btn btn-prev" onclick="prevQuestion()">← Previous</button>' : '<div></div>'}
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="next-${index}">
+                        ${index < questions.length - 1 ? 'Next →' : 'Complete ✓'}
+                    </button>
+                </div>
+            `;
+
+            // Add textarea event listener
+            const textarea = slide.querySelector('.answer-input');
+            textarea.addEventListener('input', (e) => updateWordCount(index));
+
+            return slide;
+        }
+
+        // Update word count
+        function updateWordCount(index) {
+            const textarea = document.querySelector(`[data-question="${index}"]`);
+            const counter = document.getElementById(`counter-${index}`);
+            const nextBtn = document.getElementById(`next-${index}`);
+
+            const text = textarea.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+
+            // Update counter
+            counter.textContent = `${words} words`;
+
+            // Apply styling based on word count
+            counter.classList.remove('golden', 'warning', 'error');
+            if (words >= 60 && words <= 80) {
+                counter.classList.add('golden');
+                counter.textContent += ' ✨ Perfect length!';
+                createConfetti();
+            } else if (words >= MIN_WORDS && words <= MAX_WORDS) {
+                counter.classList.add('golden');
+            } else if (words > MAX_WORDS) {
+                counter.classList.add('error');
+                counter.textContent += ` (${words - MAX_WORDS} over limit)`;
+            } else if (words > 0) {
+                counter.classList.add('warning');
+                counter.textContent += ` (${MIN_WORDS - words} more needed)`;
+            }
+
+            // Enable/disable next button
+            nextBtn.disabled = words < MIN_WORDS || words > MAX_WORDS;
+
+            if (!nextBtn.disabled) {
+                nextBtn.classList.add('pulse');
+            } else {
+                nextBtn.classList.remove('pulse');
+            }
+
+            // Save answer
+            answers[index] = text;
+        }
+
+        // Next question
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                // Slide animation
+                const slides = document.querySelectorAll('.question-slide');
+                slides[currentQuestion].classList.remove('active');
+                slides[currentQuestion].classList.add('prev');
+
+                currentQuestion++;
+                slides[currentQuestion].classList.add('active');
+                slides[currentQuestion].classList.remove('prev');
+
+                updateProgress();
+            } else {
+                // Show completion
+                showCompletion();
+            }
+        }
+
+        // Previous question
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                const slides = document.querySelectorAll('.question-slide');
+                slides[currentQuestion].classList.remove('active');
+
+                currentQuestion--;
+                slides[currentQuestion].classList.add('active');
+                slides[currentQuestion].classList.remove('prev');
+
+                updateProgress();
+            }
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent =
+                `Question ${currentQuestion + 1} of ${questions.length}`;
+        }
+
+        // Show completion screen
+        function showCompletion() {
+            const slidesWrapper = document.getElementById('slidesWrapper');
+            slidesWrapper.innerHTML = `
+                <div class="question-slide active">
+                    <div class="completion-screen">
+                        <div class="checkmark"></div>
+                        <h2>Assessment Complete!</h2>
+                        <p>Thank you for completing the personality assessment. In the full version, your responses would be analyzed using AI to generate your personality profile and compatibility insights.</p>
+                        <button class="btn btn-next" onclick="location.reload()">
+                            Start Over
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Celebration confetti
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => createConfetti(), i * 50);
+            }
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = ['#D4AF37', '#800020', '#A6002A'][Math.floor(Math.random() * 3)];
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.body.appendChild(confetti);
+
+            setTimeout(() => confetti.remove(), 5000);
+        }
+
+        // Initialize on load
+        initQuiz();
+    </script>
+</body>
+</html>
