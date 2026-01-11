@@ -1,0 +1,360 @@
+<!--
+    Harmonia Apex Match - Module 2: Calibration (The Meta FP Engine)
+
+    Spec Reference: README.md Section 4 - "The Portrait Gallery"
+    CSS Classes: css/5-modules.css (.module-calibration, .calibration-*)
+    Components: Spring physics slider, custom range input
+
+    Research Applied:
+    - Accessible slider with ARIA (W3C Slider Pattern)
+    - Keyboard navigation (arrow keys, Home, End)
+    - Dwell time tracking for implicit signals
+    - Data attributes for Meta FP vs Real profile distinction
+-->
+
+<section class="module-calibration" id="module-calibration" data-module="calibration" data-step="2" aria-labelledby="calibration-title">
+    <div class="calibration-gallery">
+        <!-- Title (Hidden visually but available to screen readers) -->
+        <h1 class="sr-only" id="calibration-title">Visual Calibration - Portrait Gallery</h1>
+
+        <div class="calibration-instructions" style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.75rem; color: var(--color-mediterranean-500); margin-bottom: 0.5rem;">
+                The Portrait Gallery
+            </h2>
+            <p style="font-family: var(--font-body); color: var(--color-parchment-900); opacity: 0.8;">
+                Rate each portrait based on your instinctive visual preference.
+                This calibration establishes your baseline aesthetic pattern (50% of match score).
+            </p>
+        </div>
+
+        <!-- Portrait Frame Container -->
+        <article
+            class="calibration-portrait-frame"
+            id="portrait-frame"
+            data-portrait-index="0"
+            data-portrait-type="stock"
+            data-portrait-id=""
+            data-dwell-start=""
+            role="img"
+            aria-labelledby="portrait-description"
+        >
+            <!-- Portrait Image -->
+            <img
+                id="portrait-image"
+                class="calibration-portrait-image"
+                src=""
+                alt=""
+                aria-describedby="portrait-description"
+            />
+
+            <!-- Visually hidden description for screen readers -->
+            <div id="portrait-description" class="sr-only"></div>
+        </article>
+
+        <!-- Rating Slider Section -->
+        <section class="calibration-rating" aria-labelledby="rating-label">
+            <label id="rating-label" class="calibration-rating-label">
+                Rate Your Attraction
+            </label>
+
+            <!-- Custom Range Slider -->
+            <input
+                type="range"
+                id="calibration-slider"
+                class="custom-slider"
+                min="1"
+                max="5"
+                value="3"
+                step="1"
+                role="slider"
+                aria-valuemin="1"
+                aria-valuemax="5"
+                aria-valuenow="3"
+                aria-valuetext="Potential"
+                aria-label="Rate portrait from 1 to 5"
+            />
+
+            <!-- Slider Labels -->
+            <div class="calibration-slider-labels" style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--color-parchment-900); opacity: 0.6;">1</span>
+                <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--color-parchment-900); opacity: 0.6;">2</span>
+                <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--color-parchment-900); opacity: 0.6;">3</span>
+                <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--color-parchment-900); opacity: 0.6;">4</span>
+                <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--color-parchment-900); opacity: 0.6;">5</span>
+            </div>
+
+            <!-- Feedback Text -->
+            <div
+                id="calibration-feedback"
+                class="calibration-feedback potential"
+                role="status"
+                aria-live="polite"
+            >
+                Potential
+            </div>
+
+            <!-- Submit Rating Button -->
+            <button
+                type="button"
+                id="submit-rating-btn"
+                class="btn btn-primary"
+                style="width: 100%; margin-top: 1.5rem;"
+                aria-label="Submit rating and continue to next portrait"
+            >
+                Continue
+            </button>
+        </section>
+
+        <!-- Progress Counter -->
+        <div class="calibration-progress-counter" role="status" aria-live="polite" aria-atomic="true">
+            <span id="current-portrait">1</span> of <span id="total-portraits">50</span> portraits
+        </div>
+
+        <!-- Skip Button (accessibility feature) -->
+        <button
+            type="button"
+            id="skip-portrait-btn"
+            class="btn btn-secondary"
+            style="width: 100%; margin-top: 1rem;"
+            aria-label="Skip this portrait"
+        >
+            Skip
+        </button>
+    </div>
+</section>
+
+<!-- Initialization Script Template -->
+<script type="module">
+    // This script would be in a separate file in the final implementation
+
+    /*
+    // Calibration Data
+    const calibrationData = {
+        portraits: [], // Mix of stock (Meta FP) and real profiles
+        currentIndex: 0,
+        ratings: [],
+        dwellTimes: [],
+        decisionVelocities: []
+    };
+
+    // Load portrait data
+    async function loadPortraits() {
+        // Fetch from API/data source
+        // Mix 14-50 stock images with real profiles
+        // Flag each with data-portrait-type="stock" or "real"
+    }
+
+    // Initialize calibration module
+    function initCalibration() {
+        const slider = document.getElementById('calibration-slider');
+        const feedback = document.getElementById('calibration-feedback');
+        const portraitFrame = document.getElementById('portrait-frame');
+        const portraitImage = document.getElementById('portrait-image');
+
+        let dwellStartTime = null;
+
+        // Start dwell time tracking when portrait loads
+        function startDwellTracking() {
+            dwellStartTime = performance.now();
+            portraitFrame.dataset.dwellStart = dwellStartTime;
+        }
+
+        // Calculate dwell time and decision velocity
+        function calculateMetrics() {
+            if (!dwellStartTime) return null;
+
+            const dwellTime = performance.now() - dwellStartTime;
+            const currentRating = parseInt(slider.value);
+
+            // Decision velocity: Fast high rating = visceral attraction
+            // Slow high rating = cognitive/deliberative attraction
+            const decisionVelocity = dwellTime < 2000 ? 'fast' : dwellTime < 5000 ? 'medium' : 'slow';
+
+            return {
+                rating: currentRating,
+                dwellTime,
+                decisionVelocity,
+                portraitId: portraitFrame.dataset.portraitId,
+                portraitType: portraitFrame.dataset.portraitType
+            };
+        }
+
+        // Update feedback based on slider value
+        function updateFeedback(value) {
+            const feedbackMap = {
+                1: { text: 'Indifferent', class: 'indifferent' },
+                2: { text: 'Indifferent', class: 'indifferent' },
+                3: { text: 'Potential', class: 'potential' },
+                4: { text: 'Magnetic', class: 'magnetic' },
+                5: { text: 'Magnetic', class: 'magnetic' }
+            };
+
+            const current = feedbackMap[value];
+            feedback.textContent = current.text;
+            feedback.className = `calibration-feedback ${current.class}`;
+
+            // Update ARIA
+            slider.setAttribute('aria-valuetext', current.text);
+            slider.setAttribute('aria-valuenow', value);
+
+            // Update portrait frame background for magnetic ratings
+            if (current.class === 'magnetic') {
+                portraitFrame.classList.add('magnetic');
+            } else {
+                portraitFrame.classList.remove('magnetic');
+            }
+        }
+
+        // Load next portrait
+        function loadNextPortrait() {
+            if (calibrationData.currentIndex >= calibrationData.portraits.length) {
+                // Calibration complete
+                completeCalibration();
+                return;
+            }
+
+            const portrait = calibrationData.portraits[calibrationData.currentIndex];
+
+            // Update image
+            portraitImage.src = portrait.imageUrl;
+            portraitImage.alt = `Portrait ${calibrationData.currentIndex + 1}`;
+
+            // Update data attributes
+            portraitFrame.dataset.portraitIndex = calibrationData.currentIndex;
+            portraitFrame.dataset.portraitType = portrait.type; // 'stock' or 'real'
+            portraitFrame.dataset.portraitId = portrait.id;
+
+            // Update description for screen readers
+            document.getElementById('portrait-description').textContent =
+                `Portrait ${calibrationData.currentIndex + 1} of ${calibrationData.portraits.length}. ${portrait.type === 'stock' ? 'Calibration image' : 'Profile'}.`;
+
+            // Update progress
+            document.getElementById('current-portrait').textContent = calibrationData.currentIndex + 1;
+            document.getElementById('total-portraits').textContent = calibrationData.portraits.length;
+
+            // Reset slider to middle
+            slider.value = 3;
+            updateFeedback(3);
+
+            // Start dwell tracking
+            startDwellTracking();
+        }
+
+        // Submit rating
+        function submitRating() {
+            const metrics = calculateMetrics();
+
+            if (metrics) {
+                calibrationData.ratings.push(metrics);
+                calibrationData.dwellTimes.push(metrics.dwellTime);
+                calibrationData.decisionVelocities.push(metrics.decisionVelocity);
+            }
+
+            // Move to next portrait
+            calibrationData.currentIndex++;
+            loadNextPortrait();
+        }
+
+        // Skip portrait
+        function skipPortrait() {
+            // Record skip (null rating) for analytics
+            calibrationData.ratings.push({
+                rating: null,
+                skipped: true,
+                portraitId: portraitFrame.dataset.portraitId,
+                portraitType: portraitFrame.dataset.portraitType
+            });
+
+            calibrationData.currentIndex++;
+            loadNextPortrait();
+        }
+
+        // Complete calibration
+        function completeCalibration() {
+            // Save calibration data to backend
+            // Navigate to Module 3: Assessment
+        }
+
+        // Event Listeners
+        slider.addEventListener('input', (e) => {
+            updateFeedback(parseInt(e.target.value));
+        });
+
+        // Keyboard navigation
+        slider.addEventListener('keydown', (e) => {
+            // Arrow keys are handled by native input type="range"
+            // Add custom handling for Home/End if needed
+            if (e.key === 'Home') {
+                e.preventDefault();
+                slider.value = 1;
+                updateFeedback(1);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                slider.value = 5;
+                updateFeedback(5);
+            }
+        });
+
+        document.getElementById('submit-rating-btn').addEventListener('click', submitRating);
+        document.getElementById('skip-portrait-btn').addEventListener('click', skipPortrait);
+
+        // Also allow Enter key to submit
+        slider.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitRating();
+            }
+        });
+
+        // Initialize
+        loadPortraits().then(() => {
+            loadNextPortrait();
+        });
+    }
+
+    // Start on load
+    document.addEventListener('DOMContentLoaded', initCalibration);
+    */
+</script>
+
+<style>
+    /* Additional module-specific styles */
+
+    .calibration-slider-labels {
+        user-select: none;
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    /* Golden hour glow animation for magnetic ratings */
+    .calibration-portrait-frame.magnetic {
+        animation: golden-hour 3s ease-in-out infinite;
+    }
+
+    @keyframes golden-hour {
+        0% {
+            background: linear-gradient(135deg, #fef6e4 0%, #f5e6c8 100%);
+        }
+        50% {
+            background: linear-gradient(135deg, #fff8e7 0%, #f7e8ca 100%);
+        }
+        100% {
+            background: linear-gradient(135deg, #fef6e4 0%, #f5e6c8 100%);
+        }
+    }
+
+    /* Ensure portrait images maintain aspect ratio */
+    .calibration-portrait-image {
+        object-fit: cover;
+        object-position: center top;
+    }
+</style>

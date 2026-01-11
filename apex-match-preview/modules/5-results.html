@@ -1,0 +1,707 @@
+<!--
+    Harmonia Apex Match - Module 5: Results (The Apex Match Reveal)
+
+    Spec Reference: README.md Section 7 - "The Apex Match Reveal"
+    CSS Classes: css/5-modules.css (.module-results, .results-*)
+    Components: chart.js, spark-indicator.js, chromosome-map.js
+
+    Research Applied:
+    - Semantic article structure for match profile
+    - ARIA labels for data visualizations
+    - Chart accessibility patterns
+    - Disclosure widget for ethical transparency
+    - Keyboard navigation for action buttons
+-->
+
+<section class="module-results" id="module-results" data-module="results" data-step="5" aria-labelledby="results-title">
+    <div class="results-container">
+        <!-- Title (Hidden visually but available to screen readers) -->
+        <h1 class="sr-only" id="results-title">Your Apex Match Results</h1>
+
+        <!-- Results Header: Match Score -->
+        <header class="results-header" style="text-align: center; margin-bottom: 3rem;">
+            <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--color-parchment-900); opacity: 0.8; margin-bottom: 1rem;">
+                Your Apex Match
+            </h2>
+
+            <!-- Match Score Display -->
+            <div class="results-match-score" role="status" aria-live="polite">
+                <div class="match-score-value" id="match-score-value" aria-label="Match score">
+                    <span class="score-number">87</span>
+                    <span class="score-symbol">%</span>
+                </div>
+                <div class="match-score-label">Harmonia Compatibility</div>
+            </div>
+
+            <!-- Match Confidence Indicator -->
+            <div class="match-confidence" style="margin-top: 1.5rem;">
+                <span style="font-family: var(--font-body); font-size: 0.875rem; color: var(--color-mediterranean-500);">
+                    High Confidence Match
+                </span>
+            </div>
+        </header>
+
+        <!-- Match Profile Card -->
+        <article class="results-match-profile" aria-labelledby="profile-name">
+            <div class="profile-portrait-container">
+                <!-- Portrait Image -->
+                <img
+                    id="profile-portrait"
+                    class="profile-portrait"
+                    src=""
+                    alt="Match profile portrait"
+                    style="width: 100%; height: auto; border-radius: var(--radius-lg);"
+                />
+
+                <!-- Spark Indicator Overlay -->
+                <div class="spark-indicator" id="spark-indicator" aria-label="Chemistry spark indicator">
+                    <svg class="spark-icon" width="60" height="60" viewBox="0 0 60 60" aria-hidden="true">
+                        <!-- Lightning bolt spark icon -->
+                        <path
+                            d="M30 10 L20 30 L30 28 L25 50 L40 25 L30 27 Z"
+                            fill="var(--color-champagne-500)"
+                            stroke="var(--color-champagne-600)"
+                            stroke-width="2"
+                        />
+                    </svg>
+                    <span class="spark-label">High Chemistry</span>
+                </div>
+            </div>
+
+            <div class="profile-info">
+                <!-- Name & Age -->
+                <h3 class="profile-name" id="profile-name">
+                    <span id="profile-name-text">Alexandra</span>,
+                    <span id="profile-age">28</span>
+                </h3>
+
+                <!-- Location -->
+                <p class="profile-location" id="profile-location">
+                    <svg class="location-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M8 0C5.24 0 3 2.24 3 5c0 3.37 5 11 5 11s5-7.63 5-11c0-2.76-2.24-5-5-5zm0 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="var(--color-mediterranean-500)"/>
+                    </svg>
+                    San Francisco, CA
+                </p>
+
+                <!-- Bio Preview -->
+                <p class="profile-bio-preview" style="font-family: var(--font-body); color: var(--color-parchment-900); opacity: 0.8; line-height: 1.6;">
+                    Architect by day, painter by night. Passionate about sustainable design and finding beauty in unexpected places.
+                </p>
+            </div>
+        </article>
+
+        <!-- Tri-Factor Breakdown -->
+        <section class="results-tri-factor" aria-labelledby="tri-factor-title" style="margin-top: 3rem;">
+            <h3 class="section-title" id="tri-factor-title" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--color-mediterranean-500); margin-bottom: 2rem; text-align: center;">
+                Compatibility Breakdown
+            </h3>
+
+            <div class="tri-factor-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <!-- Visual Resonance (50%) -->
+                <div class="factor-card" data-factor="visual">
+                    <div class="factor-icon" aria-hidden="true">
+                        <svg width="40" height="40" viewBox="0 0 40 40">
+                            <circle cx="20" cy="20" r="15" stroke="var(--color-champagne-500)" stroke-width="2" fill="none"/>
+                            <circle cx="13" cy="17" r="3" fill="var(--color-champagne-500)"/>
+                            <circle cx="27" cy="17" r="3" fill="var(--color-champagne-500)"/>
+                            <path d="M12 25 Q20 30 28 25" stroke="var(--color-champagne-500)" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="factor-label">Visual Resonance</div>
+                    <div class="factor-score" role="status" aria-label="Visual resonance: 92 percent">92%</div>
+                    <div class="factor-weight">(50% of total)</div>
+                </div>
+
+                <!-- Psychometric Alignment (35%) -->
+                <div class="factor-card" data-factor="psychometric">
+                    <div class="factor-icon" aria-hidden="true">
+                        <svg width="40" height="40" viewBox="0 0 40 40">
+                            <path d="M20 5 L25 15 L35 15 L27 22 L30 32 L20 26 L10 32 L13 22 L5 15 L15 15 Z" stroke="var(--color-mediterranean-500)" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="factor-label">Psychometric Alignment</div>
+                    <div class="factor-score" role="status" aria-label="Psychometric alignment: 84 percent">84%</div>
+                    <div class="factor-weight">(35% of total)</div>
+                </div>
+
+                <!-- Genetic Compatibility (10%) -->
+                <div class="factor-card" data-factor="genetic">
+                    <div class="factor-icon" aria-hidden="true">
+                        <svg width="40" height="40" viewBox="0 0 40 40">
+                            <path d="M15 5 Q15 15 20 20 T15 35" stroke="var(--color-champagne-500)" stroke-width="2" fill="none"/>
+                            <path d="M25 5 Q25 15 20 20 T25 35" stroke="var(--color-mediterranean-500)" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="factor-label">Genetic Compatibility</div>
+                    <div class="factor-score" role="status" aria-label="Genetic compatibility: 78 percent">78%</div>
+                    <div class="factor-weight">(10% of total)</div>
+                </div>
+
+                <!-- Serendipity Factor (5%) -->
+                <div class="factor-card" data-factor="serendipity">
+                    <div class="factor-icon" aria-hidden="true">
+                        <svg width="40" height="40" viewBox="0 0 40 40">
+                            <path d="M20 8 L22 18 L32 20 L22 22 L20 32 L18 22 L8 20 L18 18 Z" fill="var(--color-champagne-500)"/>
+                        </svg>
+                    </div>
+                    <div class="factor-label">Serendipity</div>
+                    <div class="factor-score" role="status" aria-label="Serendipity factor: 95 percent">95%</div>
+                    <div class="factor-weight">(5% of total)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cardinal Driver Alignment -->
+        <section class="results-cardinal-alignment" aria-labelledby="cardinal-title" style="margin-top: 3rem;">
+            <h3 class="section-title" id="cardinal-title" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--color-mediterranean-500); margin-bottom: 2rem; text-align: center;">
+                Personality Alignment
+            </h3>
+
+            <!-- Radar Chart Container -->
+            <div class="cardinal-radar-chart" role="img" aria-label="Cardinal drivers alignment chart showing compatibility across seven personality dimensions">
+                <svg class="radar-chart" width="400" height="400" viewBox="0 0 400 400" aria-hidden="true">
+                    <!-- Radar background grid -->
+                    <g class="radar-grid">
+                        <circle cx="200" cy="200" r="150" stroke="rgba(212, 175, 55, 0.2)" stroke-width="1" fill="none"/>
+                        <circle cx="200" cy="200" r="120" stroke="rgba(212, 175, 55, 0.2)" stroke-width="1" fill="none"/>
+                        <circle cx="200" cy="200" r="90" stroke="rgba(212, 175, 55, 0.2)" stroke-width="1" fill="none"/>
+                        <circle cx="200" cy="200" r="60" stroke="rgba(212, 175, 55, 0.2)" stroke-width="1" fill="none"/>
+                        <circle cx="200" cy="200" r="30" stroke="rgba(212, 175, 55, 0.2)" stroke-width="1" fill="none"/>
+                    </g>
+
+                    <!-- Radar axes -->
+                    <g class="radar-axes">
+                        <line x1="200" y1="200" x2="200" y2="50" stroke="rgba(212, 175, 55, 0.3)" stroke-width="1"/>
+                        <line x1="200" y1="200" x2="330" y2="110" stroke="rgba(212, 175, 55, 0.3)" stroke-width="1"/>
+                        <line x1="200" y1="200" x2="330" y2="290" stroke="rgba(212, 175, 55, 0.3)" stroke-width="1"/>
+                        <line x1="200" y1="200" x2="200" y2="350" stroke="rgba(212, 175, 55, 0.3)" stroke-width="1"/>
+                        <line x1="200" y1="200" x2="70" y2="290" stroke="rgba(212, 175, 55, 0.3)" stroke-width="1"/>
+                        <line x1="200" y1="200" x2="70" y2="110" stroke="rgba(212, 175, 55, 0.3)" stroke-width="1"/>
+                    </g>
+
+                    <!-- Your profile (blue fill) -->
+                    <polygon
+                        id="radar-user-profile"
+                        points="200,80 290,130 310,250 200,310 90,250 110,130"
+                        fill="rgba(42, 78, 108, 0.3)"
+                        stroke="var(--color-mediterranean-500)"
+                        stroke-width="2"
+                    />
+
+                    <!-- Match profile (gold outline) -->
+                    <polygon
+                        id="radar-match-profile"
+                        points="200,70 300,120 320,260 200,320 80,260 100,120"
+                        fill="rgba(212, 175, 55, 0.1)"
+                        stroke="var(--color-champagne-500)"
+                        stroke-width="2"
+                        stroke-dasharray="5,5"
+                    />
+
+                    <!-- Axis labels -->
+                    <text x="200" y="40" text-anchor="middle" fill="var(--color-parchment-900)" font-size="12">Passion</text>
+                    <text x="340" y="115" text-anchor="start" fill="var(--color-parchment-900)" font-size="12">Indulgence</text>
+                    <text x="340" y="295" text-anchor="start" fill="var(--color-parchment-900)" font-size="12">Ambition</text>
+                    <text x="200" y="370" text-anchor="middle" fill="var(--color-parchment-900)" font-size="12">Serenity</text>
+                    <text x="60" y="295" text-anchor="end" fill="var(--color-parchment-900)" font-size="12">Conviction</text>
+                    <text x="60" y="115" text-anchor="end" fill="var(--color-parchment-900)" font-size="12">Yearning</text>
+                </svg>
+
+                <!-- Chart Legend -->
+                <div class="radar-legend" style="display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem;">
+                    <div class="legend-item">
+                        <span class="legend-color" style="display: inline-block; width: 16px; height: 16px; background: var(--color-mediterranean-500); border-radius: 50%;"></span>
+                        <span class="legend-label" style="font-family: var(--font-body); font-size: 0.875rem; margin-left: 0.5rem;">You</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="display: inline-block; width: 16px; height: 16px; background: var(--color-champagne-500); border-radius: 50%;"></span>
+                        <span class="legend-label" style="font-family: var(--font-body); font-size: 0.875rem; margin-left: 0.5rem;">Alexandra</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Genetic Compatibility Details -->
+        <section class="results-genetic-details" aria-labelledby="genetic-title" style="margin-top: 3rem;">
+            <h3 class="section-title" id="genetic-title" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--color-mediterranean-500); margin-bottom: 2rem; text-align: center;">
+                HLA Compatibility
+            </h3>
+
+            <!-- Chromosome Map -->
+            <div class="results-chromosome-map" role="img" aria-label="HLA chromosome compatibility visualization">
+                <svg class="chromosome-visualization" width="500" height="200" viewBox="0 0 500 200" aria-hidden="true">
+                    <!-- Chromosome pair visualization -->
+                    <g class="chromosome-pair">
+                        <!-- Your chromosome -->
+                        <g class="chromosome-yours">
+                            <rect x="100" y="50" width="50" height="100" rx="25" fill="var(--color-mediterranean-400)" opacity="0.6"/>
+                            <rect x="108" y="65" width="34" height="20" fill="var(--color-mediterranean-600)" opacity="0.8"/>
+                            <rect x="108" y="90" width="34" height="15" fill="var(--color-mediterranean-600)" opacity="0.8"/>
+                            <rect x="108" y="110" width="34" height="18" fill="var(--color-mediterranean-600)" opacity="0.8"/>
+                            <text x="125" y="165" text-anchor="middle" fill="var(--color-parchment-900)" font-size="12">You</text>
+                        </g>
+
+                        <!-- Match chromosome -->
+                        <g class="chromosome-match">
+                            <rect x="350" y="50" width="50" height="100" rx="25" fill="var(--color-champagne-400)" opacity="0.6"/>
+                            <rect x="358" y="65" width="34" height="20" fill="var(--color-champagne-600)" opacity="0.8"/>
+                            <rect x="358" y="90" width="34" height="15" fill="var(--color-champagne-600)" opacity="0.8"/>
+                            <rect x="358" y="110" width="34" height="18" fill="var(--color-champagne-600)" opacity="0.8"/>
+                            <text x="375" y="165" text-anchor="middle" fill="var(--color-parchment-900)" font-size="12">Alexandra</text>
+                        </g>
+
+                        <!-- Compatibility connection lines -->
+                        <g class="compatibility-links">
+                            <line x1="150" y1="75" x2="350" y2="75" stroke="var(--color-champagne-500)" stroke-width="2" opacity="0.6"/>
+                            <circle cx="250" cy="75" r="8" fill="var(--color-champagne-500)"/>
+                            <text x="250" y="65" text-anchor="middle" fill="var(--color-champagne-600)" font-size="10">78%</text>
+
+                            <line x1="150" y1="97.5" x2="350" y2="97.5" stroke="var(--color-champagne-500)" stroke-width="2" opacity="0.6"/>
+                            <circle cx="250" cy="97.5" r="8" fill="var(--color-champagne-500)"/>
+                            <text x="250" y="87.5" text-anchor="middle" fill="var(--color-champagne-600)" font-size="10">82%</text>
+
+                            <line x1="150" y1="119" x2="350" y2="119" stroke="var(--color-champagne-500)" stroke-width="2" opacity="0.6"/>
+                            <circle cx="250" cy="119" r="8" fill="var(--color-champagne-500)"/>
+                            <text x="250" y="109" text-anchor="middle" fill="var(--color-champagne-600)" font-size="10">74%</text>
+                        </g>
+                    </g>
+                </svg>
+
+                <p style="text-align: center; font-family: var(--font-body); font-size: 0.875rem; color: var(--color-parchment-900); opacity: 0.7; margin-top: 1rem;">
+                    Your HLA profiles show moderate complementarity, associated with enhanced immune response in offspring.
+                </p>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <div class="results-actions" style="display: flex; gap: 1rem; margin-top: 3rem;">
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="send-like-btn"
+                aria-label="Send like to Alexandra"
+                style="flex: 1;"
+            >
+                Send Like
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="skip-match-btn"
+                aria-label="Skip this match"
+                style="flex: 1;"
+            >
+                Skip
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-accent"
+                id="review-profile-btn"
+                aria-label="Review full profile"
+                style="flex: 1;"
+            >
+                Review Full Profile
+            </button>
+        </div>
+
+        <!-- Ethical Transparency Disclosure -->
+        <details class="results-transparency" style="margin-top: 3rem; padding: 2rem; background: rgba(212, 175, 55, 0.05); border-radius: var(--radius-md);">
+            <summary style="font-family: var(--font-display); font-size: 1rem; color: var(--color-mediterranean-500); cursor: pointer;">
+                About This Match Score
+            </summary>
+
+            <div class="transparency-content" style="margin-top: 1.5rem; font-family: var(--font-body); font-size: 0.875rem; color: var(--color-parchment-900); line-height: 1.8;">
+                <p style="margin-bottom: 1rem;">
+                    <strong>How Your Score is Calculated:</strong> This compatibility score combines visual preference analysis (50%), psychometric assessment (35%), genetic compatibility (10%), and a serendipity factor (5%). The visual component uses transfer learning to predict attraction patterns. Psychometric alignment is based on the Cardinal Driver framework. Genetic scores reflect HLA complementarity research.
+                </p>
+
+                <p style="margin-bottom: 1rem;">
+                    <strong>Limitations:</strong> This score is a probabilistic estimate, not a guarantee. Human attraction is complex and multi-dimensional. Our model has been trained on diverse datasets but may not capture all cultural contexts or individual preferences.
+                </p>
+
+                <p style="margin-bottom: 1rem;">
+                    <strong>Your Privacy:</strong> Your genetic data is encrypted and never shared with other users. Visual calibration data is anonymized. You can delete all data at any time from Account Settings.
+                </p>
+
+                <p>
+                    <strong>Questions?</strong> Read our <a href="#" style="color: var(--color-mediterranean-500); text-decoration: underline;">Methodology Whitepaper</a> or contact our research team.
+                </p>
+            </div>
+        </details>
+    </div>
+</section>
+
+<!-- Initialization Script Template -->
+<script type="module">
+    // This script would be in a separate file in the final implementation
+
+    /*
+    // Results Data (from analysis module)
+    const resultsData = {
+        matchScore: 87,
+        confidence: 'high',
+        profile: {
+            id: 'user_12345',
+            name: 'Alexandra',
+            age: 28,
+            location: 'San Francisco, CA',
+            portraitUrl: '/assets/portraits/user_12345.jpg',
+            bio: 'Architect by day, painter by night. Passionate about sustainable design and finding beauty in unexpected places.'
+        },
+        factors: {
+            visual: 92,
+            psychometric: 84,
+            genetic: 78,
+            serendipity: 95
+        },
+        spark: 'high', // low, medium, high
+        cardinalDrivers: {
+            // Your scores vs Match scores
+            passion: { you: 80, match: 85 },
+            indulgence: { you: 65, match: 70 },
+            ambition: { you: 90, match: 85 },
+            serenity: { you: 60, match: 55 },
+            conviction: { you: 75, match: 80 },
+            yearning: { you: 70, match: 75 },
+            dignity: { you: 85, match: 90 }
+        },
+        hlaCompatibility: {
+            overall: 78,
+            loci: [
+                { name: 'HLA-A', compatibility: 78 },
+                { name: 'HLA-B', compatibility: 82 },
+                { name: 'HLA-C', compatibility: 74 }
+            ]
+        }
+    };
+
+    function initResults() {
+        const matchScoreValue = document.getElementById('match-score-value');
+        const profilePortrait = document.getElementById('profile-portrait');
+        const profileName = document.getElementById('profile-name-text');
+        const profileAge = document.getElementById('profile-age');
+        const profileLocation = document.getElementById('profile-location');
+        const sparkIndicator = document.getElementById('spark-indicator');
+
+        // Animate match score count-up
+        function animateScore(targetScore) {
+            const scoreNumber = matchScoreValue.querySelector('.score-number');
+            let currentScore = 0;
+            const increment = targetScore / 50; // 50 frames
+            const duration = 2000; // 2 seconds
+            const frameTime = duration / 50;
+
+            const counter = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(counter);
+                }
+                scoreNumber.textContent = Math.round(currentScore);
+            }, frameTime);
+        }
+
+        // Load profile data
+        function loadProfile() {
+            profilePortrait.src = resultsData.profile.portraitUrl;
+            profilePortrait.alt = `${resultsData.profile.name}'s profile portrait`;
+            profileName.textContent = resultsData.profile.name;
+            profileAge.textContent = resultsData.profile.age;
+            profileLocation.textContent = resultsData.profile.location;
+
+            // Update spark indicator
+            sparkIndicator.dataset.spark = resultsData.spark;
+            if (resultsData.spark === 'high') {
+                sparkIndicator.querySelector('.spark-label').textContent = 'High Chemistry';
+            } else if (resultsData.spark === 'medium') {
+                sparkIndicator.querySelector('.spark-label').textContent = 'Good Chemistry';
+            } else {
+                sparkIndicator.querySelector('.spark-label').textContent = 'Potential Chemistry';
+            }
+        }
+
+        // Update radar chart with actual data
+        function updateRadarChart() {
+            const drivers = resultsData.cardinalDrivers;
+
+            // Calculate polygon points based on driver scores
+            // This would involve trigonometry to position points on radar
+            // For brevity, using static points in HTML template
+        }
+
+        // Handle action buttons
+        function handleSendLike() {
+            // Send like to match
+            // Update UI with confirmation
+        }
+
+        function handleSkip() {
+            // Skip this match
+            // Load next match or return to queue
+        }
+
+        function handleReviewProfile() {
+            // Navigate to full profile view
+        }
+
+        // Event listeners
+        document.getElementById('send-like-btn').addEventListener('click', handleSendLike);
+        document.getElementById('skip-match-btn').addEventListener('click', handleSkip);
+        document.getElementById('review-profile-btn').addEventListener('click', handleReviewProfile);
+
+        // Initialize
+        loadProfile();
+        animateScore(resultsData.matchScore);
+        updateRadarChart();
+    }
+
+    // Start on load
+    document.addEventListener('DOMContentLoaded', initResults);
+    */
+</script>
+
+<style>
+    /* Additional module-specific styles */
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .results-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+    }
+
+    /* Match Score Display */
+    .results-match-score {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .match-score-value {
+        font-family: var(--font-display);
+        display: flex;
+        align-items: baseline;
+        gap: 0.25rem;
+    }
+
+    .score-number {
+        font-size: 6rem;
+        font-weight: 300;
+        color: var(--color-mediterranean-500);
+        line-height: 1;
+    }
+
+    .score-symbol {
+        font-size: 3rem;
+        color: var(--color-mediterranean-500);
+        opacity: 0.7;
+    }
+
+    .match-score-label {
+        margin-top: 0.5rem;
+        font-family: var(--font-body);
+        font-size: 1rem;
+        color: var(--color-parchment-900);
+        opacity: 0.8;
+    }
+
+    /* Match Profile Card */
+    .results-match-profile {
+        background: var(--color-parchment-100);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 2rem;
+        box-shadow: 0 4px 12px rgba(42, 78, 108, 0.1);
+    }
+
+    .profile-portrait-container {
+        position: relative;
+    }
+
+    .spark-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius-full);
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .spark-label {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-champagne-600);
+    }
+
+    .profile-name {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 400;
+        color: var(--color-mediterranean-500);
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-location {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        color: var(--color-parchment-900);
+        opacity: 0.7;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Factor Cards */
+    .factor-card {
+        background: rgba(212, 175, 55, 0.05);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .factor-card:hover {
+        border-color: rgba(212, 175, 55, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+
+    .factor-icon {
+        margin-bottom: 1rem;
+    }
+
+    .factor-label {
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        color: var(--color-parchment-900);
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+    }
+
+    .factor-score {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 500;
+        color: var(--color-mediterranean-500);
+        margin-bottom: 0.25rem;
+    }
+
+    .factor-weight {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        color: var(--color-parchment-900);
+        opacity: 0.6;
+    }
+
+    /* Radar Chart */
+    .cardinal-radar-chart {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .radar-chart {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Chromosome Map */
+    .results-chromosome-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .chromosome-visualization {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Transparency Disclosure */
+    .results-transparency summary {
+        list-style: none;
+    }
+
+    .results-transparency summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .results-transparency summary::after {
+        content: ' ▼';
+        font-size: 0.75rem;
+        margin-left: 0.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .results-transparency[open] summary::after {
+        transform: rotate(180deg);
+    }
+
+    /* Responsive Layout */
+    @media (max-width: 768px) {
+        .results-match-profile {
+            grid-template-columns: 1fr;
+        }
+
+        .score-number {
+            font-size: 4rem;
+        }
+
+        .score-symbol {
+            font-size: 2rem;
+        }
+
+        .tri-factor-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .results-actions {
+            flex-direction: column;
+        }
+
+        .radar-chart {
+            width: 100%;
+            height: auto;
+        }
+
+        .chromosome-visualization {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    /* Accessibility: Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+        .factor-card,
+        .results-transparency summary::after {
+            transition: none !important;
+        }
+
+        .factor-card:hover {
+            transform: none !important;
+        }
+    }
+</style>

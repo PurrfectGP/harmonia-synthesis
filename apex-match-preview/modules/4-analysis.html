@@ -1,0 +1,602 @@
+<!--
+    Harmonia Apex Match - Module 4: Analysis (The Labor Illusion Theater)
+
+    Spec Reference: README.md Section 6 - "The Labor Illusion Theater"
+    CSS Classes: css/5-modules.css (.module-analysis, .analysis-*)
+    Components: particles.js, dna-helix.js, radar-sweep.js
+
+    Research Applied:
+    - Loading skeleton accessibility (Adrian Roselli)
+    - ARIA live regions for dynamic status updates
+    - Animation performance (transform, opacity only)
+    - Labor illusion UX pattern (5-second staged reveal)
+    - Reduced motion media query support
+-->
+
+<section class="module-analysis" id="module-analysis" data-module="analysis" data-step="4" aria-labelledby="analysis-title">
+    <div class="analysis-theater">
+        <!-- Title (Hidden visually but available to screen readers) -->
+        <h1 class="sr-only" id="analysis-title">Analyzing Your Match Results</h1>
+
+        <!-- Analysis Stage Container -->
+        <div class="analysis-stage" role="status" aria-live="polite" aria-atomic="true">
+
+            <!-- Central Spotlight Area -->
+            <div class="analysis-spotlight" id="analysis-spotlight">
+
+                <!-- Layer 1: Visual Pattern Analysis (DNA Helix) -->
+                <div class="analysis-layer" id="layer-visual" data-layer="visual" data-stage="1" aria-hidden="true">
+                    <div class="layer-visual-content">
+                        <!-- DNA Helix Visualization -->
+                        <div class="dna-helix-container">
+                            <svg class="dna-helix" width="200" height="300" viewBox="0 0 200 300" aria-hidden="true">
+                                <!-- DNA double helix structure -->
+                                <g class="helix-strand-1">
+                                    <path d="M50 0 Q50 75 100 150 T50 300" stroke="var(--color-champagne-500)" stroke-width="3" fill="none" />
+                                </g>
+                                <g class="helix-strand-2">
+                                    <path d="M150 0 Q150 75 100 150 T150 300" stroke="var(--color-mediterranean-500)" stroke-width="3" fill="none" />
+                                </g>
+                                <!-- Base pairs (rungs) -->
+                                <g class="helix-rungs">
+                                    <line x1="50" y1="30" x2="150" y2="30" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                    <line x1="60" y1="60" x2="140" y2="60" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                    <line x1="70" y1="90" x2="130" y2="90" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                    <line x1="80" y1="120" x2="120" y2="120" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                    <line x1="90" y1="150" x2="110" y2="150" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                    <line x1="80" y1="180" x2="120" y2="180" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                    <line x1="70" y1="210" x2="130" y2="210" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                    <line x1="60" y1="240" x2="140" y2="240" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                    <line x1="50" y1="270" x2="150" y2="270" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" />
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="layer-label">Analyzing Visual Patterns</div>
+                    </div>
+                </div>
+
+                <!-- Layer 2: Psychometric Alignment (Radar Scan) -->
+                <div class="analysis-layer" id="layer-psychometric" data-layer="psychometric" data-stage="2" aria-hidden="true">
+                    <div class="layer-psychometric-content">
+                        <!-- Radar Sweep Visualization -->
+                        <div class="radar-container">
+                            <svg class="radar-sweep" width="250" height="250" viewBox="0 0 250 250" aria-hidden="true">
+                                <!-- Radar circles -->
+                                <circle cx="125" cy="125" r="100" stroke="var(--color-champagne-500)" stroke-width="1" fill="none" opacity="0.3" />
+                                <circle cx="125" cy="125" r="75" stroke="var(--color-champagne-500)" stroke-width="1" fill="none" opacity="0.3" />
+                                <circle cx="125" cy="125" r="50" stroke="var(--color-champagne-500)" stroke-width="1" fill="none" opacity="0.3" />
+                                <circle cx="125" cy="125" r="25" stroke="var(--color-champagne-500)" stroke-width="1" fill="none" opacity="0.3" />
+
+                                <!-- Radar sweep line -->
+                                <line
+                                    id="radar-sweep-line"
+                                    x1="125"
+                                    y1="125"
+                                    x2="125"
+                                    y2="25"
+                                    stroke="var(--color-mediterranean-500)"
+                                    stroke-width="2"
+                                    opacity="0.8"
+                                    style="transform-origin: 125px 125px;"
+                                />
+
+                                <!-- Cardinal Driver points -->
+                                <circle cx="125" cy="25" r="5" fill="var(--color-champagne-500)" opacity="0.8" />
+                                <circle cx="195" cy="75" r="5" fill="var(--color-champagne-500)" opacity="0.8" />
+                                <circle cx="210" cy="150" r="5" fill="var(--color-champagne-500)" opacity="0.8" />
+                                <circle cx="160" cy="210" r="5" fill="var(--color-champagne-500)" opacity="0.8" />
+                                <circle cx="90" cy="210" r="5" fill="var(--color-champagne-500)" opacity="0.8" />
+                                <circle cx="40" cy="150" r="5" fill="var(--color-champagne-500)" opacity="0.8" />
+                                <circle cx="55" cy="75" r="5" fill="var(--color-champagne-500)" opacity="0.8" />
+                            </svg>
+                        </div>
+                        <div class="layer-label">Computing Psychometric Alignment</div>
+                    </div>
+                </div>
+
+                <!-- Layer 3: Genetic Compatibility (Chromosome Map) -->
+                <div class="analysis-layer" id="layer-genetic" data-layer="genetic" data-stage="3" aria-hidden="true">
+                    <div class="layer-genetic-content">
+                        <!-- Chromosome Visualization -->
+                        <div class="chromosome-container">
+                            <svg class="chromosome-map" width="300" height="200" viewBox="0 0 300 200" aria-hidden="true">
+                                <!-- HLA Chromosome pair -->
+                                <g class="chromosome-pair">
+                                    <!-- Chromosome 1 -->
+                                    <rect x="80" y="50" width="30" height="100" rx="15" fill="var(--color-champagne-400)" opacity="0.6" />
+                                    <rect x="85" y="60" width="20" height="15" fill="var(--color-mediterranean-500)" opacity="0.8" />
+                                    <rect x="85" y="90" width="20" height="10" fill="var(--color-mediterranean-500)" opacity="0.8" />
+                                    <rect x="85" y="120" width="20" height="12" fill="var(--color-mediterranean-500)" opacity="0.8" />
+
+                                    <!-- Chromosome 2 -->
+                                    <rect x="190" y="50" width="30" height="100" rx="15" fill="var(--color-champagne-400)" opacity="0.6" />
+                                    <rect x="195" y="60" width="20" height="15" fill="var(--color-mediterranean-500)" opacity="0.8" />
+                                    <rect x="195" y="90" width="20" height="10" fill="var(--color-mediterranean-500)" opacity="0.8" />
+                                    <rect x="195" y="120" width="20" height="12" fill="var(--color-mediterranean-500)" opacity="0.8" />
+                                </g>
+
+                                <!-- Connection lines showing compatibility -->
+                                <line x1="110" y1="67.5" x2="190" y2="67.5" stroke="var(--color-champagne-500)" stroke-width="1" stroke-dasharray="3,3" opacity="0.4" />
+                                <line x1="110" y1="95" x2="190" y2="95" stroke="var(--color-champagne-500)" stroke-width="1" stroke-dasharray="3,3" opacity="0.4" />
+                                <line x1="110" y1="126" x2="190" y2="126" stroke="var(--color-champagne-500)" stroke-width="1" stroke-dasharray="3,3" opacity="0.4" />
+                            </svg>
+                        </div>
+                        <div class="layer-label">Processing Genetic Compatibility</div>
+                    </div>
+                </div>
+
+                <!-- Layer 4: Synthesis (Particle Convergence) -->
+                <div class="analysis-layer" id="layer-synthesis" data-layer="synthesis" data-stage="4" aria-hidden="true">
+                    <div class="layer-synthesis-content">
+                        <!-- Particle Synthesis Visualization -->
+                        <div class="synthesis-container">
+                            <div class="particle-field" id="synthesis-particles" aria-hidden="true">
+                                <!-- Particles generated dynamically by JavaScript -->
+                            </div>
+                            <!-- Central convergence point -->
+                            <div class="synthesis-core"></div>
+                        </div>
+                        <div class="layer-label">Synthesizing Final Results</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Progress Indicator (Bottom) -->
+            <div class="analysis-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Analysis progress">
+                <!-- Circular Progress Ring -->
+                <svg class="progress-ring" width="120" height="120" aria-hidden="true">
+                    <circle
+                        class="progress-ring-bg"
+                        cx="60"
+                        cy="60"
+                        r="50"
+                        stroke="rgba(212, 175, 55, 0.2)"
+                        stroke-width="8"
+                        fill="none"
+                    />
+                    <circle
+                        id="progress-ring-fill"
+                        class="progress-ring-fill"
+                        cx="60"
+                        cy="60"
+                        r="50"
+                        stroke="var(--color-champagne-500)"
+                        stroke-width="8"
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-dasharray="314.159"
+                        stroke-dashoffset="314.159"
+                        style="transform: rotate(-90deg); transform-origin: center;"
+                    />
+                </svg>
+
+                <!-- Percentage Text -->
+                <div class="progress-percentage" id="progress-percentage">0%</div>
+            </div>
+
+            <!-- Status Text (Screen Reader Announcement) -->
+            <div class="analysis-status-text" id="analysis-status" role="status" aria-live="assertive" aria-atomic="true">
+                Initializing analysis...
+            </div>
+
+        </div>
+
+        <!-- Background Particle Effect (Ambient) -->
+        <div class="analysis-ambient-particles" aria-hidden="true">
+            <!-- Gold dust particles floating in background -->
+        </div>
+    </div>
+</section>
+
+<!-- Initialization Script Template -->
+<script type="module">
+    // This script would be in a separate file in the final implementation
+
+    /*
+    // Analysis Theater Orchestration
+    const analysisStages = [
+        {
+            stage: 1,
+            layer: 'layer-visual',
+            duration: 1250, // 1.25 seconds
+            statusText: 'Analyzing visual patterns...',
+            animation: 'dna-rotate-3d'
+        },
+        {
+            stage: 2,
+            layer: 'layer-psychometric',
+            duration: 1250,
+            statusText: 'Computing psychometric alignment...',
+            animation: 'radar-scan'
+        },
+        {
+            stage: 3,
+            layer: 'layer-genetic',
+            duration: 1250,
+            statusText: 'Processing genetic compatibility...',
+            animation: 'chromosome-pulse'
+        },
+        {
+            stage: 4,
+            layer: 'layer-synthesis',
+            duration: 1250,
+            statusText: 'Synthesizing final results...',
+            animation: 'particle-convergence'
+        }
+    ];
+
+    function initAnalysis() {
+        const spotlight = document.getElementById('analysis-spotlight');
+        const statusText = document.getElementById('analysis-status');
+        const progressRingFill = document.getElementById('progress-ring-fill');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const progressBar = document.querySelector('.analysis-progress');
+
+        let currentStage = 0;
+        let totalDuration = analysisStages.reduce((sum, stage) => sum + stage.duration, 0);
+        let elapsedTime = 0;
+
+        // Update progress ring
+        function updateProgress(percentage) {
+            const circumference = 314.159; // 2 * PI * radius (50)
+            const offset = circumference - (percentage / 100) * circumference;
+
+            progressRingFill.style.strokeDashoffset = offset;
+            progressPercentage.textContent = `${Math.round(percentage)}%`;
+            progressBar.setAttribute('aria-valuenow', percentage);
+        }
+
+        // Activate layer with spotlight
+        function activateLayer(layerId, statusMessage) {
+            // Hide all layers
+            document.querySelectorAll('.analysis-layer').forEach(layer => {
+                layer.style.opacity = '0';
+                layer.style.transform = 'scale(0.8)';
+                layer.setAttribute('aria-hidden', 'true');
+            });
+
+            // Show active layer
+            const activeLayer = document.getElementById(layerId);
+            if (activeLayer) {
+                activeLayer.style.transition = 'all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)';
+                activeLayer.style.opacity = '1';
+                activeLayer.style.transform = 'scale(1)';
+                activeLayer.setAttribute('aria-hidden', 'false');
+
+                // Trigger layer-specific animation
+                const animationClass = activeLayer.dataset.layer;
+                activeLayer.classList.add(`animating-${animationClass}`);
+            }
+
+            // Update status text
+            statusText.textContent = statusMessage;
+        }
+
+        // Run staged analysis
+        function runAnalysis() {
+            if (currentStage >= analysisStages.length) {
+                completeAnalysis();
+                return;
+            }
+
+            const stage = analysisStages[currentStage];
+
+            // Activate this stage
+            activateLayer(stage.layer, stage.statusText);
+
+            // Increment progress
+            const stageProgress = ((currentStage + 1) / analysisStages.length) * 100;
+
+            // Animate progress over stage duration
+            let startTime = performance.now();
+
+            function animateProgress(timestamp) {
+                const elapsed = timestamp - startTime;
+                const progress = Math.min((elapsed / stage.duration) * (100 / analysisStages.length), 100 / analysisStages.length);
+                const totalProgress = (currentStage / analysisStages.length) * 100 + progress;
+
+                updateProgress(totalProgress);
+
+                if (elapsed < stage.duration) {
+                    requestAnimationFrame(animateProgress);
+                } else {
+                    // Move to next stage
+                    currentStage++;
+                    setTimeout(runAnalysis, 100);
+                }
+            }
+
+            requestAnimationFrame(animateProgress);
+        }
+
+        // Complete analysis and transition to results
+        function completeAnalysis() {
+            updateProgress(100);
+            statusText.textContent = 'Analysis complete. Preparing your results...';
+
+            // Transition to Module 5: Results after brief delay
+            setTimeout(() => {
+                // Navigate to results module
+            }, 1000);
+        }
+
+        // Ambient particle effect
+        function createAmbientParticles() {
+            const container = document.querySelector('.analysis-ambient-particles');
+            if (!container) return;
+
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'ambient-particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.animationDuration = `${5 + Math.random() * 5}s`;
+                container.appendChild(particle);
+            }
+        }
+
+        // DNA helix rotation animation
+        function animateDNAHelix() {
+            const helix = document.querySelector('.dna-helix');
+            if (helix) {
+                helix.style.animation = 'dna-rotate-y 4s linear infinite';
+            }
+        }
+
+        // Radar sweep animation
+        function animateRadarSweep() {
+            const radarLine = document.getElementById('radar-sweep-line');
+            if (radarLine) {
+                radarLine.style.animation = 'radar-sweep 2s linear infinite';
+            }
+        }
+
+        // Initialize
+        createAmbientParticles();
+        animateDNAHelix();
+        animateRadarSweep();
+
+        // Start analysis after brief delay
+        setTimeout(() => {
+            runAnalysis();
+        }, 500);
+    }
+
+    // Start on load
+    document.addEventListener('DOMContentLoaded', initAnalysis);
+    */
+</script>
+
+<style>
+    /* Additional module-specific styles */
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .analysis-theater {
+        position: relative;
+        min-height: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--color-parchment-100) 0%, var(--color-parchment-200) 100%);
+        padding: 3rem 2rem;
+        overflow: hidden;
+    }
+
+    .analysis-stage {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+    }
+
+    .analysis-spotlight {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .analysis-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+
+    .layer-label {
+        margin-top: 2rem;
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        color: var(--color-mediterranean-500);
+        text-align: center;
+    }
+
+    /* DNA Helix Animation */
+    .dna-helix {
+        animation: dna-rotate-y 4s linear infinite;
+    }
+
+    @keyframes dna-rotate-y {
+        from {
+            transform: rotateY(0deg);
+        }
+        to {
+            transform: rotateY(360deg);
+        }
+    }
+
+    /* Radar Sweep Animation */
+    @keyframes radar-sweep {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Synthesis Core Pulse */
+    .synthesis-core {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: radial-gradient(circle, var(--color-champagne-500) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: synthesis-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes synthesis-pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.5);
+            opacity: 0.5;
+        }
+    }
+
+    /* Progress Ring */
+    .analysis-progress {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .progress-ring-fill {
+        transition: stroke-dashoffset 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .progress-percentage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: var(--color-mediterranean-500);
+    }
+
+    /* Status Text */
+    .analysis-status-text {
+        margin-top: 1.5rem;
+        font-family: var(--font-body);
+        font-size: 1rem;
+        color: var(--color-parchment-900);
+        text-align: center;
+        opacity: 0.8;
+    }
+
+    /* Ambient Particles */
+    .analysis-ambient-particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .ambient-particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: var(--color-champagne-500);
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: ambient-float 10s ease-in-out infinite;
+    }
+
+    @keyframes ambient-float {
+        0%, 100% {
+            transform: translateY(0) translateX(0);
+        }
+        25% {
+            transform: translateY(-20px) translateX(10px);
+        }
+        50% {
+            transform: translateY(-10px) translateX(-10px);
+        }
+        75% {
+            transform: translateY(-30px) translateX(5px);
+        }
+    }
+
+    /* Particle Field for Synthesis */
+    .particle-field {
+        position: relative;
+        width: 300px;
+        height: 300px;
+    }
+
+    /* Accessibility: Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+        .dna-helix,
+        .ambient-particle,
+        .synthesis-core,
+        .progress-ring-fill {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        .analysis-layer {
+            transition: opacity 0.1s ease !important;
+        }
+    }
+
+    /* Responsive Layout */
+    @media (max-width: 768px) {
+        .analysis-spotlight {
+            height: 300px;
+        }
+
+        .dna-helix-container svg {
+            width: 150px;
+            height: 225px;
+        }
+
+        .radar-container svg {
+            width: 200px;
+            height: 200px;
+        }
+
+        .chromosome-container svg {
+            width: 250px;
+            height: 150px;
+        }
+
+        .layer-label {
+            font-size: 1rem;
+        }
+    }
+</style>

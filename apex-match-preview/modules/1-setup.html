@@ -1,0 +1,366 @@
+<!--
+    Harmonia Apex Match - Module 1: Setup (Biometric Ingestion & Onboarding)
+
+    Spec Reference: README.md Section 3 - "The Concierge Signup Flow"
+    CSS Classes: css/5-modules.css (.module-setup, .setup-*)
+    Components: floating-input.js, segmented-control.js, biometric-seal.js
+
+    Research Applied:
+    - Semantic HTML5 structure
+    - WCAG 2.2 accessible form labels
+    - Progressive disclosure pattern
+    - Data attributes for state management
+-->
+
+<section class="module-setup" id="module-setup" data-module="setup" data-step="1" aria-labelledby="setup-title">
+    <!-- Setup Card - "Concierge" Style -->
+    <div class="setup-card" role="main">
+        <!-- Title & Subtitle -->
+        <h1 class="setup-title" id="setup-title">The Harmonia Protocol</h1>
+        <p class="setup-subtitle">
+            A scientific approach to meaningful connection.
+            This rigorous process ensures high-quality matches based on visual preference, psychological resonance, and biological compatibility.
+        </p>
+
+        <!-- Progress Indicator - "Ink Well" Style -->
+        <div class="setup-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Setup progress">
+            <div class="setup-progress-fill" style="width: 0%;"></div>
+        </div>
+
+        <!-- Basic Information Form -->
+        <form id="setup-form" aria-label="Account setup form" data-form-section="basic-info">
+            <!-- Name Input (Floating Label) -->
+            <div id="input-name-container" aria-label="Full name field"></div>
+
+            <!-- Email Input (Floating Label) -->
+            <div id="input-email-container" aria-label="Email address field"></div>
+
+            <!-- Password Input (Floating Label) -->
+            <div id="input-password-container" aria-label="Password field"></div>
+
+            <!-- Gender Selection (Segmented Control) -->
+            <div class="setup-field-group" style="margin: 2.5rem 0;">
+                <label class="setup-seal-label" for="gender-control-container">
+                    Gender
+                </label>
+                <div id="gender-control-container" aria-label="Gender selection"></div>
+            </div>
+
+            <!-- Seeking Preference (Segmented Control) -->
+            <div class="setup-field-group" style="margin: 2.5rem 0;">
+                <label class="setup-seal-label" for="seeking-control-container">
+                    Seeking
+                </label>
+                <div id="seeking-control-container" aria-label="Seeking preference"></div>
+            </div>
+        </form>
+
+        <!-- Mandatory Five Inquiry Section -->
+        <section class="setup-mandatory-inquiry" data-section="mandatory-five" aria-labelledby="inquiry-title">
+            <h2 class="setup-inquiry-title" id="inquiry-title">The Mandatory Five</h2>
+            <p class="setup-subtitle" style="margin-bottom: 2rem;">
+                Answer these five foundational questions to establish your baseline psychometric profile.
+            </p>
+
+            <!-- Question Cards Container -->
+            <div id="mandatory-questions-container" role="list" aria-label="Five mandatory questions">
+                <!-- Questions will be dynamically inserted here -->
+                <!-- Each question card structure:
+                <article class="setup-question-card" role="listitem" data-question="1">
+                    <h3 class="setup-question-text">Question text here?</h3>
+                    <div class="setup-question-choices">
+                        <button class="assessment-choice-btn" data-choice="A">Choice A</button>
+                        <button class="assessment-choice-btn" data-choice="B">Choice B</button>
+                    </div>
+                </article>
+                -->
+            </div>
+        </section>
+
+        <!-- Biometric Ingestion Section -->
+        <section class="setup-biometric-seal-container" data-section="biometric" aria-labelledby="biometric-title">
+            <h2 class="setup-inquiry-title" id="biometric-title">Biometric Ingestion</h2>
+            <p class="setup-subtitle" style="margin-bottom: 2rem;">
+                Upload your genetic data (23andMe, Ancestry) or request a testing kit.
+                HLA compatibility accounts for 10% of your match score.
+            </p>
+
+            <label class="setup-seal-label" for="biometric-seal-element">
+                DNA Data Upload
+            </label>
+
+            <!-- Biometric Seal Component -->
+            <div id="biometric-seal-element" aria-label="DNA file upload area"></div>
+
+            <!-- Alternative: Request Kit Button -->
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="request-kit-btn"
+                aria-label="Request DNA testing kit"
+                style="margin-top: 1.5rem; width: 100%;"
+            >
+                Request DNA Testing Kit
+            </button>
+
+            <!-- Kit Request Status -->
+            <div id="kit-request-status" role="status" aria-live="polite" style="margin-top: 1rem; display: none;">
+                <!-- Status message will be inserted here -->
+            </div>
+        </section>
+
+        <!-- Continue Button -->
+        <button
+            type="submit"
+            class="btn btn-primary"
+            id="continue-to-calibration"
+            aria-label="Continue to calibration"
+            style="width: 100%; margin-top: 3rem;"
+            disabled
+        >
+            Continue to Calibration
+        </button>
+    </div>
+</section>
+
+<!-- Template: Mandatory Question Card -->
+<template id="question-card-template">
+    <article class="setup-question-card" role="listitem" data-question="">
+        <h3 class="setup-question-text"></h3>
+        <div class="setup-question-choices">
+            <button class="assessment-choice-btn" data-choice="A"></button>
+            <button class="assessment-choice-btn" data-choice="B"></button>
+        </div>
+    </article>
+</template>
+
+<!-- Initialization Script Template -->
+<script type="module">
+    // This script would be in a separate file in the final implementation
+    // Included here to show component initialization
+
+    /*
+    // Initialize Floating Inputs
+    const nameInput = new FloatingInput('#input-name-container', {
+        label: 'Full Name',
+        value: '',
+        required: true,
+        autocomplete: 'name',
+        onChange: validateForm
+    });
+
+    const emailInput = new FloatingInput('#input-email-container', {
+        type: 'email',
+        label: 'Email Address',
+        value: '',
+        required: true,
+        pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$',
+        autocomplete: 'email',
+        onChange: validateForm
+    });
+
+    const passwordInput = new FloatingInput('#input-password-container', {
+        type: 'password',
+        label: 'Password',
+        value: '',
+        required: true,
+        autocomplete: 'new-password',
+        onValidate: (value) => {
+            if (value.length < 8) return 'Password must be at least 8 characters';
+            return true;
+        },
+        onChange: validateForm
+    });
+
+    // Initialize Gender Segmented Control
+    const genderControl = new SegmentedControl('#gender-control-container', {
+        segments: ['Male', 'Female', 'Non-Binary'],
+        selected: 0,
+        name: 'gender',
+        onChange: validateForm
+    });
+
+    // Initialize Seeking Segmented Control
+    const seekingControl = new SegmentedControl('#seeking-control-container', {
+        segments: ['Men', 'Women', 'Everyone'],
+        selected: 0,
+        name: 'seeking',
+        onChange: validateForm
+    });
+
+    // Initialize Biometric Seal
+    const biometricSeal = new BiometricSeal('#biometric-seal-element', {
+        size: 200,
+        label: 'Upload Biometric',
+        accept: '.txt,.csv,.zip',
+        showProgress: true,
+        onUpload: handleBiometricUpload
+    });
+
+    // Mandatory Questions Data
+    const mandatoryQuestions = [
+        {
+            id: 1,
+            text: 'When facing a social gathering, do you typically feel:',
+            choices: {
+                A: 'Energized by the prospect of meeting new people',
+                B: 'Drained and prefer quiet reflection'
+            },
+            category: 'Social Battery'
+        },
+        {
+            id: 2,
+            text: 'In conflict situations, do you tend to:',
+            choices: {
+                A: 'Address issues directly and immediately',
+                B: 'Reflect privately before engaging'
+            },
+            category: 'Conflict Style'
+        },
+        {
+            id: 3,
+            text: 'Your ideal weekend involves:',
+            choices: {
+                A: 'Pursuing ambitious goals and productivity',
+                B: 'Restorative activities and leisure'
+            },
+            category: 'Ambition'
+        },
+        {
+            id: 4,
+            text: 'When making important decisions, you prioritize:',
+            choices: {
+                A: 'Logic and objective analysis',
+                B: 'Intuition and emotional intelligence'
+            },
+            category: 'Decision Making'
+        },
+        {
+            id: 5,
+            text: 'In relationships, you value most:',
+            choices: {
+                A: 'Deep emotional intimacy and vulnerability',
+                B: 'Intellectual connection and shared interests'
+            },
+            category: 'Connection Type'
+        }
+    ];
+
+    // Load mandatory questions dynamically
+    function loadMandatoryQuestions() {
+        const container = document.getElementById('mandatory-questions-container');
+        const template = document.getElementById('question-card-template');
+
+        mandatoryQuestions.forEach(question => {
+            const clone = template.content.cloneNode(true);
+
+            const card = clone.querySelector('.setup-question-card');
+            card.dataset.question = question.id;
+
+            const questionText = clone.querySelector('.setup-question-text');
+            questionText.textContent = question.text;
+
+            const buttons = clone.querySelectorAll('.assessment-choice-btn');
+            buttons[0].textContent = question.choices.A;
+            buttons[0].dataset.choice = 'A';
+            buttons[1].textContent = question.choices.B;
+            buttons[1].dataset.choice = 'B';
+
+            // Add click handlers
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => handleQuestionAnswer(question.id, btn.dataset.choice));
+            });
+
+            container.appendChild(clone);
+        });
+    }
+
+    function handleQuestionAnswer(questionId, choice) {
+        // Store answer
+        // Update progress
+        // Move to next question or enable continue button
+    }
+
+    function handleBiometricUpload(file, progress) {
+        if (progress === 100) {
+            // File uploaded successfully
+            validateForm();
+        }
+    }
+
+    function handleRequestKit() {
+        // Check gender equilibrium
+        // Show waitlist modal if needed
+        // Update status
+    }
+
+    function validateForm() {
+        // Enable continue button when all fields are valid
+        const allValid = nameInput.validate() &&
+                        emailInput.validate() &&
+                        passwordInput.validate();
+
+        document.getElementById('continue-to-calibration').disabled = !allValid;
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMandatoryQuestions();
+
+        document.getElementById('request-kit-btn').addEventListener('click', handleRequestKit);
+        document.getElementById('continue-to-calibration').addEventListener('click', (e) => {
+            e.preventDefault();
+            // Navigate to Module 2: Calibration
+        });
+    });
+    */
+</script>
+
+<style>
+    /* Module-specific styles (would be in css/5-modules.css in final implementation) */
+
+    .setup-question-card {
+        background: var(--color-parchment-100);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: var(--radius-md);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+
+    .setup-question-card:hover {
+        border-color: rgba(212, 175, 55, 0.4);
+        box-shadow: 0 4px 12px rgba(42, 78, 108, 0.1);
+    }
+
+    .setup-question-text {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: var(--color-parchment-900);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .setup-question-choices {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .setup-field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .setup-question-card {
+            padding: 1.5rem;
+        }
+
+        .setup-question-text {
+            font-size: 1.125rem;
+        }
+    }
+</style>
