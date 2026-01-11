@@ -5206,21 +5206,32 @@ async function loadQuestions() {
 
         const data = await response.json();
 
-        // Select 2 random questions from each block
+        // FIXED QUESTIONS FOR TESTING - same questions for everyone
+        // Later will expand to randomization and more questions per block
+        const fixedQuestionIds = {
+            "Block 1: Social & Interpersonal": "social_3",     // The Stranger's Story
+            "Block 2: Stress & Problem-Solving": "stress_2",   // The Unexpected Expense
+            "Block 3: Decision-Making & Values": "values_1",   // The Found Wallet
+            "Block 4: Conflict & Disagreement": "conflict_2",  // The Customer Service Call
+            "Block 5: Time & Priorities": "time_2",            // The Friend Crisis
+            "Block 6: Growth & Change": "growth_2"             // The Mistake Made
+        };
+
+        // Select the fixed question from each block
         QUESTIONS = {};
         for (const [blockName, questions] of Object.entries(data.questions)) {
-            const shuffled = [...questions];
-            // Fisher-Yates shuffle
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            const selectedId = fixedQuestionIds[blockName];
+            const selectedQuestion = questions.find(q => q.id === selectedId);
+            if (selectedQuestion) {
+                QUESTIONS[blockName] = [selectedQuestion];
+            } else {
+                console.warn(`⚠️ Question ${selectedId} not found in ${blockName}, using first question`);
+                QUESTIONS[blockName] = [questions[0]];
             }
-            // Select only first 2 questions
-            QUESTIONS[blockName] = shuffled.slice(0, 2);
         }
 
         QUESTIONS_LOADED = true;
-        console.log('✅ Questions loaded - 2 per block selected randomly');
+        console.log('✅ Questions loaded - FIXED questions for testing (1 per block)');
         return true;
 
     } catch (error) {
