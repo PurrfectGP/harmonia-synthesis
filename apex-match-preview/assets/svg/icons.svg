@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <defs>
+    <!-- Cardinal Driver Icons - Sketch Style -->
+
+    <!-- Passion (Lust) - Burning Heart -->
+    <symbol id="icon-passion" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+        d="M12 8 Q14 10 12 14 Q10 10 12 8 Z" opacity="0.6"/>
+    </symbol>
+
+    <!-- Indulgence (Gluttony) - Wine Chalice -->
+    <symbol id="icon-indulgence" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        d="M6 2h12M12 2v2M7 4h10l-2 8H9L7 4zM12 12v8M9 20h6"/>
+      <ellipse cx="12" cy="8" rx="4" ry="2" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+    </symbol>
+
+    <!-- Ambition (Greed) - Crown -->
+    <symbol id="icon-ambition" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        d="M3 18h18M4 14l3-6 3 3 2-8 2 8 3-3 3 6H4z"/>
+      <circle cx="12" cy="6" r="1.5" fill="currentColor"/>
+    </symbol>
+
+    <!-- Serenity (Sloth) - Still Water -->
+    <symbol id="icon-serenity" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+        d="M3 12 Q6 10 9 12 T15 12 T21 12"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"
+        d="M3 15 Q6 13 9 15 T15 15 T21 15"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"
+        d="M3 18 Q6 16 9 18 T15 18 T21 18"/>
+    </symbol>
+
+    <!-- Conviction (Wrath) - Sword -->
+    <symbol id="icon-conviction" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        d="M3 21 L21 3M5 19 L19 5M10 2 L12 4 L10 6M18 10 L20 12 L18 14"/>
+      <rect x="7" y="17" width="4" height="2" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </symbol>
+
+    <!-- Yearning (Envy) - Eye -->
+    <symbol id="icon-yearning" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+        d="M2 12 Q2 6 12 6 T22 12 Q22 18 12 18 T2 12 Z"/>
+      <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+    </symbol>
+
+    <!-- Dignity (Pride) - Peacock Feather -->
+    <symbol id="icon-dignity" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+        d="M12 20 L12 4"/>
+      <ellipse cx="12" cy="6" rx="6" ry="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="12" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="12" cy="6" r="0.8" fill="currentColor"/>
+    </symbol>
+
+    <!-- Upload Icon -->
+    <symbol id="icon-upload" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        d="M12 15V3m0 0L7 8m5-5l5 5M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4"/>
+    </symbol>
+
+  </defs>
+</svg>
