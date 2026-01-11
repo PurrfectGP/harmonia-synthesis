@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia Apex Match - Professional Full-Page Example</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Files (in correct order) -->
+    <link rel="stylesheet" href="css/1-variables.css">
+    <link rel="stylesheet" href="css/2-reset.css">
+    <link rel="stylesheet" href="css/3-base.css">
+    <link rel="stylesheet" href="css/4-layout.css">
+
+    <style>
+        /* Example-specific styles for demonstration */
+        .example-section {
+            border-bottom: 2px solid var(--parchment-200);
+            padding: var(--space-16) 0;
+        }
+
+        .example-section:last-child {
+            border-bottom: none;
+        }
+
+        .example-title {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            color: var(--mediterranean-500);
+            margin-bottom: var(--space-6);
+            text-align: center;
+        }
+
+        .example-description {
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            color: var(--parchment-900);
+            max-width: 600px;
+            margin: 0 auto var(--space-8);
+            text-align: center;
+        }
+
+        /* Floating Label Input Wrapper */
+        .input-wrapper {
+            position: relative;
+            margin: var(--space-6) 0;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: var(--space-3) 0;
+            border: none;
+            border-bottom: 1px solid var(--parchment-200);
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            color: var(--parchment-900);
+            background: transparent;
+            transition: border-color var(--transition-base);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-bottom-color: var(--mediterranean-500);
+        }
+
+        .input-wrapper label {
+            position: absolute;
+            left: 0;
+            top: var(--space-3);
+            color: var(--mediterranean-500);
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-medium);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus ~ label,
+        .input-wrapper input:not(:placeholder-shown) ~ label {
+            top: -1rem;
+            font-size: var(--text-xs);
+            color: var(--mediterranean-500);
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: var(--tracking-wide);
+            text-transform: uppercase;
+        }
+
+        /* Segmented Control */
+        .segmented-control {
+            position: relative;
+            display: inline-flex;
+            background: var(--parchment-100);
+            border-radius: 999px;
+            padding: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .segmented-control input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .segmented-control label {
+            position: relative;
+            padding: var(--space-3) var(--space-8);
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: var(--font-weight-medium);
+            color: var(--parchment-900);
+            transition: color var(--transition-base);
+            z-index: 1;
+            user-select: none;
+        }
+
+        .segmented-control .slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: var(--champagne-400);
+            border-radius: 999px;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: var(--shadow-base);
+        }
+
+        .segmented-control input:nth-of-type(2):checked ~ .slider {
+            transform: translateX(100%);
+        }
+
+        /* Biometric Seal (Circular Upload) */
+        .biometric-seal {
+            width: 200px;
+            height: 200px;
+            border: 3px dashed var(--mediterranean-500);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            position: relative;
+        }
+
+        .biometric-seal:hover {
+            border-color: var(--champagne-400);
+            border-style: solid;
+            box-shadow: var(--shadow-spark);
+        }
+
+        .biometric-seal svg {
+            width: 80px;
+            height: 80px;
+            stroke: var(--mediterranean-500);
+            fill: none;
+            stroke-width: 2;
+            transition: all var(--transition-base);
+        }
+
+        .biometric-seal:hover svg {
+            stroke: var(--champagne-400);
+            transform: scale(1.1);
+        }
+
+        .biometric-seal input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .biometric-seal-text {
+            margin-top: var(--space-3);
+            font-family: var(--font-body);
+            font-size: var(--text-sm);
+            color: var(--mediterranean-500);
+            font-weight: var(--font-weight-medium);
+        }
+
+        /* Portrait Frame */
+        .portrait-frame {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 3/4;
+            position: relative;
+            border: 2px solid var(--champagne-400);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            background: var(--parchment-100);
+        }
+
+        .portrait-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Assessment Card */
+        .assessment-card {
+            width: 100%;
+            max-width: 640px;
+            min-height: 400px;
+            background-color: var(--parchment-50);
+            border: 1px solid rgba(var(--champagne-400-rgb), 0.3);
+            border-radius: var(--radius-xl);
+            padding: var(--space-10);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .assessment-card h2 {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            color: var(--parchment-900);
+            margin-bottom: var(--space-6);
+        }
+
+        .choice-buttons {
+            display: flex;
+            gap: var(--space-4);
+            margin-top: var(--space-8);
+        }
+
+        .choice-button {
+            padding: var(--space-4) var(--space-8);
+            background: var(--parchment-100);
+            border: 2px solid var(--mediterranean-500);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-weight: var(--font-weight-semibold);
+            color: var(--mediterranean-500);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .choice-button:hover {
+            background: var(--mediterranean-500);
+            color: var(--parchment-50);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================================================
+         EXAMPLE 1: FULL-PAGE CENTERED SETUP (MODULE 1)
+         ================================================== -->
+    <div class="layout-full-center example-section">
+        <div class="setup-form">
+            <h1 class="example-title">The Concierge Signup</h1>
+            <p class="example-description">
+                Centered single-column form (max-width 480px).
+                Inputs are prefilled and use floating label animation.
+            </p>
+
+            <!-- Prefilled Input: Name -->
+            <div class="input-wrapper">
+                <input type="text" id="name" placeholder=" " value="Felix Patel" required>
+                <label for="name">Full Name</label>
+            </div>
+
+            <!-- Prefilled Input: Email -->
+            <div class="input-wrapper">
+                <input type="email" id="email" placeholder=" " value="felix.patel@harmonia.app" required>
+                <label for="email">Email Address</label>
+            </div>
+
+            <!-- Prefilled Input: Password -->
+            <div class="input-wrapper">
+                <input type="password" id="password" placeholder=" " value="SecurePass123" required>
+                <label for="password">Password</label>
+            </div>
+
+            <!-- Segmented Control: Gender Selection -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <p style="font-family: var(--font-body); font-size: var(--text-sm); color: var(--mediterranean-500); margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Gender</p>
+                <div class="segmented-control">
+                    <input type="radio" name="gender" id="male" checked>
+                    <label for="male">Male</label>
+
+                    <input type="radio" name="gender" id="female">
+                    <label for="female">Female</label>
+
+                    <div class="slider"></div>
+                </div>
+            </div>
+
+            <!-- Biometric Seal (Circular Upload) -->
+            <div style="margin: 3rem 0; text-align: center;">
+                <p style="font-family: var(--font-body); font-size: var(--text-sm); color: var(--mediterranean-500); margin-bottom: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Biometric Data</p>
+                <div class="biometric-seal" style="margin: 0 auto;">
+                    <input type="file" accept=".txt,.zip" aria-label="Upload DNA file">
+                    <!-- DNA Helix Icon (SVG) -->
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 2c0 1.5 1.5 3 3 3s3-1.5 3-3M4 22c0-1.5 1.5-3 3-3s3 1.5 3 3M14 2c0 1.5 1.5 3 3 3s3-1.5 3-3M14 22c0-1.5 1.5-3 3-3s3 1.5 3 3M4 8c0 1 1 2 2 2s2-1 2-2M4 16c0 1 1 2 2 2s2-1 2-2M16 8c0 1 1 2 2 2s2-1 2-2M16 16c0 1 1 2 2 2s2-1 2-2M7 5c2 2 9 2 11 0M7 19c2-2 9-2 11 0M7 8c2 2 9 2 11 0M7 16c2-2 9-2 11 0"/>
+                    </svg>
+                    <div class="biometric-seal-text">Drop 23andMe File</div>
+                </div>
+            </div>
+
+            <!-- Primary Button -->
+            <button class="btn-primary" style="width: 100%; margin-top: 2rem;">
+                Continue to Calibration
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================================================
+         EXAMPLE 2: CALIBRATION - PORTRAIT GALLERY (MODULE 2)
+         Full-page centered with portrait frame
+         ================================================== -->
+    <div class="layout-calibration example-section">
+        <h1 class="example-title">The Portrait Gallery</h1>
+        <p class="example-description">
+            Full-page centered layout with gold-framed portrait (3:4 aspect ratio).
+            Slider beneath for rating (1-5 Likert scale).
+        </p>
+
+        <!-- Portrait Frame -->
+        <div class="portrait-frame">
+            <!-- Placeholder - in real app, this would be calibration image -->
+            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #f5f0e6 0%, #e6ddd0 100%); display: flex; align-items: center; justify-content: center;">
+                <p style="font-family: var(--font-display); font-size: var(--text-4xl); color: var(--mediterranean-500);">
+                    Calibration Profile
+                </p>
+            </div>
+        </div>
+
+        <!-- Rating Slider Container -->
+        <div class="slider-container" style="margin-top: 2rem;">
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <span style="font-family: var(--font-body); font-size: var(--text-lg); color: var(--mediterranean-500); font-weight: 600;">
+                    Rating: <span id="rating-value">3</span> - Potential
+                </span>
+            </div>
+
+            <input
+                type="range"
+                min="1"
+                max="5"
+                value="3"
+                step="1"
+                id="rating-slider"
+                style="
+                    width: 100%;
+                    height: 8px;
+                    background: linear-gradient(to right, #2a4e6c 0%, #2a4e6c 50%, #d4af37 50%, #d4af37 100%);
+                    border-radius: 999px;
+                    outline: none;
+                    -webkit-appearance: none;
+                "
+            >
+
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-family: var(--font-body); font-size: var(--text-xs); color: var(--parchment-900);">
+                <span>1 - Indifferent</span>
+                <span>3 - Potential</span>
+                <span>5 - Magnetic</span>
+            </div>
+        </div>
+
+        <button class="btn-accent" style="margin-top: 2rem;">
+            Next Profile →
+        </button>
+    </div>
+
+    <!-- ==================================================
+         EXAMPLE 3: ASSESSMENT - CARD STACK (MODULE 3)
+         Full-page centered with assessment card
+         ================================================== -->
+    <div class="layout-assessment example-section">
+        <h1 class="example-title">The Inquiry Deck</h1>
+        <p class="example-description">
+            Centered card for binary choice questions (A vs B).
+            Text dissolves into gold particles on selection.
+        </p>
+
+        <div class="assessment-card">
+            <h2>For Serenity (Repose)</h2>
+            <p style="font-family: var(--font-display); font-size: var(--text-xl); color: var(--parchment-900); margin: 2rem 0; line-height: 1.6;">
+                Do you find regeneration in <strong>(A) Motion and Activity</strong> or <strong>(B) Stillness and Silence</strong>?
+            </p>
+
+            <div class="choice-buttons">
+                <button class="choice-button" data-choice="A">
+                    (A) Motion & Activity
+                </button>
+                <button class="choice-button" data-choice="B">
+                    (B) Stillness & Silence
+                </button>
+            </div>
+        </div>
+
+        <!-- Vertical Progress Tube (Fixed Right) -->
+        <div class="progress-tube">
+            <div class="progress-tube-fill" style="height: 42%; /* 3 of 7 questions answered */"></div>
+        </div>
+    </div>
+
+    <!-- ==================================================
+         EXAMPLE 4: FULL-PAGE GRID CENTER
+         Demonstrates alternative centering approach
+         ================================================== -->
+    <div class="layout-grid-center example-section">
+        <div style="max-width: 640px; text-align: center;">
+            <h1 class="example-title">Grid Place-Items Center</h1>
+            <p class="example-description">
+                Alternative full-page centering using CSS Grid's <code>place-items: center</code>.
+                Most concise modern approach (2025).
+            </p>
+
+            <div class="glass-panel" style="padding: 3rem; margin-top: 2rem;">
+                <h3 style="font-family: var(--font-display); font-size: var(--text-2xl); margin-bottom: 1rem;">
+                    Glassmorphism Panel
+                </h3>
+                <p style="font-family: var(--font-body); font-size: var(--text-base); line-height: 1.6;">
+                    This demonstrates the vellum/lens glass effect with backdrop blur,
+                    blue-tinted shadows, and gold champagne borders.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================================================
+         EXAMPLE 5: RESULTS LAYOUT
+         Grid layout for charts
+         ================================================== -->
+    <div class="layout-results example-section">
+        <div class="results-container">
+            <h1 class="example-title">The Compatibility Report</h1>
+            <p class="example-description">
+                Grid layout with side-by-side charts on desktop, stacked on mobile.
+            </p>
+
+            <div class="results-grid">
+                <!-- Donut Chart Placeholder -->
+                <div class="chart-container">
+                    <h3 style="font-family: var(--font-display); font-size: var(--text-xl); margin-bottom: 2rem; text-align: center;">
+                        Match Score Breakdown
+                    </h3>
+                    <div style="text-align: center;">
+                        <canvas id="donutChart" width="300" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Radar Chart Placeholder -->
+                <div class="chart-container">
+                    <h3 style="font-family: var(--font-display); font-size: var(--text-xl); margin-bottom: 2rem; text-align: center;">
+                        Psychometric Compass
+                    </h3>
+                    <div style="text-align: center;">
+                        <canvas id="radarChart" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-accent" style="display: block; margin: 3rem auto 0; padding: 1rem 3rem;">
+                ⚡ Chemical Spark Detected
+            </button>
+        </div>
+    </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        // Slider value update
+        const slider = document.getElementById('rating-slider');
+        const ratingValue = document.getElementById('rating-value');
+        const labels = ['Indifferent', 'Indifferent', 'Potential', 'Magnetic', 'Magnetic'];
+
+        slider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            ratingValue.textContent = `${value} - ${labels[value - 1]}`;
+        });
+
+        // Donut Chart
+        const donutCtx = document.getElementById('donutChart').getContext('2d');
+        new Chart(donutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Visual (50%)', 'Psychometric (35%)', 'Genetic (10%)', 'Serendipity (5%)'],
+                datasets: [{
+                    data: [50, 35, 10, 5],
+                    backgroundColor: [
+                        '#2a4e6c', // Mediterranean Blue
+                        '#8b0000', // Deep Burgundy
+                        '#d4af37', // Gold Champagne
+                        'rgba(255, 255, 255, 0.3)' // White/Void
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: 'DM Sans',
+                                size: 12
+                            },
+                            padding: 15
+                        }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // Radar Chart
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Passion', 'Indulgence', 'Ambition', 'Serenity', 'Conviction', 'Yearning', 'Dignity'],
+                datasets: [{
+                    label: 'You',
+                    data: [5, 3, 4, 3, 4, 2, 5],
+                    backgroundColor: 'rgba(42, 78, 108, 0.2)',
+                    borderColor: '#2a4e6c',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#2a4e6c',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#2a4e6c'
+                }, {
+                    label: 'Match',
+                    data: [4, 4, 3, 5, 3, 3, 4],
+                    backgroundColor: 'rgba(139, 0, 0, 0.2)',
+                    borderColor: '#8b0000',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#8b0000',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#8b0000'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                family: 'DM Sans',
+                                size: 10
+                            }
+                        },
+                        pointLabels: {
+                            font: {
+                                family: 'DM Sans',
+                                size: 12,
+                                weight: '600'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(212, 175, 55, 0.2)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: 'DM Sans',
+                                size: 12
+                            },
+                            padding: 15
+                        }
+                    }
+                }
+            }
+        });
+
+        // Choice button interactions
+        document.querySelectorAll('.choice-button').forEach(button => {
+            button.addEventListener('click', () => {
+                alert(`You selected: ${button.dataset.choice}`);
+                // In real app, this would trigger gold particle animation
+            });
+        });
+    </script>
+
+</body>
+</html>
