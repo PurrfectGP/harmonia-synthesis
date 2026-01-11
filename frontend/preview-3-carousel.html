@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Design 3: CAROUSEL - Mobile Swipe</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #FAF6F1; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.carousel-container { max-width: 500px; width: 100%; }
+.card-wrapper { position: relative; height: 600px; perspective: 1000px; }
+.card { position: absolute; width: 100%; height: 100%; background: white; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); padding: 50px 40px; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); opacity: 0; transform: translateX(100%) scale(0.8); }
+.card.active { opacity: 1; transform: translateX(0) scale(1); z-index: 10; }
+.card.prev { transform: translateX(-100%) scale(0.8); opacity: 0; }
+h1 { font-size: 2.5rem; color: #722F37; text-align: center; margin-bottom: 30px; }
+input, select, textarea { width: 100%; padding: 16px; margin-bottom: 20px; border: 2px solid #E8C97A; border-radius: 12px; font-size: 1rem; }
+textarea { min-height: 150px; resize: vertical; }
+.btn { width: 100%; padding: 18px; background: #722F37; color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; margin-top: 20px; }
+.btn:hover { background: #5C1A1B; }
+.btn:disabled { opacity: 0.5; }
+.dots { display: flex; gap: 10px; justify-content: center; margin-top: 30px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: #ccc; transition: all 0.3s; }
+.dot.active { background: #D4A853; width: 40px; border-radius: 6px; }
+.q-label { display: inline-block; background: #D4A853; color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 20px; }
+.q-title { font-size: 1.8rem; color: #722F37; margin-bottom: 15px; }
+.progress-text { text-align: center; color: #D4A853; font-weight: 600; margin-bottom: 20px; }
+</style></head><body>
+<div class="carousel-container">
+<div class="card-wrapper">
+<div class="card active" data-step="0">
+<h1>Harmonia</h1>
+<input type="text" id="na" placeholder="Your Name">
+<input type="text" id="nb" placeholder="Partner's Name">
+<select id="ga"><option>Male</option><option>Female</option><option>Other</option></select>
+<select id="gb"><option>Male</option><option>Female</option><option>Other</option></select>
+<button class="btn" onclick="nextCard()">Start →</button>
+</div>
+<div class="card" data-step="1">
+<div class="progress-text" id="prog">Question 1 of 6</div>
+<span class="q-label" id="ql">Q1</span>
+<h2 class="q-title" id="qt">The Stranger's Story</h2>
+<p id="qp" style="margin-bottom: 20px; line-height: 1.6;">At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?</p>
+<textarea id="ans" placeholder="Your response..."></textarea>
+<div id="wc" style="text-align: right; font-size: 0.9rem; margin-bottom: 10px;">0 words</div>
+<button class="btn" id="nextBtn" onclick="nextCard()" disabled>Next →</button>
+</div>
+<div class="card" data-step="2">
+<div style="text-align: center; padding: 40px 0;">
+<div style="width: 120px; height: 120px; border: 8px solid #D4A853; border-top-color: transparent; border-radius: 50%; margin: 0 auto 40px; animation: spin 1s linear infinite;"></div>
+<h2 style="color: #722F37; font-size: 2rem; margin-bottom: 20px;">Analyzing...</h2>
+<p id="status" style="color: #666;">Processing...</p>
+<p id="pct" style="color: #D4A853; font-weight: 600; margin-top: 10px;">0%</p>
+</div>
+</div>
+<div class="card" data-step="3">
+<h1 style="font-size: 2rem; margin-bottom: 40px;">Results</h1>
+<div style="text-align: center;">
+<div style="font-size: 6rem; color: #722F37; font-weight: 700; line-height: 1;">87<span style="font-size: 3rem;">%</span></div>
+<div style="margin: 20px 0; color: #D4A853; font-weight: 600;">Excellent Match</div>
+<button class="btn" style="margin-top: 40px;">Download Report</button>
+</div>
+</div>
+</div>
+<div class="dots">
+<span class="dot active"></span>
+<span class="dot"></span>
+<span class="dot"></span>
+<span class="dot"></span>
+</div>
+</div>
+<style>@keyframes spin { to { transform: rotate(360deg); }}</style>
+<script>
+const qs = [
+{t: "The Stranger's Story", p: "At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?"},
+{t: "The Unexpected Expense", p: "Your car needs a $1,200 repair you didn't budget for. Walk me through your thought process."},
+{t: "The Found Wallet", p: "You find a wallet with $300 cash in a parking lot. What do you do and why?"},
+{t: "The Customer Service Call", p: "You've been on hold for 45 minutes about a billing error that's clearly the company's fault. When someone finally answers, how do you handle the conversation?"},
+{t: "The Friend Crisis", p: "Your best friend calls with an emergency the same night as a planned date you've been looking forward to. What's your thinking process?"},
+{t: "The Mistake Made", p: "You realize you've made a significant mistake at work that no one else has noticed yet. What do you do?"}
+];
+let step = 0, cq = 0, usr = 1;
+const cards = document.querySelectorAll('.card');
+const dots = document.querySelectorAll('.dot');
+function nextCard() {
+if (step === 0) { if (!document.getElementById('na').value) { alert('Enter names'); return; } }
+if (step === 1) {
+cq++;
+if (cq < 6) { updateQ(); return; }
+else if (usr === 1) { usr = 2; cq = 0; updateQ(); return; }
+}
+cards[step].classList.remove('active'); cards[step].classList.add('prev');
+step++;
+if (step < cards.length) {
+cards[step].classList.add('active');
+dots.forEach((d, i) => d.classList.toggle('active', i === step));
+if (step === 1) updateQ();
+if (step === 2) { let p = 0; const int = setInterval(() => {
+p += 5; document.getElementById('pct').textContent = p + '%';
+if (p < 30) document.getElementById('status').textContent = 'Processing...';
+else if (p < 70) document.getElementById('status').textContent = 'Analyzing...';
+else document.getElementById('status').textContent = 'Finalizing...';
+if (p >= 100) { clearInterval(int); setTimeout(() => nextCard(), 500); }
+}, 80); }
+}
+}
+function updateQ() {
+const q = qs[cq];
+document.getElementById('ql').textContent = `Q${cq + 1}`;
+document.getElementById('qt').textContent = q.t;
+document.getElementById('qp').textContent = q.p;
+document.getElementById('ans').value = '';
+document.getElementById('wc').textContent = '0 words';
+document.getElementById('nextBtn').disabled = true;
+document.getElementById('prog').textContent = `Question ${cq + 1} of 6`;
+}
+document.getElementById('ans').addEventListener('input', (e) => {
+const w = e.target.value.trim() ? e.target.value.trim().split(/\s+/).length : 0;
+document.getElementById('wc').textContent = w + ' words';
+document.getElementById('nextBtn').disabled = w < 25 || w > 150;
+});
+</script>
+</body></html>

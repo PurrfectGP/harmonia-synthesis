@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Design 5: TIMELINE - Vertical Story</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Georgia', serif; background: #FAF6F1; }
+.timeline-container { max-width: 900px; margin: 0 auto; padding: 80px 40px; }
+.timeline-item { position: relative; padding-left: 100px; margin-bottom: 100px; }
+.timeline-item::before { content: ''; position: absolute; left: 40px; top: 60px; bottom: -100px; width: 3px; background: #D4A853; }
+.timeline-item:last-child::before { display: none; }
+.timeline-dot { position: absolute; left: 24px; top: 0; width: 35px; height: 35px; background: white; border: 4px solid #722F37; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #722F37; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(114,47,55,0.2); }
+.timeline-item.active .timeline-dot { background: #722F37; color: white; border-color: #D4A853; transform: scale(1.3); }
+.timeline-content { background: white; padding: 50px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); opacity: 0.5; transition: all 0.5s; }
+.timeline-item.active .timeline-content { opacity: 1; box-shadow: 0 10px 40px rgba(0,0,0,0.12); transform: translateX(10px); }
+.timeline-title { font-size: 2.5rem; color: #722F37; margin-bottom: 15px; }
+.timeline-subtitle { font-size: 1.1rem; color: #666; margin-bottom: 30px; }
+input, select, textarea { width: 100%; padding: 16px; margin-bottom: 20px; border: 2px solid #E8C97A; border-radius: 8px; font-size: 1rem; font-family: Arial, sans-serif; }
+textarea { min-height: 160px; resize: vertical; }
+.btn { padding: 18px 40px; background: #722F37; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; }
+.btn:hover { background: #5C1A1B; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(114,47,55,0.2); }
+.btn:disabled { opacity: 0.5; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.q-label { display: inline-block; background: #D4A853; color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+.q-title { font-size: 2.2rem; color: #722F37; margin-bottom: 15px; }
+.q-text { font-size: 1.15rem; line-height: 1.7; color: #333; margin-bottom: 25px; }
+.loader-container { text-align: center; padding: 60px 0; }
+.spinner { width: 80px; height: 80px; border: 5px solid #E8C97A; border-top-color: #722F37; border-radius: 50%; margin: 0 auto 30px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); }}
+.results { text-align: center; padding: 40px 0; }
+.score { font-size: 7rem; font-weight: 700; color: #722F37; line-height: 1; }
+</style></head><body>
+<div class="timeline-container">
+<div class="timeline-item active" id="t1">
+<div class="timeline-dot">1</div>
+<div class="timeline-content">
+<h1 class="timeline-title">Welcome</h1>
+<p class="timeline-subtitle">Create your compatibility profile</p>
+<div class="grid">
+<div><label style="display: block; font-size: 0.9rem; color: #722F37; margin-bottom: 8px; font-weight: 600;">Your Name</label><input type="text" id="na"></div>
+<div><label style="display: block; font-size: 0.9rem; color: #722F37; margin-bottom: 8px; font-weight: 600;">Partner's Name</label><input type="text" id="nb"></div>
+</div>
+<div class="grid">
+<div><label style="display: block; font-size: 0.9rem; color: #722F37; margin-bottom: 8px; font-weight: 600;">Your Gender</label><select id="ga"><option>Male</option><option>Female</option><option>Other</option></select></div>
+<div><label style="display: block; font-size: 0.9rem; color: #722F37; margin-bottom: 8px; font-weight: 600;">Partner's Gender</label><select id="gb"><option>Male</option><option>Female</option><option>Other</option></select></div>
+</div>
+<button class="btn" onclick="start()">Continue →</button>
+</div>
+</div>
+<div class="timeline-item" id="t2">
+<div class="timeline-dot">2</div>
+<div class="timeline-content">
+<span class="q-label" id="qm">Question 1 of 6</span>
+<h2 class="q-title" id="qt">The Stranger's Story</h2>
+<p class="q-text" id="qp">At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?</p>
+<textarea id="ans" placeholder="Share your thoughts..."></textarea>
+<div id="wc" style="text-align: right; margin-bottom: 15px; color: #666; font-size: 0.95rem;">0 words</div>
+<button class="btn" id="nextBtn" onclick="next()" disabled>Next →</button>
+</div>
+</div>
+<div class="timeline-item" id="t3">
+<div class="timeline-dot">3</div>
+<div class="timeline-content">
+<div class="loader-container">
+<div class="spinner"></div>
+<h2 style="font-size: 2.2rem; color: #722F37; margin-bottom: 15px;">Analyzing</h2>
+<p id="status" style="font-size: 1.1rem; color: #666;">Processing profiles...</p>
+<p id="pct" style="color: #D4A853; font-weight: 600; margin-top: 10px; font-size: 1.1rem;">0%</p>
+</div>
+</div>
+</div>
+<div class="timeline-item" id="t4">
+<div class="timeline-dot">4</div>
+<div class="timeline-content">
+<div class="results">
+<h1 style="font-size: 2.5rem; color: #722F37; margin-bottom: 40px;">Your Results</h1>
+<div class="score">87<span style="font-size: 4rem;">%</span></div>
+<p style="margin-top: 20px; font-size: 1.2rem; color: #D4A853; font-weight: 600;">Excellent Compatibility</p>
+<button class="btn" style="margin-top: 50px;">Download Full Report</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+const qs = [
+{t: "The Stranger's Story", p: "At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?"},
+{t: "The Unexpected Expense", p: "Your car needs a $1,200 repair you didn't budget for. Walk me through your thought process."},
+{t: "The Found Wallet", p: "You find a wallet with $300 cash in a parking lot. What do you do and why?"},
+{t: "The Customer Service Call", p: "You've been on hold for 45 minutes about a billing error that's clearly the company's fault. When someone finally answers, how do you handle the conversation?"},
+{t: "The Friend Crisis", p: "Your best friend calls with an emergency the same night as a planned date you've been looking forward to. What's your thinking process?"},
+{t: "The Mistake Made", p: "You realize you've made a significant mistake at work that no one else has noticed yet. What do you do?"}
+];
+let cq = 0, usr = 1;
+function start() {
+if (!document.getElementById('na').value) { alert('Enter names'); return; }
+activateStep(2);
+updateQ();
+}
+function updateQ() {
+const q = qs[cq];
+document.getElementById('qm').textContent = `Question ${cq + 1} of 6`;
+document.getElementById('qt').textContent = q.t;
+document.getElementById('qp').textContent = q.p;
+document.getElementById('ans').value = '';
+document.getElementById('wc').textContent = '0 words';
+document.getElementById('nextBtn').disabled = true;
+}
+document.getElementById('ans').addEventListener('input', (e) => {
+const w = e.target.value.trim() ? e.target.value.trim().split(/\s+/).length : 0;
+document.getElementById('wc').textContent = w + ' words';
+document.getElementById('nextBtn').disabled = w < 25 || w > 150;
+});
+function next() {
+cq++;
+if (cq < 6) { updateQ(); }
+else if (usr === 1) { usr = 2; cq = 0; updateQ(); }
+else {
+activateStep(3);
+let p = 0;
+const int = setInterval(() => {
+p += 5; document.getElementById('pct').textContent = p + '%';
+if (p < 30) document.getElementById('status').textContent = 'Processing profiles...';
+else if (p < 70) document.getElementById('status').textContent = 'Analyzing compatibility...';
+else document.getElementById('status').textContent = 'Generating insights...';
+if (p >= 100) { clearInterval(int); setTimeout(() => activateStep(4), 500); }
+}, 80);
+}
+}
+function activateStep(n) {
+document.querySelectorAll('.timeline-item').forEach((item, i) => {
+item.classList.toggle('active', i + 1 === n);
+});
+document.getElementById('t' + n).scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+</script>
+</body></html>
