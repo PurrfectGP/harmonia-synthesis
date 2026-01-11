@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Design 2: BRUTALIST - Bold & Geometric</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Arial Black', sans-serif;
+    background: #000;
+    color: #fff;
+    min-height: 100vh;
+}
+.phase { display: none; }
+.phase.active { display: block; }
+
+/* BRUTALIST SETUP */
+#setup {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: 100vh;
+}
+.sidebar {
+    background: #722F37;
+    padding: 60px 40px;
+    border-right: 10px solid #D4A853;
+}
+.sidebar h1 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    line-height: 0.9;
+    margin-bottom: 20px;
+}
+.main-setup {
+    background: #fff;
+    color: #000;
+    padding: 80px;
+}
+.field {
+    margin-bottom: 30px;
+}
+.field label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    font-weight: 900;
+}
+.field input, .field select {
+    width: 100%;
+    padding: 20px;
+    border: 5px solid #000;
+    font-size: 1.2rem;
+    font-family: 'Courier New', monospace;
+    background: #FAF6F1;
+}
+.field input:focus, .field select:focus {
+    outline: none;
+    background: #D4A853;
+}
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.btn-brutal {
+    width: 100%;
+    padding: 25px;
+    background: #000;
+    color: #D4A853;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.1s;
+    margin-top: 40px;
+}
+.btn-brutal:hover {
+    background: #722F37;
+    color: #fff;
+}
+
+/* BRUTALIST QUIZ */
+#quiz {
+    background: #fff;
+    color: #000;
+    padding: 0;
+}
+.quiz-header {
+    background: #000;
+    color: #fff;
+    padding: 40px 80px;
+    border-bottom: 10px solid #722F37;
+}
+.quiz-header h2 {
+    font-size: 4rem;
+    text-transform: uppercase;
+    line-height: 0.9;
+}
+.progress-brutal {
+    height: 20px;
+    background: #333;
+    margin-top: 20px;
+}
+.progress-fill-brutal {
+    height: 100%;
+    background: #D4A853;
+    width: 0%;
+    transition: width 0.1s;
+}
+.quiz-content {
+    padding: 80px;
+}
+.q-box {
+    border: 10px solid #000;
+    padding: 60px;
+    background: #FAF6F1;
+}
+.q-label {
+    background: #722F37;
+    color: #fff;
+    display: inline-block;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    font-weight: 900;
+    margin-bottom: 30px;
+}
+.q-h {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+.q-p {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    font-family: Arial, sans-serif;
+    margin-bottom: 40px;
+}
+textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 20px;
+    border: 5px solid #000;
+    font-size: 1.1rem;
+    font-family: 'Courier New', monospace;
+    background: #fff;
+    resize: vertical;
+}
+textarea:focus {
+    outline: none;
+    border-color: #D4A853;
+}
+.nav-brutal {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+    margin-top: 40px;
+}
+.btn-brutal-sm {
+    padding: 20px 40px;
+    background: #000;
+    color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.btn-brutal-sm:hover {
+    background: #722F37;
+}
+.btn-brutal-sm:disabled {
+    opacity: 0.3;
+}
+
+/* BRUTALIST PROCESSING */
+#processing {
+    background: #000;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.proc-box {
+    text-align: center;
+}
+.spinner-brutal {
+    width: 200px;
+    height: 200px;
+    border: 20px solid #333;
+    border-top-color: #D4A853;
+    margin: 0 auto 60px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.proc-h {
+    font-size: 5rem;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: #D4A853;
+}
+.proc-p {
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+/* BRUTALIST RESULTS */
+#results {
+    background: #fff;
+    color: #000;
+    padding: 80px;
+}
+.results-h {
+    font-size: 6rem;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 80px;
+    line-height: 0.9;
+}
+.results-grid-brutal {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+}
+.profile-brutal {
+    border: 10px solid #000;
+    padding: 50px;
+    background: #FAF6F1;
+}
+.profile-brutal h3 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+}
+.score-brutal {
+    background: #000;
+    color: #fff;
+    padding: 80px 50px;
+    text-align: center;
+    border: 10px solid #722F37;
+}
+.score-num {
+    font-size: 10rem;
+    line-height: 1;
+    color: #D4A853;
+}
+</style>
+</head>
+<body>
+<div class="phase active" id="setup">
+    <div class="sidebar">
+        <h1>HARMONIA</h1>
+        <div style="margin-top: 40px; font-size: 1.2rem; line-height: 1.4; font-family: Arial;">COMPATIBILITY<br>ASSESSMENT<br>SYSTEM</div>
+    </div>
+    <div class="main-setup">
+        <div style="font-size: 3rem; font-weight: 900; text-transform: uppercase; margin-bottom: 60px;">ENTER DATA</div>
+        <div class="grid">
+            <div class="field"><label>NAME A</label><input type="text" id="na"></div>
+            <div class="field"><label>NAME B</label><input type="text" id="nb"></div>
+        </div>
+        <div class="grid">
+            <div class="field"><label>GENDER A</label><select id="ga"><option>Male</option><option>Female</option><option>Other</option></select></div>
+            <div class="field"><label>GENDER B</label><select id="gb"><option>Male</option><option>Female</option><option>Other</option></select></div>
+        </div>
+        <button class="btn-brutal" onclick="start()">BEGIN →</button>
+    </div>
+</div>
+
+<div class="phase" id="quiz">
+    <div class="quiz-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-size: 0.9rem; margin-bottom: 10px;">SUBJECT:</div>
+                <h2 id="cu">PERSON A</h2>
+            </div>
+            <div id="pt" style="font-size: 2rem; color: #D4A853;">1/6</div>
+        </div>
+        <div class="progress-brutal"><div class="progress-fill-brutal" id="pb"></div></div>
+    </div>
+    <div class="quiz-content">
+        <div class="q-box">
+            <div class="q-label" id="qn">Q1</div>
+            <h3 class="q-h" id="qt">THE STRANGER'S STORY</h3>
+            <p class="q-p" id="qp">At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?</p>
+            <textarea id="ans" placeholder="TYPE RESPONSE..."></textarea>
+            <div id="wc" style="text-align: right; margin-top: 10px; font-family: 'Courier New'; font-size: 0.9rem;">0 WORDS</div>
+        </div>
+        <div class="nav-brutal">
+            <button class="btn-brutal-sm" onclick="skip()">SKIP</button>
+            <button class="btn-brutal-sm" id="nb" onclick="next()" disabled>NEXT →</button>
+        </div>
+    </div>
+</div>
+
+<div class="phase" id="processing">
+    <div class="proc-box">
+        <div class="spinner-brutal"></div>
+        <h2 class="proc-h">ANALYZING</h2>
+        <p class="proc-p" id="st">PROCESSING...</p>
+        <p id="pc" style="color: #D4A853; font-size: 2rem; margin-top: 20px;">0%</p>
+    </div>
+</div>
+
+<div class="phase" id="results">
+    <h1 class="results-h">RESULTS</h1>
+    <div class="results-grid-brutal">
+        <div class="profile-brutal">
+            <h3>ALEX</h3>
+            <div style="font-size: 1.2rem; margin-top: 30px; line-height: 1.8;">GREED<br>PRIDE<br>LUST</div>
+        </div>
+        <div class="score-brutal">
+            <div style="font-size: 1rem; margin-bottom: 20px;">SCORE</div>
+            <div class="score-num">87%</div>
+            <div style="margin-top: 20px;">EXCELLENT</div>
+            <button class="btn-brutal" style="margin-top: 60px; padding: 20px; font-size: 1rem;">DOWNLOAD</button>
+        </div>
+        <div class="profile-brutal">
+            <h3>JORDAN</h3>
+            <div style="font-size: 1.2rem; margin-top: 30px; line-height: 1.8;">WRATH<br>GLUTTONY<br>ENVY</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const qs = [
+    {t: "THE STRANGER'S STORY", p: "At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?"},
+    {t: "THE UNEXPECTED EXPENSE", p: "Your car needs a $1,200 repair you didn't budget for. Walk me through your thought process."},
+    {t: "THE FOUND WALLET", p: "You find a wallet with $300 cash in a parking lot. What do you do and why?"},
+    {t: "THE CUSTOMER SERVICE CALL", p: "You've been on hold for 45 minutes about a billing error that's clearly the company's fault. When someone finally answers, how do you handle the conversation?"},
+    {t: "THE FRIEND CRISIS", p: "Your best friend calls with an emergency the same night as a planned date you've been looking forward to. What's your thinking process?"},
+    {t: "THE MISTAKE MADE", p: "You realize you've made a significant mistake at work that no one else has noticed yet. What do you do?"}
+];
+let cq = 0, usr = 1;
+function start() {
+    if (!document.getElementById('na').value || !document.getElementById('nb').value) { alert('ENTER NAMES'); return; }
+    sw('setup', 'quiz');
+    document.getElementById('cu').textContent = document.getElementById('na').value.toUpperCase();
+    uq();
+}
+function uq() {
+    document.getElementById('qn').textContent = `Q${cq + 1}`;
+    document.getElementById('qt').textContent = qs[cq].t;
+    document.getElementById('qp').textContent = qs[cq].p;
+    document.getElementById('ans').value = '';
+    document.getElementById('wc').textContent = '0 WORDS';
+    document.getElementById('nb').disabled = true;
+    document.getElementById('pt').textContent = `${cq + 1}/6`;
+    document.getElementById('pb').style.width = `${((cq + 1) / 6) * 100}%`;
+}
+document.getElementById('ans').addEventListener('input', (e) => {
+    const w = e.target.value.trim() ? e.target.value.trim().split(/\s+/).length : 0;
+    document.getElementById('wc').textContent = `${w} WORDS`;
+    document.getElementById('nb').disabled = w < 25 || w > 150;
+});
+function next() {
+    cq++;
+    if (cq < 6) { uq(); }
+    else if (usr === 1) {
+        usr = 2; cq = 0;
+        document.getElementById('cu').textContent = document.getElementById('nb').value.toUpperCase();
+        uq();
+    } else {
+        sw('quiz', 'processing');
+        let p = 0;
+        const int = setInterval(() => {
+            p += 5;
+            document.getElementById('pc').textContent = `${p}%`;
+            if (p < 30) document.getElementById('st').textContent = 'PROCESSING...';
+            else if (p < 70) document.getElementById('st').textContent = 'ANALYZING...';
+            else document.getElementById('st').textContent = 'FINALIZING...';
+            if (p >= 100) {
+                clearInterval(int);
+                setTimeout(() => sw('processing', 'results'), 500);
+            }
+        }, 60);
+    }
+}
+function skip() { next(); }
+function sw(f, t) {
+    document.getElementById(f).classList.remove('active');
+    setTimeout(() => document.getElementById(t).classList.add('active'), 100);
+}
+</script>
+</body>
+</html>
