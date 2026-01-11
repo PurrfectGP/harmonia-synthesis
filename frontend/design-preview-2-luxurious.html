@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia Local Network - Design 2: Luxurious & Sophisticated</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FAF6F1;
+            --blush: #F5EDE6;
+            --rose: #EFE5DC;
+            --card-bg: #F0E8DF;
+            --gold: #D4A853;
+            --gold-light: rgba(212, 168, 83, 0.15);
+            --gold-champagne: #E8C97A;
+            --maroon: #722F37;
+            --maroon-deep: #5C1A1B;
+            --maroon-light: rgba(114, 47, 55, 0.12);
+            --wine: #8B3A3A;
+            --navy: #1E293B;
+            --slate: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--rose) 100%);
+            color: var(--navy);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(212, 168, 83, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(114, 47, 55, 0.08) 0%, transparent 50%);
+            animation: bgFloat 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Phase Transitions with Luxurious Animations */
+        .phase {
+            opacity: 0;
+            transform: scale(0.95) translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none;
+        }
+
+        .phase.active {
+            display: block;
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Setup Phase - Premium Card */
+        .setup-container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, white 0%, var(--cream) 100%);
+            border-radius: 32px;
+            padding: 70px 60px;
+            box-shadow:
+                0 20px 60px rgba(114, 47, 55, 0.12),
+                0 0 0 1px var(--gold-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .setup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-champagne), var(--gold));
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--maroon), var(--wine));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--slate);
+            font-size: 1.05rem;
+            margin-bottom: 3.5rem;
+            opacity: 0.9;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        label {
+            color: var(--maroon);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+        }
+
+        input, select {
+            padding: 18px 20px;
+            background: white;
+            border: 2px solid var(--gold-light);
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--navy);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px var(--gold-light), 0 8px 24px rgba(212, 168, 83, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .upload-area {
+            margin: 40px 0;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .upload-box {
+            padding: 50px 20px;
+            background: linear-gradient(135deg, white, var(--cream));
+            border: 3px dashed var(--gold);
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .upload-box:hover::before {
+            opacity: 1;
+        }
+
+        .upload-box:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(212, 168, 83, 0.3);
+            border-color: var(--gold-champagne);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 22px;
+            background: linear-gradient(135deg, var(--maroon) 0%, var(--wine) 50%, var(--maroon-deep) 100%);
+            background-size: 200% 100%;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(114, 47, 55, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(114, 47, 55, 0.35);
+            background-position: 100% 0;
+        }
+
+        /* Quiz Phase - Elegant Cards */
+        .quiz-container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, white, var(--cream));
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 36px;
+            box-shadow: 0 10px 40px rgba(114, 47, 55, 0.1);
+            border: 1px solid var(--gold-light);
+        }
+
+        .user-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-name {
+            background: linear-gradient(135deg, var(--maroon), var(--wine));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.8rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+        }
+
+        .block-progress {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar-container {
+            background: var(--gold-light);
+            height: 10px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .progress-bar-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold-champagne));
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 20px rgba(212, 168, 83, 0.6);
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, white 0%, var(--cream) 100%);
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 12px 50px rgba(114, 47, 55, 0.1);
+            border: 2px solid var(--gold-light);
+            transform-origin: center;
+            animation: luxurySlide 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes luxurySlide {
+            0% {
+                opacity: 0;
+                transform: translateX(60px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .question-number {
+            color: var(--gold);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .question-title {
+            background: linear-gradient(135deg, var(--maroon), var(--wine));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .question-text {
+            color: var(--slate);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 160px;
+            padding: 20px;
+            background: white;
+            border: 2px solid var(--gold-light);
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--navy);
+            resize: vertical;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px var(--gold-light), 0 8px 32px rgba(212, 168, 83, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .word-counter {
+            text-align: right;
+            margin-top: 12px;
+            font-size: 0.95rem;
+            color: var(--slate);
+            font-weight: 500;
+        }
+
+        .word-counter.golden {
+            color: var(--gold);
+            font-weight: 700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-end;
+            margin-top: 36px;
+        }
+
+        .btn-secondary {
+            padding: 16px 36px;
+            background: var(--cream);
+            color: var(--slate);
+            border: 2px solid var(--gold-light);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            padding: 16px 36px;
+            background: linear-gradient(135deg, var(--maroon), var(--wine));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 8px 24px rgba(114, 47, 55, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(114, 47, 55, 0.35);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Processing - Elegant Loading */
+        .processing-container {
+            text-align: center;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .loading-circle {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 50px;
+            position: relative;
+        }
+
+        .loading-circle svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 8px 24px rgba(212, 168, 83, 0.3));
+        }
+
+        .loading-circle .emoji {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5rem;
+            animation: luxuryFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes luxuryFloat {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) translateY(-15px) rotate(10deg); }
+        }
+
+        .processing-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--maroon), var(--wine));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .processing-status {
+            color: var(--slate);
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+        }
+
+        .processing-percent {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        /* Results - Premium Display */
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 36px;
+            margin-top: 50px;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, white, var(--cream));
+            border-radius: 24px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 12px 50px rgba(114, 47, 55, 0.12);
+            border: 2px solid var(--gold-light);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(114, 47, 55, 0.18);
+        }
+
+        .profile-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, var(--maroon), var(--wine));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 28px;
+            font-weight: 700;
+        }
+
+        .radar-chart {
+            margin: 36px auto;
+            filter: drop-shadow(0 4px 16px rgba(114, 47, 55, 0.15));
+        }
+
+        .traits-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .trait-tag {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--gold-light), rgba(212, 168, 83, 0.25));
+            color: var(--maroon);
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 1px solid var(--gold);
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, var(--maroon) 0%, var(--wine) 50%, var(--maroon-deep) 100%);
+            border-radius: 24px;
+            padding: 70px 50px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 20px 60px rgba(114, 47, 55, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent);
+            animation: scoreGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes scoreGlow {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-20%, 20%); }
+        }
+
+        .score-label {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .score-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 6rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-subtitle {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-download {
+            padding: 18px;
+            background: white;
+            color: var(--maroon);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-reset {
+            padding: 18px;
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-reset:hover {
+            background: white;
+            color: var(--maroon);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid, .upload-grid, .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .setup-container {
+                padding: 50px 35px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .question-card {
+                padding: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- PHASE 1: SETUP -->
+        <div class="phase active" id="phase-setup">
+            <div class="setup-container">
+                <h1>Create Compatibility Profile</h1>
+                <p class="subtitle">Experience the art of scientific connection</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" id="name-a" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Partner's Name</label>
+                        <input type="text" id="name-b" placeholder="Enter partner's name">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Your Gender</label>
+                        <select id="gender-a">
+                            <option value="">Select...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Partner's Gender</label>
+                        <select id="gender-b">
+                            <option value="">Select...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+                    <label>Upload Photos (Optional)</label>
+                    <div class="upload-grid">
+                        <div class="upload-box">
+                            <div style="font-size: 2.5rem; margin-bottom: 12px;">📷</div>
+                            <div style="font-size: 0.95rem; color: var(--slate); font-weight: 500;">Your Photo</div>
+                        </div>
+                        <div class="upload-box">
+                            <div style="font-size: 2.5rem; margin-bottom: 12px;">📷</div>
+                            <div style="font-size: 0.95rem; color: var(--slate); font-weight: 500;">Partner's Photo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="startQuiz()">Begin Personality Assessment →</button>
+            </div>
+        </div>
+
+        <!-- PHASE 2: QUIZ -->
+        <div class="phase" id="phase-quiz">
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <div class="user-indicator">
+                        <div>
+                            <div style="color: var(--slate); font-size: 0.9rem; margin-bottom: 6px; font-weight: 500;">Answering for:</div>
+                            <div class="user-name" id="current-user">Person 1</div>
+                        </div>
+                        <div class="block-progress" id="progress-text">Question 1 / 6</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+
+                <div class="question-card" id="question-card">
+                    <div class="question-number" id="q-number">QUESTION 1</div>
+                    <h2 class="question-title" id="q-title">The Stranger's Story</h2>
+                    <p class="question-text" id="q-text">At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?</p>
+                    <textarea id="answer" placeholder="Share your thoughts here... (25-150 words)"></textarea>
+                    <div class="word-counter" id="word-count">0 words</div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" id="skip-btn" onclick="skipQuestion()">Skip</button>
+                    <button class="btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE 3: PROCESSING -->
+        <div class="phase" id="phase-processing">
+            <div class="processing-container">
+                <div class="loading-circle">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--gold-light)" stroke-width="8"/>
+                        <circle id="loading-progress" cx="50" cy="50" r="45" fill="none" stroke="var(--gold)" stroke-width="8"
+                                stroke-dasharray="283" stroke-dashoffset="283" style="transition: stroke-dashoffset 0.3s;"/>
+                    </svg>
+                    <div class="emoji">✨</div>
+                </div>
+                <h2 class="processing-title">Analyzing Compatibility</h2>
+                <p class="processing-status" id="status-text">Processing personality profiles...</p>
+                <p class="processing-percent" id="percent-text">0%</p>
+            </div>
+        </div>
+
+        <!-- PHASE 4: RESULTS -->
+        <div class="phase" id="phase-results">
+            <div class="results-container">
+                <div class="results-grid">
+                    <div class="profile-card">
+                        <h3 class="profile-name">Alex</h3>
+                        <svg class="radar-chart" viewBox="0 0 100 100" width="150" height="150">
+                            <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="var(--gold-light)" stroke-width="2"/>
+                            <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="var(--maroon-light)" stroke="var(--maroon)" stroke-width="3"/>
+                        </svg>
+                        <div class="traits-list">
+                            <span class="trait-tag">Greed</span>
+                            <span class="trait-tag">Pride</span>
+                            <span class="trait-tag">Lust</span>
+                        </div>
+                    </div>
+
+                    <div class="score-card">
+                        <p class="score-label">Harmonia Score</p>
+                        <div class="score-number">87<span style="font-size: 3.5rem;">%</span></div>
+                        <p class="score-subtitle">Excellent Compatibility</p>
+                        <div class="action-buttons">
+                            <button class="btn-download">📄 Download Full Report</button>
+                            <button class="btn-reset" onclick="resetDemo()">← New Analysis</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3 class="profile-name">Jordan</h3>
+                        <svg class="radar-chart" viewBox="0 0 100 100" width="150" height="150">
+                            <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="var(--gold-light)" stroke-width="2"/>
+                            <polygon points="50,25 70,37 72,63 50,75 28,63 30,37" fill="var(--gold-light)" stroke="var(--gold)" stroke-width="3"/>
+                        </svg>
+                        <div class="traits-list">
+                            <span class="trait-tag">Wrath</span>
+                            <span class="trait-tag">Gluttony</span>
+                            <span class="trait-tag">Envy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {title: "The Stranger's Story", text: "At a party, someone you've just met starts telling you a deeply personal story about their struggles. How do you respond?"},
+            {title: "The Unexpected Expense", text: "Your car needs a $1,200 repair you didn't budget for. Walk me through your thought process."},
+            {title: "The Found Wallet", text: "You find a wallet with $300 cash in a parking lot. What do you do and why?"},
+            {title: "The Customer Service Call", text: "You've been on hold for 45 minutes about a billing error that's clearly the company's fault. When someone finally answers, how do you handle the conversation?"},
+            {title: "The Friend Crisis", text: "Your best friend calls with an emergency the same night as a planned date you've been looking forward to. What's your thinking process?"},
+            {title: "The Mistake Made", text: "You realize you've made a significant mistake at work that no one else has noticed yet. What do you do?"}
+        ];
+
+        let currentQ = 0;
+        let currentUser = 1;
+
+        function startQuiz() {
+            const nameA = document.getElementById('name-a').value;
+            const nameB = document.getElementById('name-b').value;
+
+            if (!nameA || !nameB) {
+                alert('Please enter both names');
+                return;
+            }
+
+            switchPhase('phase-setup', 'phase-quiz');
+            document.getElementById('current-user').textContent = nameA;
+            updateQuestion();
+        }
+
+        function updateQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('q-number').textContent = `QUESTION ${currentQ + 1}`;
+            document.getElementById('q-title').textContent = q.title;
+            document.getElementById('q-text').textContent = q.text;
+            document.getElementById('answer').value = '';
+            document.getElementById('word-count').textContent = '0 words';
+            document.getElementById('next-btn').disabled = true;
+            document.getElementById('progress-text').textContent = `Question ${currentQ + 1} / 6`;
+            document.getElementById('progress-bar').style.width = `${((currentQ + 1) / 6) * 100}%`;
+        }
+
+        document.getElementById('answer').addEventListener('input', (e) => {
+            const text = e.target.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            const counter = document.getElementById('word-count');
+
+            counter.textContent = `${words} words`;
+            counter.classList.toggle('golden', words >= 25 && words <= 150);
+
+            document.getElementById('next-btn').disabled = words < 25 || words > 150;
+        });
+
+        function nextQuestion() {
+            currentQ++;
+            if (currentQ < 6) {
+                updateQuestion();
+            } else if (currentUser === 1) {
+                currentUser = 2;
+                currentQ = 0;
+                document.getElementById('current-user').textContent = document.getElementById('name-b').value;
+                updateQuestion();
+            } else {
+                startProcessing();
+            }
+        }
+
+        function skipQuestion() {
+            nextQuestion();
+        }
+
+        function startProcessing() {
+            switchPhase('phase-quiz', 'phase-processing');
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                updateProcessing(progress);
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => showResults(), 500);
+                }
+            }, 100);
+        }
+
+        function updateProcessing(percent) {
+            const circle = document.getElementById('loading-progress');
+            const offset = 283 - (283 * percent / 100);
+            circle.style.strokeDashoffset = offset;
+
+            document.getElementById('percent-text').textContent = `${percent}%`;
+
+            if (percent < 30) {
+                document.getElementById('status-text').textContent = 'Processing personality profiles...';
+            } else if (percent < 70) {
+                document.getElementById('status-text').textContent = 'Analyzing compatibility patterns...';
+            } else {
+                document.getElementById('status-text').textContent = 'Generating insights...';
+            }
+        }
+
+        function showResults() {
+            switchPhase('phase-processing', 'phase-results');
+        }
+
+        function switchPhase(from, to) {
+            document.getElementById(from).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(to).classList.add('active');
+            }, 400);
+        }
+
+        function resetDemo() {
+            currentQ = 0;
+            currentUser = 1;
+            switchPhase('phase-results', 'phase-setup');
+        }
+    </script>
+</body>
+</html>
