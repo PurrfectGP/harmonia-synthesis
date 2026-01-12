@@ -187,7 +187,10 @@ class SpringPhysics {
     }
 }
 
-// Export
+// Export for both Node.js and browser
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = SpringPhysics;
+} else {
+    // Browser global export
+    window.SpringPhysics = SpringPhysics;
 }

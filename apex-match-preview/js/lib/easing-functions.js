@@ -264,7 +264,14 @@ const HarmoniaEasingPresets = {
     }
 };
 
-// Export
+// Export for both Node.js and browser
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { HarmoniaEasing, HarmoniaEasingPresets, applyEasing, getTransition, getAnimation };
+} else {
+    // Browser global exports
+    window.HarmoniaEasing = HarmoniaEasing;
+    window.HarmoniaEasingPresets = HarmoniaEasingPresets;
+    window.applyEasing = applyEasing;
+    window.getTransition = getTransition;
+    window.getAnimation = getAnimation;
 }

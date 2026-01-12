@@ -155,7 +155,10 @@ class LiquidFill {
     }
 }
 
-// Export
+// Export for both Node.js and browser
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = LiquidFill;
+} else {
+    // Browser global export
+    window.LiquidFill = LiquidFill;
 }
