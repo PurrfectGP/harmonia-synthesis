@@ -148,83 +148,119 @@
             </div>
 
             <!-- Load Module 1 Content -->
-            <section class="module-setup" data-module="setup" data-step="1" aria-labelledby="setup-title">
+            <section class="module-setup" id="module-setup-section" data-module="setup" data-step="1" aria-labelledby="setup-title">
+                <!-- Setup Card - "Concierge" Style -->
                 <div class="setup-card" role="main">
+                    <!-- Title & Subtitle -->
                     <h1 class="setup-title" id="setup-title">The Harmonia Protocol</h1>
                     <p class="setup-subtitle">
                         A scientific approach to meaningful connection.
                         This rigorous process ensures high-quality matches based on visual preference, psychological resonance, and biological compatibility.
                     </p>
 
+                    <!-- Progress Indicator - "Ink Well" Style -->
                     <div class="setup-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Setup progress">
-                        <div class="setup-progress-fill" style="width: 33%;"></div>
+                        <div class="setup-progress-fill" style="width: 0%;"></div>
                     </div>
 
+                    <!-- Basic Information Form -->
                     <form id="setup-form" aria-label="Account setup form" data-form-section="basic-info">
-                        <div style="margin: 2rem 0;">
-                            <label style="font-family: var(--font-body); font-size: 0.875rem; color: var(--parchment-900); opacity: 0.8;">Full Name</label>
-                            <input type="text" placeholder="Enter your name" style="width: 100%; padding: 0.75rem; margin-top: 0.5rem; border: none; border-bottom: 2px solid var(--parchment-200); background: transparent; font-family: var(--font-body); font-size: 1rem;">
-                        </div>
+                        <!-- Name Input (Floating Label) -->
+                        <div id="input-name-container" aria-label="Full name field"></div>
 
-                        <div style="margin: 2rem 0;">
-                            <label style="font-family: var(--font-body); font-size: 0.875rem; color: var(--parchment-900); opacity: 0.8;">Email Address</label>
-                            <input type="email" placeholder="Enter your email" style="width: 100%; padding: 0.75rem; margin-top: 0.5rem; border: none; border-bottom: 2px solid var(--parchment-200); background: transparent; font-family: var(--font-body); font-size: 1rem;">
-                        </div>
+                        <!-- Email Input (Floating Label) -->
+                        <div id="input-email-container" aria-label="Email address field"></div>
 
-                        <div style="margin: 2rem 0;">
-                            <label style="font-family: var(--font-body); font-size: 0.875rem; color: var(--parchment-900); opacity: 0.8;">Password</label>
-                            <input type="password" placeholder="Create a password" style="width: 100%; padding: 0.75rem; margin-top: 0.5rem; border: none; border-bottom: 2px solid var(--parchment-200); background: transparent; font-family: var(--font-body); font-size: 1rem;">
-                        </div>
+                        <!-- Password Input (Floating Label) -->
+                        <div id="input-password-container" aria-label="Password field"></div>
 
+                        <!-- Gender Selection (Segmented Control) -->
                         <div class="setup-field-group" style="margin: 2.5rem 0;">
-                            <label class="setup-seal-label" style="font-family: var(--font-body); font-size: 0.875rem; color: var(--parchment-900); opacity: 0.8;">Gender</label>
-                            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                                <button type="button" class="btn btn-secondary" style="flex: 1;">Male</button>
-                                <button type="button" class="btn btn-primary" style="flex: 1;">Female</button>
-                                <button type="button" class="btn btn-secondary" style="flex: 1;">Non-Binary</button>
-                            </div>
+                            <label class="setup-seal-label" for="gender-control-container">
+                                Gender
+                            </label>
+                            <div id="gender-control-container" aria-label="Gender selection"></div>
+                        </div>
+
+                        <!-- Seeking Preference (Segmented Control) -->
+                        <div class="setup-field-group" style="margin: 2.5rem 0;">
+                            <label class="setup-seal-label" for="seeking-control-container">
+                                Seeking
+                            </label>
+                            <div id="seeking-control-container" aria-label="Seeking preference"></div>
                         </div>
                     </form>
 
-                    <section class="setup-mandatory-inquiry" style="margin-top: 3rem;">
-                        <h2 class="setup-inquiry-title" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--mediterranean-500);">The Mandatory Five</h2>
+                    <!-- Mandatory Five Inquiry Section -->
+                    <section class="setup-mandatory-inquiry" data-section="mandatory-five" aria-labelledby="inquiry-title">
+                        <h2 class="setup-inquiry-title" id="inquiry-title">The Mandatory Five</h2>
                         <p class="setup-subtitle" style="margin-bottom: 2rem;">
                             Answer these five foundational questions to establish your baseline psychometric profile.
                         </p>
 
-                        <div class="setup-question-card" style="background: var(--parchment-100); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: var(--radius-md); padding: 2rem; margin-bottom: 1.5rem;">
-                            <h3 class="setup-question-text" style="font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 1.5rem;">When facing a social gathering, do you typically feel:</h3>
-                            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                                <button class="assessment-choice-btn btn btn-secondary" style="width: 100%;">Energized by the prospect of meeting new people</button>
-                                <button class="assessment-choice-btn btn btn-secondary" style="width: 100%;">Drained and prefer quiet reflection</button>
-                            </div>
+                        <!-- Question Cards Container -->
+                        <div id="mandatory-questions-container" role="list" aria-label="Five mandatory questions">
+                            <!-- Questions will be dynamically inserted here -->
                         </div>
                     </section>
 
-                    <section class="setup-biometric-seal-container" style="margin-top: 3rem;">
-                        <h2 class="setup-inquiry-title" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--mediterranean-500);">Biometric Ingestion</h2>
+                    <!-- Biometric Ingestion Section -->
+                    <section class="setup-biometric-seal-container" data-section="biometric" aria-labelledby="biometric-title">
+                        <h2 class="setup-inquiry-title" id="biometric-title">Biometric Ingestion</h2>
                         <p class="setup-subtitle" style="margin-bottom: 2rem;">
                             Upload your genetic data (23andMe, Ancestry) or request a testing kit.
                             HLA compatibility accounts for 10% of your match score.
                         </p>
 
-                        <div style="width: 200px; height: 200px; margin: 0 auto; border: 3px dashed var(--mediterranean-500); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
-                            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-                                <path d="M30 10 Q30 30 40 40 T30 70" stroke="var(--champagne-500)" stroke-width="3" fill="none"/>
-                                <path d="M50 10 Q50 30 40 40 T50 70" stroke="var(--mediterranean-500)" stroke-width="3" fill="none"/>
-            </svg>
-                        </div>
+                        <label class="setup-seal-label" for="biometric-seal-element">
+                            DNA Data Upload
+                        </label>
 
-                        <button type="button" class="btn btn-secondary" style="margin-top: 1.5rem; width: 100%;">
+                        <!-- Biometric Seal Component -->
+                        <div id="biometric-seal-element" aria-label="DNA file upload area"></div>
+
+                        <!-- Alternative: Request Kit Button -->
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            id="request-kit-btn"
+                            aria-label="Request DNA testing kit"
+                            style="margin-top: 1.5rem; width: 100%;"
+                        >
                             Request DNA Testing Kit
                         </button>
+
+                        <!-- Kit Request Status -->
+                        <div id="kit-request-status" role="status" aria-live="polite" style="margin-top: 1rem; display: none;">
+                            <!-- Status message will be inserted here -->
+                        </div>
                     </section>
 
-                    <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 3rem;" onclick="showModule('calibration')">
+                    <!-- Continue Button -->
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="continue-to-calibration"
+                        aria-label="Continue to calibration"
+                        style="width: 100%; margin-top: 3rem;"
+                        disabled
+                        onclick="showModule('calibration')"
+                    >
                         Continue to Calibration
                     </button>
                 </div>
             </section>
+
+            <!-- Template: Mandatory Question Card -->
+            <template id="question-card-template">
+                <article class="setup-question-card" role="listitem" data-question="">
+                    <h3 class="setup-question-text"></h3>
+                    <div class="setup-question-choices">
+                        <button class="assessment-choice-btn" data-choice="A"></button>
+                        <button class="assessment-choice-btn" data-choice="B"></button>
+                    </div>
+                </article>
+            </template>
         </div>
 
         <!-- Module 2: Calibration -->
