@@ -216,7 +216,10 @@ class BiometricSeal {
     }
 }
 
-// Export
+// Export for both Node.js and browser
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = BiometricSeal;
+} else {
+    // Browser global export
+    window.BiometricSeal = BiometricSeal;
 }

@@ -241,7 +241,10 @@ class FloatingInput {
     }
 }
 
-// Export
+// Export for both Node.js and browser
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = FloatingInput;
+} else {
+    // Browser global export
+    window.FloatingInput = FloatingInput;
 }

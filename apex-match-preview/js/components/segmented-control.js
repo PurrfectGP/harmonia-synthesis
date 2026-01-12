@@ -209,7 +209,10 @@ class SegmentedControl {
     }
 }
 
-// Export
+// Export for both Node.js and browser
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = SegmentedControl;
+} else {
+    // Browser global export
+    window.SegmentedControl = SegmentedControl;
 }
