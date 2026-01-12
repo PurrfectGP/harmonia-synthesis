@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface Driver {
   id: string;
@@ -32,18 +33,22 @@ export function DriverCard({ driver, selectedChoice, onSelect }: DriverCardProps
   };
 
   return (
-    <div
-      className={`
-        relative p-8 rounded-lg transition-all duration-150
-        ${isAnimating ? 'scale-[0.98]' : 'scale-100'}
-        ${selectedChoice ? 'opacity-100' : 'opacity-100'}
-      `}
+    <motion.div
+      className="relative p-8 rounded-lg"
       style={{
         background: 'var(--parchment-50)',
-        border: '1px solid rgba(212, 175, 55, 0.3)',
+        border: '1px solid rgba(212, 175, 55, 0.3)'
+      }}
+      animate={{
+        scale: isAnimating ? 0.98 : 1,
         boxShadow: selectedChoice
           ? '0 10px 15px -3px rgba(42, 78, 108, 0.15)'
           : '0 4px 6px -1px rgba(42, 78, 108, 0.1)'
+      }}
+      transition={{
+        type: 'spring',
+        stiffness: 400,
+        damping: 25
       }}
     >
       {/* Icon Watermark - Faint background */}
@@ -122,7 +127,7 @@ export function DriverCard({ driver, selectedChoice, onSelect }: DriverCardProps
           <div className="text-base text-parchment-900">{driver.choiceB}</div>
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

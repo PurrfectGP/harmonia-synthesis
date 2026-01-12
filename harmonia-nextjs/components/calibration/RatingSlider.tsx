@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion, useSpring, useMotionValue } from 'framer-motion';
 
 interface RatingSliderProps {
   value: number | null;
@@ -27,17 +28,27 @@ export function RatingSlider({ value, onChange }: RatingSliderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [localValue, setLocalValue] = useState<number>(3);
 
+  // Framer Motion spring physics for smooth, weighted movement
+  const springValue = useSpring(3, {
+    stiffness: 150,
+    damping: 20,
+    mass: 0.8
+  });
+
   useEffect(() => {
     if (value !== null) {
       setLocalValue(value);
+      springValue.set(value);
     } else {
       setLocalValue(3); // Reset to center when value is cleared
+      springValue.set(3);
     }
-  }, [value]);
+  }, [value, springValue]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value);
     setLocalValue(newValue);
+    springValue.set(newValue); // Animate with spring physics
     onChange(newValue);
   };
 
@@ -45,18 +56,25 @@ export function RatingSlider({ value, onChange }: RatingSliderProps) {
   const currentBgColor = BACKGROUND_COLORS[localValue as keyof typeof BACKGROUND_COLORS] || BACKGROUND_COLORS[3];
 
   return (
-    <div
-      className="p-8 rounded-lg transition-all duration-500"
-      style={{
+    <motion.div
+      className="p-8 rounded-lg"
+      animate={{
         backgroundColor: currentBgColor,
-        boxShadow: localValue >= 4 ? '0 0 30px rgba(212, 175, 55, 0.3)' : 'none'
+        boxShadow: localValue >= 4 ? '0 0 30px rgba(212, 175, 55, 0.3)' : '0 0 0px rgba(212, 175, 55, 0)'
       }}
+      transition={{ duration: 0.5 }}
     >
       {/* Feedback Text */}
       <div className="text-center mb-6">
-        <div className="text-3xl font-serif text-mediterranean-500 mb-2">
+        <motion.div
+          className="text-3xl font-serif text-mediterranean-500 mb-2"
+          key={currentFeedback}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           {currentFeedback}
-        </div>
+        </motion.div>
         <div className="text-sm font-sans text-parchment-900/60">
           Rate your visual attraction • {localValue} of 5
         </div>
@@ -98,13 +116,13 @@ export function RatingSlider({ value, onChange }: RatingSliderProps) {
           />
 
           {/* Filled Track */}
-          <div
+          <motion.div
             className="absolute inset-y-0 left-0 rounded-full"
-            style={{
+            animate={{
               width: `${((localValue - 1) / 4) * 100}%`,
-              background: localValue >= 4 ? 'var(--champagne-400)' : 'var(--mediterranean-500)',
-              transition: 'width 0.3s ease, background 0.3s ease'
+              background: localValue >= 4 ? 'var(--champagne-400)' : 'var(--mediterranean-500)'
             }}
+            transition={{ type: 'spring', stiffness: 150, damping: 20 }}
           />
 
           {/* Slider Input (invisible but functional) */}
@@ -123,22 +141,26 @@ export function RatingSlider({ value, onChange }: RatingSliderProps) {
             style={{ zIndex: 10 }}
           />
 
-          {/* Gold Knob/Thumb */}
-          <div
-            className={`
-              absolute top-1/2 -translate-y-1/2 -translate-x-1/2
-              w-7 h-7 rounded-full
-              transition-all duration-200
-              ${isDragging ? 'scale-125' : 'scale-100'}
-            `}
+          {/* Gold Knob/Thumb - Spring Physics */}
+          <motion.div
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 rounded-full"
             style={{
               left: `${((localValue - 1) / 4) * 100}%`,
               background: 'var(--champagne-400)',
               border: '3px solid var(--champagne-500)',
+              zIndex: 5
+            }}
+            animate={{
+              scale: isDragging ? 1.25 : 1,
               boxShadow: isDragging
                 ? '0 0 20px rgba(212, 175, 55, 0.6)'
-                : '0 2px 8px rgba(42, 78, 108, 0.3)',
-              zIndex: 5
+                : '0 2px 8px rgba(42, 78, 108, 0.3)'
+            }}
+            transition={{
+              type: 'spring',
+              stiffness: 300,
+              damping: 25,
+              mass: 0.8
             }}
           />
         </div>
@@ -153,20 +175,20 @@ export function RatingSlider({ value, onChange }: RatingSliderProps) {
       {/* Visual Indicators */}
       <div className="mt-6 flex gap-1 justify-center">
         {[1, 2, 3, 4, 5].map((num) => (
-          <div
+          <motion.div
             key={num}
-            className={`
-              h-1 w-12 rounded-full transition-all duration-300
-              ${localValue >= num
+            className="h-1 w-12 rounded-full"
+            animate={{
+              backgroundColor: localValue >= num
                 ? num >= 4
-                  ? 'bg-champagne-400'
-                  : 'bg-mediterranean-500'
-                : 'bg-parchment-200'
-              }
-            `}
+                  ? 'var(--champagne-400)'
+                  : 'var(--mediterranean-500)'
+                : 'var(--parchment-200)'
+            }}
+            transition={{ duration: 0.3 }}
           />
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface Question {
   id: number;
@@ -30,11 +31,16 @@ export function QuestionCard({ question, selectedChoice, onSelect }: QuestionCar
   };
 
   return (
-    <div
-      className={`
-        glass-panel p-8 rounded-lg transition-all duration-150
-        ${isAnimating ? 'scale-[0.98]' : 'scale-100'}
-      `}
+    <motion.div
+      className="glass-panel p-8 rounded-lg"
+      animate={{
+        scale: isAnimating ? 0.98 : 1
+      }}
+      transition={{
+        type: 'spring',
+        stiffness: 400,
+        damping: 25
+      }}
     >
       {/* Category Label */}
       <div className="mb-4">
@@ -88,6 +94,6 @@ export function QuestionCard({ question, selectedChoice, onSelect }: QuestionCar
           <div className="text-base text-parchment-900">{question.choiceB}</div>
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
