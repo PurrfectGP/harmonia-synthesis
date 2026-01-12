@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { GoldParticles } from '@/components/effects/GoldParticles';
 
 interface Question {
   id: number;
@@ -19,20 +20,27 @@ interface QuestionCardProps {
 
 export function QuestionCard({ question, selectedChoice, onSelect }: QuestionCardProps) {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showParticles, setShowParticles] = useState(false);
 
   const handleChoice = (choice: 'A' | 'B') => {
     setIsAnimating(true);
+    setShowParticles(true);
 
     // Brief animation before calling onSelect
     setTimeout(() => {
       onSelect(choice);
       setIsAnimating(false);
+
+      // Hide particles after animation completes
+      setTimeout(() => {
+        setShowParticles(false);
+      }, 1200);
     }, 150);
   };
 
   return (
     <motion.div
-      className="glass-panel p-8 rounded-lg"
+      className="glass-panel p-8 rounded-lg relative overflow-hidden"
       animate={{
         scale: isAnimating ? 0.98 : 1
       }}
@@ -42,6 +50,8 @@ export function QuestionCard({ question, selectedChoice, onSelect }: QuestionCar
         damping: 25
       }}
     >
+      {/* Gold Particle Effect */}
+      <GoldParticles isActive={showParticles} particleCount={25} targetY={-120} />
       {/* Category Label */}
       <div className="mb-4">
         <span className="text-xs font-sans uppercase tracking-wider text-champagne-500">

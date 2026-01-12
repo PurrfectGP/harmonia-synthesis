@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { GoldParticles } from '@/components/effects/GoldParticles';
 
 interface Driver {
   id: string;
@@ -21,20 +22,27 @@ interface DriverCardProps {
 
 export function DriverCard({ driver, selectedChoice, onSelect }: DriverCardProps) {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showParticles, setShowParticles] = useState(false);
 
   const handleChoice = (choice: 'A' | 'B') => {
     setIsAnimating(true);
+    setShowParticles(true);
 
     // Brief animation before calling onSelect
     setTimeout(() => {
       onSelect(choice);
       setIsAnimating(false);
+
+      // Hide particles after animation completes
+      setTimeout(() => {
+        setShowParticles(false);
+      }, 1200);
     }, 150);
   };
 
   return (
     <motion.div
-      className="relative p-8 rounded-lg"
+      className="relative p-8 rounded-lg overflow-hidden"
       style={{
         background: 'var(--parchment-50)',
         border: '1px solid rgba(212, 175, 55, 0.3)'
@@ -51,6 +59,9 @@ export function DriverCard({ driver, selectedChoice, onSelect }: DriverCardProps
         damping: 25
       }}
     >
+      {/* Gold Particle Effect */}
+      <GoldParticles isActive={showParticles} particleCount={30} targetY={-150} />
+
       {/* Icon Watermark - Faint background */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5 pointer-events-none"
