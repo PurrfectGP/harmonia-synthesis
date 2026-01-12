@@ -119,6 +119,13 @@ export default function Home() {
               >
                 Module 2: Calibration →
               </a>
+              <a
+                href="/assessment"
+                className="px-6 py-3 bg-danger-500 text-white font-sans rounded-lg hover:opacity-90 transition-opacity"
+                style={{boxShadow: 'var(--shadow-md)'}}
+              >
+                Module 3: Assessment →
+              </a>
             </div>
           </div>
         </div>
