@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia - Personality Card Fix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #FAF6F1;
+            --maroon: #722F37;
+            --maroon-deep: #5C1A1B;
+            --maroon-light: rgba(114, 47, 55, 0.12);
+            --gold: #D4A853;
+            --gold-light: rgba(212, 168, 83, 0.15);
+            --navy: #1E293B;
+            --slate: #475569;
+            --card-bg: #F0E8DF;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--navy);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Container simulation for the preview */
+        #page-why-harmonia {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            display: block; 
+        }
+
+        /* --- BASIC LAYOUT STYLES FROM ORIGINAL --- */
+        .science-slider-wrapper {
+            position: relative;
+            width: 100%;
+            padding: 2rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .science-card {
+            width: 100%;
+            max-width: 800px;
+            min-height: 420px;
+            padding: 2.5rem;
+            border-radius: 12px;
+            background: rgba(114, 47, 55, 0.04); 
+            border: 1px solid rgba(212, 168, 83, 0.25);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-visual {
+            height: 100px;
+            width: 100px;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--maroon);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+            line-height: 1.1;
+        }
+
+        .card-subtitle {
+            font-size: 1rem;
+            color: var(--maroon);
+            opacity: 0.6;
+            max-width: 400px;
+            margin: 0;
+        }
+
+        .card-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .comparison-column {
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: rgba(114, 47, 55, 0.03);
+            border: 1px solid transparent;
+        }
+
+        .comparison-column.highlight {
+            background: rgba(212, 168, 83, 0.08);
+            border: 1px solid rgba(212, 168, 83, 0.2);
+        }
+
+        .comp-label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+            color: var(--maroon);
+            opacity: 0.5;
+        }
+
+        .comparison-column.highlight .comp-label {
+            color: var(--gold);
+            opacity: 1;
+        }
+
+        .comp-text {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--maroon-deep);
+        }
+
+        .comparison-column.dim .comp-text { opacity: 0.6; }
+
+        /* =============================================
+           PERSONALITY CARD - FIXED ANIMATION STYLES
+           ============================================= */
+        
+        .science-card.personality-card {
+            --personality-duration: 5s; /* Default for first run */
+        }
+        
+        .science-card.personality-card.animated-once {
+            --personality-duration: 3s;
+        }
+
+        /* --- ICON CONTAINER --- */
+        /* Animated icon moves from center to header position */
+        .science-card.personality-card .personality-icon-container {
+            position: absolute;
+            top: 45%; /* Adjusted slightly lower for visibility */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px; /* Slightly larger canvas for arcs */
+            height: 140px;
+            z-index: 10;
+            opacity: 1;
+            transition: top var(--personality-duration) cubic-bezier(0.25, 0.1, 0.25, 1),
+                        left var(--personality-duration) cubic-bezier(0.25, 0.1, 0.25, 1),
+                        transform var(--personality-duration) cubic-bezier(0.25, 0.1, 0.25, 1),
+                        opacity 0.6s ease;
+        }
+
+        .science-card.personality-card.animation-complete .personality-icon-container {
+            top: calc(2.5rem + 50px);
+            left: calc(2.5rem + 50px);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition-delay: 0s, 0s, 0s, 0.4s; /* Delay opacity fade */
+        }
+
+        .personality-animated-icon {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* --- STATIC ELEMENTS --- */
+        .personality-animated-icon .dot { opacity: 1; }
+        
+        /* --- ANIMATED ELEMENTS --- */
+        /* 1. Inner Lines (Dots to Center) */
+        .personality-animated-icon .inner-line {
+            opacity: 0;
+            stroke-dasharray: 40;
+            stroke-dashoffset: 40;
+            transition: stroke-dashoffset 0.5s ease-out, opacity 0.2s ease;
+        }
+
+        .science-card.personality-card.line-1-visible .inner-line.line-1 { opacity: 1; stroke-dashoffset: 0; }
+        .science-card.personality-card.line-2-visible .inner-line.line-2 { opacity: 1; stroke-dashoffset: 0; }
+        .science-card.personality-card.line-3-visible .inner-line.line-3 { opacity: 1; stroke-dashoffset: 0; }
+
+        /* 2. Center Circle */
+        .personality-animated-icon .center-circle {
+            opacity: 0;
+            transform: scale(0);
+            transform-origin: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .science-card.personality-card.center-visible .center-circle {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 3. Outer Arcs (The Fix) */
+        /* We use a mask to animate the "drawing" of the dotted lines */
+        .personality-animated-icon .mask-path {
+            stroke-dasharray: 120; /* Long enough to cover the arc */
+            stroke-dashoffset: 120; /* Fully hidden */
+            transition: stroke-dashoffset 1.2s ease-out; /* Smooth draw */
+        }
+
+        .science-card.personality-card.outer-circle-animating .mask-path {
+            stroke-dashoffset: 0; /* Reveal */
+        }
+
+        /* --- HEADER STATIC ICON FADE IN --- */
+        .science-card.personality-card .card-visual.personality-icon {
+            opacity: 0;
+            transition: opacity 0.8s ease 0.2s;
+        }
+        .science-card.personality-card.animation-complete .card-visual.personality-icon { opacity: 1; }
+
+        /* --- TEXT FADES --- */
+        .science-card.personality-card .card-title-group {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .science-card.personality-card.animation-complete .card-title-group { opacity: 1; }
+
+        /* --- BOX FADES & GLOWS --- */
+        .science-card.personality-card .personality-box {
+            opacity: 0;
+            transition: opacity 0.5s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        /* Visibility States */
+        .science-card.personality-card.science-box-visible .science-box { opacity: 1; }
+        .science-card.personality-card.apps-box-visible .apps-box { opacity: 1; }
+        .science-card.personality-card.harmonia-box-visible .harmonia-box { opacity: 1; }
+
+        /* Glow States */
+        .science-card.personality-card.science-box-glow .science-box,
+        .science-card.personality-card.apps-box-glow .apps-box {
+            box-shadow: 0 0 25px rgba(212, 168, 83, 0.4);
+            border-color: rgba(212, 168, 83, 0.6);
+        }
+
+        .science-card.personality-card.harmonia-glow .harmonia-box {
+            box-shadow: 0 0 40px rgba(212, 168, 83, 0.6);
+            border-color: var(--gold);
+            background: rgba(212, 168, 83, 0.15);
+        }
+
+        /* --- RESET/REPLAY BUTTON (For Preview Only) --- */
+        .replay-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: var(--maroon);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 100;
+        }
+        .replay-btn:hover { background: var(--maroon-deep); }
+
+    </style>
+</head>
+<body>
+
+    <div class="page active" id="page-why-harmonia">
+        
+        <button class="replay-btn" onclick="resetAndPlay()">Replay Animation</button>
+
+        <section id="why-harmonia">
+            <div class="science-slider-wrapper">
+                
+                <div class="science-card personality-card">
+                    
+                    <div class="personality-icon-container">
+                        <svg viewBox="0 0 100 100" class="personality-animated-icon">
+                            <defs>
+                                <mask id="arc-mask">
+                                    <path class="mask-path" d="M 78 27 A 36 36 0 0 1 50 85" stroke="white" stroke-width="4" fill="none" />
+                                    <path class="mask-path" d="M 50 85 A 36 36 0 0 1 22 27" stroke="white" stroke-width="4" fill="none" />
+                                    <path class="mask-path" d="M 22 27 A 36 36 0 0 1 78 27" stroke="white" stroke-width="4" fill="none" />
+                                </mask>
+                            </defs>
+                            
+                            <circle class="dot dot-1" cx="22" cy="27" r="5" fill="var(--maroon)"/>
+                            <circle class="dot dot-2" cx="78" cy="27" r="5" fill="var(--maroon)"/>
+                            <circle class="dot dot-3" cx="50" cy="85" r="5" fill="var(--maroon)"/>
+                            
+                            <line class="inner-line line-1" x1="22" y1="27" x2="50" y2="50" stroke="var(--gold)" stroke-width="1.5"/>
+                            <line class="inner-line line-2" x1="78" y1="27" x2="50" y2="50" stroke="var(--gold)" stroke-width="1.5"/>
+                            <line class="inner-line line-3" x1="50" y1="85" x2="50" y2="50" stroke="var(--gold)" stroke-width="1.5"/>
+                            
+                            <circle class="center-circle" cx="50" cy="50" r="6" fill="var(--gold)"/>
+
+                            <g mask="url(#arc-mask)">
+                                <path d="M 78 27 A 36 36 0 0 1 50 85" stroke="var(--gold)" stroke-width="1.5" fill="none" stroke-dasharray="4 3" />
+                                <path d="M 50 85 A 36 36 0 0 1 22 27" stroke="var(--gold)" stroke-width="1.5" fill="none" stroke-dasharray="4 3" />
+                                <path d="M 22 27 A 36 36 0 0 1 78 27" stroke="var(--gold)" stroke-width="1.5" fill="none" stroke-dasharray="4 3" />
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="card-header">
+                        <div class="card-visual personality-icon">
+                            <svg viewBox="0 0 100 100" class="abstract-icon">
+                                <circle cx="50" cy="50" r="36" stroke="var(--gold)" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+                                <circle cx="22" cy="27" r="5" fill="var(--maroon)"/>
+                                <circle cx="78" cy="27" r="5" fill="var(--maroon)"/>
+                                <circle cx="50" cy="85" r="5" fill="var(--maroon)"/>
+                                <line x1="22" y1="27" x2="50" y2="50" stroke="var(--gold)" stroke-width="1.5"/>
+                                <line x1="78" y1="27" x2="50" y2="50" stroke="var(--gold)" stroke-width="1.5"/>
+                                <line x1="50" y1="85" x2="50" y2="50" stroke="var(--gold)" stroke-width="1.5"/>
+                                <circle cx="50" cy="50" r="6" fill="var(--gold)"/>
+                            </svg>
+                        </div>
+                        <div class="card-title-group">
+                            <h3 class="card-title">Personality</h3>
+                            <p class="card-subtitle">Perceived similarity builds deeper, lasting emotional connection.</p>
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="comparison-column personality-box science-box">
+                            <span class="comp-label">Science</span>
+                            <span class="comp-text">Perceived similarity builds deeper connection.</span>
+                        </div>
+                        <div class="comparison-column personality-box apps-box dim">
+                            <span class="comp-label">Apps</span>
+                            <span class="comp-text">Largely ignored it.</span>
+                        </div>
+                        <div class="comparison-column personality-box harmonia-box highlight">
+                            <span class="comp-label">Harmonia</span>
+                            <span class="comp-text">Integrates psychological compatibility into matching.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // =============================================
+        // PERSONALITY CARD ANIMATION LOGIC
+        // =============================================
+        let personalityState = {
+            card: null,
+            isOpen: false,
+            animating: false,
+            hasAnimatedOnce: false,
+            timeouts: []
+        };
+
+        function initPersonalityCardAnimation() {
+            personalityState.card = document.querySelector('.science-card.personality-card');
+        }
+
+        function clearAllTimeouts() {
+            personalityState.timeouts.forEach(t => clearTimeout(t));
+            personalityState.timeouts = [];
+        }
+
+        function triggerPersonalityCardAnimation(shouldOpen) {
+            const { card, isOpen, animating, hasAnimatedOnce } = personalityState;
+            
+            if (!card) return;
+            if (shouldOpen === isOpen && !animating) return;
+
+            personalityState.animating = true;
+            clearAllTimeouts();
+
+            // First time plays slower (5s), subsequent plays faster (3s)
+            const isFirstTime = shouldOpen && !hasAnimatedOnce;
+            card.style.setProperty('--personality-duration', isFirstTime ? '5s' : '3s');
+
+            if (shouldOpen) {
+                if (isFirstTime) {
+                    personalityState.hasAnimatedOnce = true;
+                    card.classList.add('animated-once');
+                }
+
+                // Time multiplier: 1.0 for first run, 0.6 for subsequent
+                const t = isFirstTime ? 1 : 0.6; 
+                
+                // --- ANIMATION SEQUENCE ---
+                
+                // 1. Line 1 draws -> Science Box appears
+                personalityState.timeouts.push(setTimeout(() => card.classList.add('line-1-visible'), 0));
+                personalityState.timeouts.push(setTimeout(() => card.classList.add('science-box-visible', 'science-box-glow'), 600 * t));
+                personalityState.timeouts.push(setTimeout(() => card.classList.remove('science-box-glow'), 1200 * t));
+
+                // 2. Line 2 draws -> Apps Box appears
+                personalityState.timeouts.push(setTimeout(() => card.classList.add('line-2-visible'), 900 * t));
+                personalityState.timeouts.push(setTimeout(() => card.classList.add('apps-box-visible', 'apps-box-glow'), 1500 * t));
+                personalityState.timeouts.push(setTimeout(() => card.classList.remove('apps-box-glow'), 2100 * t));
+
+                // 3. Line 3 draws -> Center Circle pops
+                personalityState.timeouts.push(setTimeout(() => card.classList.add('line-3-visible'), 1800 * t));
+                personalityState.timeouts.push(setTimeout(() => card.classList.add('center-visible'), 2400 * t));
+
+                // 4. OUTER ARCS DRAW (The Fix) -> Harmonia Box Glows
+                // This triggers the mask animation to reveal the dotted lines
+                personalityState.timeouts.push(setTimeout(() => card.classList.add('outer-circle-animating'), 2600 * t));
+                
+                // 5. Final Harmonia Box Glow
+                personalityState.timeouts.push(setTimeout(() => card.classList.add('harmonia-box-visible', 'harmonia-glow'), 3800 * t));
+
+                // 6. Complete (Move to header)
+                personalityState.timeouts.push(setTimeout(() => {
+                    card.classList.add('animation-complete');
+                    setTimeout(() => card.classList.remove('harmonia-glow'), 1000);
+                    personalityState.isOpen = true;
+                    personalityState.animating = false;
+                }, isFirstTime ? 5000 : 3000));
+
+            } else {
+                // Reset/Close
+                card.classList.remove(
+                    'animation-complete', 'harmonia-glow', 'outer-circle-animating',
+                    'harmonia-box-visible', 'center-visible', 'line-3-visible',
+                    'apps-box-visible', 'apps-box-glow', 'line-2-visible',
+                    'science-box-visible', 'science-box-glow', 'line-1-visible'
+                );
+                personalityState.isOpen = false;
+                personalityState.animating = false;
+            }
+        }
+
+        // Preview Helper
+        function resetAndPlay() {
+            triggerPersonalityCardAnimation(false); // Reset
+            setTimeout(() => {
+                triggerPersonalityCardAnimation(true); // Play
+            }, 500);
+        }
+
+        // Init on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initPersonalityCardAnimation();
+            // Auto-play for preview
+            setTimeout(() => triggerPersonalityCardAnimation(true), 500);
+        });
+
+    </script>
+</body>
+</html>
