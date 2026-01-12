@@ -392,51 +392,119 @@
                 The vertical glass tube fills with blue "ink" as you progress. Cards dissolve into gold dust particles.
             </div>
 
-            <section class="module-assessment" data-module="assessment" data-step="3">
-                <div style="max-width: 800px; margin: 0 auto;">
-                    <h2 style="font-family: var(--font-display); font-size: 1.75rem; color: var(--mediterranean-500); text-align: center; margin-bottom: 0.5rem;">
-                        The Inquiry Deck
-                    </h2>
-                    <p style="font-family: var(--font-body); color: var(--parchment-900); opacity: 0.8; text-align: center; margin-bottom: 2rem;">
-                        Answer each question based on your authentic preferences.
-                        This assessment maps your personality across 7 Cardinal Drivers (35% of match score).
-                    </p>
+            <section class="module-assessment" id="module-assessment-section" data-module="assessment" data-step="3" aria-labelledby="assessment-title">
+                <div class="assessment-container">
+                    <!-- Title (Hidden visually but available to screen readers) -->
+                    <h1 class="sr-only" id="assessment-title">Psychometric Assessment - The Inquiry Deck</h1>
 
-                    <div style="display: flex; gap: 2rem; align-items: stretch;">
-                        <div style="flex: 1;">
-                            <article class="assessment-card" style="background: var(--parchment-100); border: 2px solid var(--champagne-400); border-radius: var(--radius-lg); padding: 3rem; position: relative; min-height: 400px;">
-                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.05; pointer-events: none;">
-                                    <svg width="150" height="150" viewBox="0 0 150 150">
-                                        <path d="M75 20 L80 60 L120 65 L80 70 L75 110 L70 70 L30 65 L70 60 Z" fill="var(--champagne-500)"/>
+                    <div class="assessment-instructions" style="text-align: center; margin-bottom: 2rem;">
+                        <h2 style="font-family: var(--font-display); font-size: 1.75rem; color: var(--mediterranean-500); margin-bottom: 0.5rem;">
+                            The Inquiry Deck
+                        </h2>
+                        <p style="font-family: var(--font-body); color: var(--parchment-900); opacity: 0.8;">
+                            Answer each question based on your authentic preferences.
+                            This assessment maps your personality across 7 Cardinal Drivers (35% of match score).
+                        </p>
+                    </div>
+
+                    <!-- Assessment Layout: Card Stack (left) + Progress Tube (right) -->
+                    <div class="assessment-layout" style="display: flex; gap: 2rem; align-items: stretch;">
+
+                        <!-- Card Stack Area -->
+                        <div class="assessment-card-area" style="flex: 1;">
+                            <!-- Active Question Card -->
+                            <article
+                                class="assessment-card"
+                                id="assessment-card"
+                                data-question-index="0"
+                                data-cardinal-driver=""
+                                data-question-id=""
+                                role="region"
+                                aria-labelledby="current-question-text"
+                            >
+                                <!-- Cardinal Driver Icon Watermark (Behind Text) -->
+                                <div class="assessment-card-watermark" id="card-watermark" aria-hidden="true">
+                                    <!-- SVG icon injected dynamically based on Cardinal Driver -->
+                                    <svg class="cardinal-icon" width="200" height="200" viewBox="0 0 200 200">
+                                        <!-- Icon content loaded dynamically -->
                                     </svg>
                                 </div>
 
-                                <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--parchment-900); margin-bottom: 2rem; text-align: center; position: relative;">
-                                    When you envision your ideal intimate relationship:
+                                <!-- Question Text -->
+                                <h3 class="assessment-question-text" id="current-question-text">
+                                    <!-- Question text inserted dynamically -->
                                 </h3>
 
-                                <div style="display: flex; flex-direction: column; gap: 1rem; position: relative;">
-                                    <button class="assessment-choice-btn btn btn-secondary" style="width: 100%; padding: 1.5rem; text-align: left;">
-                                        You prioritize intense emotional connection and vulnerability
+                                <!-- Binary Choice Buttons (A vs B) -->
+                                <div class="assessment-choices" role="group" aria-labelledby="current-question-text">
+                                    <button
+                                        type="button"
+                                        class="assessment-choice-btn"
+                                        id="choice-a"
+                                        data-choice="A"
+                                        aria-label="Choice A"
+                                    >
+                                        <!-- Choice A text inserted dynamically -->
                                     </button>
-                                    <button class="assessment-choice-btn btn btn-secondary" style="width: 100%; padding: 1.5rem; text-align: left;">
-                                        You value steady companionship and mutual respect
+
+                                    <button
+                                        type="button"
+                                        class="assessment-choice-btn"
+                                        id="choice-b"
+                                        data-choice="B"
+                                        aria-label="Choice B"
+                                    >
+                                        <!-- Choice B text inserted dynamically -->
                                     </button>
                                 </div>
+
+                                <!-- Particle Container for Gold Dust Effect -->
+                                <div class="assessment-particles" id="card-particles" aria-hidden="true"></div>
                             </article>
+
+                            <!-- Card Stack Hint (shows depth illusion) -->
+                            <div class="assessment-card-stack-hint" aria-hidden="true">
+                                <div class="stack-card-2"></div>
+                                <div class="stack-card-3"></div>
+                            </div>
                         </div>
 
-                        <aside style="width: 60px;">
-                            <div style="width: 100%; height: 400px; background: linear-gradient(to bottom, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.2) 100%); border: 2px solid var(--champagne-400); border-radius: var(--radius-full); position: relative; overflow: hidden;">
-                                <div style="position: absolute; bottom: 0; width: 100%; height: 28%; background: linear-gradient(to top, var(--mediterranean-500) 0%, #3a5e7c 100%); transition: height 0.8s cubic-bezier(0.65, 0, 0.35, 1);"></div>
+                        <!-- Vertical Progress Tube (Right Side) -->
+                        <aside class="assessment-progress-tube" aria-labelledby="progress-tube-label">
+                            <div class="sr-only" id="progress-tube-label">Assessment Progress</div>
+
+                            <!-- Glass Tube Container -->
+                            <div class="progress-tube-container" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Assessment progress">
+                                <!-- Liquid Fill (animates upward as questions are answered) -->
+                                <div class="progress-tube-liquid" id="progress-liquid" style="height: 0%;"></div>
+
+                                <!-- Measurement Markers -->
+                                <div class="progress-tube-markers" aria-hidden="true">
+                                    <span class="tube-marker" style="bottom: 0%;">0</span>
+                                    <span class="tube-marker" style="bottom: 25%;">25</span>
+                                    <span class="tube-marker" style="bottom: 50%;">50</span>
+                                    <span class="tube-marker" style="bottom: 75%;">75</span>
+                                    <span class="tube-marker" style="bottom: 100%;">100</span>
+                                </div>
+
+                                <!-- Bubble Animation (Optional) -->
+                                <div class="progress-tube-bubbles" aria-hidden="true"></div>
                             </div>
-                            <div style="text-align: center; margin-top: 1rem; font-family: var(--font-body); font-size: 0.875rem; color: var(--parchment-900);">
-                                <span>2</span> of <span>7</span>
+
+                            <!-- Progress Text -->
+                            <div class="progress-tube-text" role="status" aria-live="polite" aria-atomic="true">
+                                <span id="current-question-num">1</span> of <span id="total-questions">7</span> questions
                             </div>
                         </aside>
                     </div>
 
-                    <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 3rem; max-width: 600px; display: block; margin-left: auto; margin-right: auto;" onclick="showModule('analysis')">
+                    <!-- Continue Button (For preview navigation) -->
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        style="width: 100%; margin-top: 3rem; max-width: 600px; display: block; margin-left: auto; margin-right: auto;"
+                        onclick="showModule('analysis')"
+                    >
                         Continue to Analysis
                     </button>
                 </div>
