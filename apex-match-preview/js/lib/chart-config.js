@@ -333,7 +333,10 @@ class HarmoniaCharts {
     }
 }
 
-// Export
+// Export for both Node.js and browser
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = HarmoniaCharts;
+} else {
+    // Browser global export
+    window.HarmoniaCharts = HarmoniaCharts;
 }
