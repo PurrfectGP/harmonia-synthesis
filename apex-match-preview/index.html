@@ -271,30 +271,70 @@
                 The "golden hour glow" effect activates for ratings of 4-5 (Magnetic).
             </div>
 
-            <section class="module-calibration" data-module="calibration" data-step="2">
+            <section class="module-calibration" id="module-calibration-section" data-module="calibration" data-step="2" aria-labelledby="calibration-title">
                 <div class="calibration-gallery">
-                    <h2 style="font-family: var(--font-display); font-size: 1.75rem; color: var(--mediterranean-500); text-align: center; margin-bottom: 0.5rem;">
-                        The Portrait Gallery
-                    </h2>
-                    <p style="font-family: var(--font-body); color: var(--parchment-900); opacity: 0.8; text-align: center; margin-bottom: 2rem;">
-                        Rate each portrait based on your instinctive visual preference.
-                        This calibration establishes your baseline aesthetic pattern (50% of match score).
-                    </p>
+                    <!-- Title (Hidden visually but available to screen readers) -->
+                    <h1 class="sr-only" id="calibration-title">Visual Calibration - Portrait Gallery</h1>
 
-                    <article class="calibration-portrait-frame" style="max-width: 500px; margin: 0 auto; border: 4px solid var(--champagne-400); border-radius: var(--radius-lg); padding: 1rem; background: var(--parchment-100);">
-                        <div style="width: 100%; aspect-ratio: 3/4; background: linear-gradient(135deg, #e6ddd0 0%, #d4c5b0 100%); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-family: var(--font-body); color: var(--parchment-900); opacity: 0.5;">
-                            [Portrait Image Placeholder]
-                        </div>
+                    <div class="calibration-instructions" style="text-align: center; margin-bottom: 2rem;">
+                        <h2 style="font-family: var(--font-display); font-size: 1.75rem; color: var(--mediterranean-500); margin-bottom: 0.5rem;">
+                            The Portrait Gallery
+                        </h2>
+                        <p style="font-family: var(--font-body); color: var(--parchment-900); opacity: 0.8;">
+                            Rate each portrait based on your instinctive visual preference.
+                            This calibration establishes your baseline aesthetic pattern (50% of match score).
+                        </p>
+                    </div>
+
+                    <!-- Portrait Frame Container -->
+                    <article
+                        class="calibration-portrait-frame"
+                        id="portrait-frame"
+                        data-portrait-index="0"
+                        data-portrait-type="stock"
+                        data-portrait-id=""
+                        data-dwell-start=""
+                        role="img"
+                        aria-labelledby="portrait-description"
+                    >
+                        <!-- Portrait Image -->
+                        <img
+                            id="portrait-image"
+                            class="calibration-portrait-image"
+                            src=""
+                            alt=""
+                            aria-describedby="portrait-description"
+                        />
+
+                        <!-- Visually hidden description for screen readers -->
+                        <div id="portrait-description" class="sr-only"></div>
                     </article>
 
-                    <section class="calibration-rating" style="max-width: 500px; margin: 2rem auto;">
-                        <label style="font-family: var(--font-body); font-size: 1rem; color: var(--mediterranean-500); display: block; margin-bottom: 1rem; text-align: center;">
+                    <!-- Rating Slider Section -->
+                    <section class="calibration-rating" aria-labelledby="rating-label">
+                        <label id="rating-label" class="calibration-rating-label">
                             Rate Your Attraction
                         </label>
 
-                        <input type="range" class="custom-slider" min="1" max="5" value="3" step="1" style="width: 100%;">
+                        <!-- Custom Range Slider -->
+                        <input
+                            type="range"
+                            id="calibration-slider"
+                            class="custom-slider"
+                            min="1"
+                            max="5"
+                            value="3"
+                            step="1"
+                            role="slider"
+                            aria-valuemin="1"
+                            aria-valuemax="5"
+                            aria-valuenow="3"
+                            aria-valuetext="Potential"
+                            aria-label="Rate portrait from 1 to 5"
+                        />
 
-                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                        <!-- Slider Labels -->
+                        <div class="calibration-slider-labels" style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
                             <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--parchment-900); opacity: 0.6;">1</span>
                             <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--parchment-900); opacity: 0.6;">2</span>
                             <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--parchment-900); opacity: 0.6;">3</span>
@@ -302,20 +342,42 @@
                             <span style="font-family: var(--font-body); font-size: 0.75rem; color: var(--parchment-900); opacity: 0.6;">5</span>
                         </div>
 
-                        <div class="calibration-feedback potential" style="text-align: center; margin-top: 1rem; font-family: var(--font-display); font-size: 1.25rem; color: var(--mediterranean-500);">
+                        <!-- Feedback Text -->
+                        <div
+                            id="calibration-feedback"
+                            class="calibration-feedback potential"
+                            role="status"
+                            aria-live="polite"
+                        >
                             Potential
                         </div>
 
-                        <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">
+                        <!-- Submit Rating Button -->
+                        <button
+                            type="button"
+                            id="submit-rating-btn"
+                            class="btn btn-primary"
+                            style="width: 100%; margin-top: 1.5rem;"
+                            aria-label="Submit rating and continue to next portrait"
+                        >
                             Continue
                         </button>
                     </section>
 
-                    <div style="text-align: center; margin-top: 2rem; font-family: var(--font-body); color: var(--parchment-900); opacity: 0.7;">
-                        <span>1</span> of <span>50</span> portraits
+                    <!-- Progress Counter -->
+                    <div class="calibration-progress-counter" role="status" aria-live="polite" aria-atomic="true">
+                        <span id="current-portrait">1</span> of <span id="total-portraits">50</span> portraits
                     </div>
 
-                    <button type="button" class="btn btn-secondary" style="width: 100%; max-width: 500px; margin: 1rem auto; display: block;" onclick="showModule('assessment')">
+                    <!-- Skip Button (accessibility feature) -->
+                    <button
+                        type="button"
+                        id="skip-portrait-btn"
+                        class="btn btn-secondary"
+                        style="width: 100%; margin-top: 1rem;"
+                        aria-label="Skip this portrait"
+                        onclick="showModule('assessment')"
+                    >
                         Skip to Assessment
                     </button>
                 </div>
