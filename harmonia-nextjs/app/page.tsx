@@ -90,14 +90,30 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Session 1 Complete Notice */}
-        <div className="text-center">
+        {/* Session Status */}
+        <div className="text-center space-y-4">
           <div className="inline-block px-6 py-3 bg-mediterranean-500 text-white rounded-lg font-sans">
-            ✓ Session 1 Complete: Next.js + Tailwind + Harmonia Design System
+            ✓ Sessions 1-3 Complete: Design System Foundation
           </div>
-          <p className="mt-4 text-sm text-parchment-900/60">
-            Paper grain texture applied • Blue-tinted shadows • Gold accents • Typography configured
+          <p className="text-sm text-parchment-900/60">
+            Paper grain texture • Blue-tinted shadows • Gold accents • Typography configured
           </p>
+
+          {/* Module Navigation */}
+          <div className="pt-8">
+            <h3 className="text-2xl font-serif text-mediterranean-500 mb-4">
+              Experience Harmonia Modules
+            </h3>
+            <div className="flex gap-4 justify-center">
+              <a
+                href="/setup"
+                className="px-6 py-3 bg-champagne-400 text-parchment-900 font-sans rounded-lg hover:bg-champagne-500 transition-colors"
+                style={{boxShadow: 'var(--shadow-md)'}}
+              >
+                Module 1: Setup →
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </main>
