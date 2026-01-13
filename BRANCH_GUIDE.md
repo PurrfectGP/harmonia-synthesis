@@ -2,6 +2,7 @@
 
 **Repository:** `PurrfectGP/harmonia-synthesis`
 **Purpose:** Complete map of all branches and what they contain
+**Last Updated:** 2026-01-13 (All 3 Avery options created)
 
 ---
 
@@ -9,10 +10,22 @@
 
 **You are here!** ⭐
 
-**Purpose:** Clean design workspace for Avery (Option 1)
+**Purpose:** Clean HTML design workspace (Option 1)
 **Source:** `origin/main`
 **Primary File:** `frontend/index.html`
 **Technology:** Vanilla HTML/CSS/JavaScript
+**Documentation:** 42 KB (4 files)
+
+---
+
+## Quick Branch Selector
+
+| Need to... | Use Branch |
+|-----------|------------|
+| Simple HTML design work | **Option 1** ⭐ (this branch) |
+| Work with React components | **Option 2** |
+| HTML work + Next.js reference | **Option 3** |
+| View original work | **quiz-design-merge** |
 
 ---
 
@@ -20,7 +33,7 @@
 
 ### 1. `main` (Production Branch)
 
-**Status:** Stable
+**Status:** ✅ Stable
 **Contains:**
 - Python backend (Flask/FastAPI)
   - `main.py` - Main application
@@ -30,14 +43,13 @@
 - Deployment configurations (Railway, Render, Cloudflare)
 - Documentation (DEPLOYMENT.md, README.md)
 
-**Last Updated:** January 11, 2026
 **Use for:** Production deployments, stable features
 
 ---
 
-### 2. `claude/quiz-design-merge-JtI2J` (Next.js Implementation)
+### 2. `claude/quiz-design-merge-JtI2J` (Original Development Branch)
 
-**Status:** Active development (11 sessions complete)
+**Status:** ✅ Active (11 sessions complete)
 **Contains:**
 - **`harmonia-nextjs/`** - Complete Next.js app
   - Next.js 16.1.1 + React 19
@@ -48,7 +60,7 @@
   - Liquid fill animations with bubbles
 
 - **`apex-match-preview/`** - Modular HTML implementation
-  - Session 1-10: HTML integration work
+  - Sessions 1-10: HTML integration work
   - Comprehensive audit documents
 
 **Sessions Completed:**
@@ -62,13 +74,13 @@
 11. Liquid Fill Animations (waves + bubbles)
 
 **Last Commit:** `a5f63d3` - Session 11: Liquid Fill Animations Complete
-**Use for:** Advanced React components, animation reference
+**Use for:** Reference implementation, understanding what was built
 
 ---
 
 ### 3. `claude/fix-gemini-empty-responses-JtI2J`
 
-**Status:** Backend fixes
+**Status:** ✅ Backend fixes
 **Contains:**
 - Python backend improvements
 - Gemini API error handling
@@ -78,80 +90,139 @@
 
 ---
 
-### 4. `claude/avery-design-option1-JtI2J` ⭐ (You Are Here)
+## Avery's Branch Options (All Created!)
 
-**Status:** Just created for Avery
-**Contains:**
-- `frontend/index.html` (clean from main)
-- Comprehensive documentation:
-  - INSTRUCTIONS.md - How to get started
-  - DESIGN_SYSTEM.md - Colors, typography, spacing
-  - OTHER_IMPLEMENTATIONS.md - What exists on other branches
-  - BRANCH_GUIDE.md - This file
+### Option 1: `claude/avery-design-option1-JtI2J` ⭐ (You Are Here)
 
-**Purpose:** Avery's design workspace (Option 1: Fresh start)
-**Use for:** Design changes to HTML without complexity
+**Status:** ✅ Created (Session 2)
+**Source:** `origin/main`
+**Primary File:** `frontend/index.html` (5,820 lines)
+**Technology:** Vanilla HTML/CSS/JavaScript
+
+**Documentation (42 KB):**
+- `INSTRUCTIONS.md` - How to get started (8.3 KB)
+- `DESIGN_SYSTEM.md` - Colors, typography, spacing (11 KB)
+- `OTHER_IMPLEMENTATIONS.md` - What exists on other branches (14 KB)
+- `BRANCH_GUIDE.md` - This file (8.9 KB)
+
+**Purpose:** Clean slate for HTML design work
+**Best for:**
+- ✅ Quick CSS/HTML tweaks
+- ✅ Working with familiar technology
+- ✅ No build tools needed
+- ✅ Simple, focused approach
+
+**To use:**
+```bash
+git checkout claude/avery-design-option1-JtI2J
+# Edit frontend/index.html
+# Preview in browser
+```
 
 ---
 
-### 5. `claude/avery-design-option2-JtI2J` (Coming in Session 3)
+### Option 2: `claude/avery-design-option2-JtI2J`
 
-**Status:** To be created
-**Will contain:**
-- Full `harmonia-nextjs/` directory
-- All 17 React components
-- Advanced features (particles, animations)
-- Next.js development environment
+**Status:** ✅ Created (Session 3)
+**Source:** `claude/quiz-design-merge-JtI2J` (includes all Sessions 1-11)
+**Primary Directory:** `harmonia-nextjs/`
+**Technology:** Next.js 16.1.1 + React 19 + TypeScript + Tailwind v4 + Framer Motion
 
-**Purpose:** Avery's design workspace (Option 2: Next.js components)
-**Use for:** React component-level design work
+**Documentation (58 KB):**
+- `NEXTJS_INSTRUCTIONS.md` - How to run Next.js (12 KB)
+- `COMPONENT_GUIDE.md` - All 17 components (16 KB)
+- `DESIGN_TOKENS.md` - Tailwind configuration (12 KB)
+- `CHANGELOG_SESSIONS_1-11.md` - Complete build history (18 KB)
+
+**Includes:**
+- ✅ All 17 React components
+- ✅ Gold particle effects
+- ✅ Liquid animations (waves + bubbles)
+- ✅ Spring physics
+- ✅ Complete design system
+
+**Purpose:** Component-level design with React
+**Best for:**
+- ✅ Working with React components
+- ✅ Advanced animations (particles, springs)
+- ✅ Hot reload development
+- ✅ TypeScript type safety
+- ✅ Modern component architecture
+
+**To use:**
+```bash
+git checkout claude/avery-design-option2-JtI2J
+cd harmonia-nextjs
+npm install
+npm run dev
+# Visit http://localhost:3000
+```
 
 ---
 
-### 6. `claude/avery-design-option3-JtI2J` (Coming in Session 4)
+### Option 3: `claude/avery-design-option3-JtI2J`
 
-**Status:** To be created
-**Will contain:**
-- `frontend/index.html` (primary work file)
-- `docs/` folder with extensive cross-references
-- Migration guides for porting features
-- Visual references and comparisons
+**Status:** ✅ Created (Session 4)
+**Source:** `origin/main` (same as Option 1)
+**Primary File:** `frontend/index.html` (5,820 lines)
+**Technology:** Vanilla HTML/CSS/JavaScript
 
-**Purpose:** Avery's design workspace (Option 3: Hybrid with docs)
-**Use for:** HTML design with comprehensive context
+**Documentation (68 KB):**
+- `INSTRUCTIONS.md` - Hybrid approach guide (13 KB)
+- `docs/NEXTJS_REFERENCE.md` - All 17 components reference (17 KB)
+- `docs/BRANCH_COMPARISON.md` - Feature comparison (15 KB)
+- `docs/DESIGN_MIGRATION.md` - React → HTML porting guide (14 KB)
+- `docs/SESSION_HISTORY.md` - Build history summary (9.6 KB)
+
+**Purpose:** HTML work with comprehensive Next.js reference
+**Best for:**
+- ✅ Working on HTML (familiar tech)
+- ✅ Referencing Next.js implementation
+- ✅ Porting features from React to vanilla
+- ✅ Understanding full project context
+- ✅ Having migration guides
+
+**To use:**
+```bash
+git checkout claude/avery-design-option3-JtI2J
+# Edit frontend/index.html
+# Reference docs/ folder when needed
+```
 
 ---
 
 ## Branch Relationships
 
 ```
-main (stable production)
+main (production)
 │
-├── claude/fix-gemini-empty-responses-JtI2J (backend fixes)
+├── claude/fix-gemini-empty-responses-JtI2J
+│   └── Python backend fixes
 │
-├── claude/quiz-design-merge-JtI2J (Next.js + advanced features)
-│   │
-│   └── Sessions 1-11 complete:
-│       ├── harmonia-nextjs/ (Next.js app)
-│       └── apex-match-preview/ (HTML implementation)
+├── claude/quiz-design-merge-JtI2J
+│   ├── harmonia-nextjs/ (Sessions 1-11)
+│   └── apex-match-preview/
 │
-└── Avery's Branches (design work):
+└── Avery's Options (All Created!)
     │
     ├── claude/avery-design-option1-JtI2J ⭐ (YOU ARE HERE)
-    │   └── Clean HTML from main + documentation
+    │   ├── frontend/index.html
+    │   └── Simple HTML focus
     │
-    ├── claude/avery-design-option2-JtI2J (coming soon)
-    │   └── Next.js components from merge-design
+    ├── claude/avery-design-option2-JtI2J
+    │   ├── harmonia-nextjs/ (all 17 components)
+    │   └── React/Next.js focus
     │
-    └── claude/avery-design-option3-JtI2J (coming soon)
-        └── HTML + extensive documentation
+    └── claude/avery-design-option3-JtI2J
+        ├── frontend/index.html
+        └── HTML + comprehensive Next.js docs
 ```
 
 ---
 
 ## Switching Between Branches
 
-### Check Out Another Branch
+### View Another Branch
 
 ```bash
 # See all branches
@@ -160,21 +231,17 @@ git branch -a
 # Switch to a branch
 git checkout <branch-name>
 
-# Example: View Next.js implementation
-git checkout claude/quiz-design-merge-JtI2J
-
-# Return to your design branch
-git checkout claude/avery-design-option1-JtI2J
+# Examples:
+git checkout claude/avery-design-option2-JtI2J  # Option 2 (Next.js)
+git checkout claude/avery-design-option3-JtI2J  # Option 3 (Hybrid)
+git checkout claude/avery-design-option1-JtI2J  # Back to Option 1 (this)
 ```
 
-### View Changes Between Branches
+### Compare Branches
 
 ```bash
-# Compare your branch to main
-git diff main
-
-# Compare to Next.js implementation
-git diff claude/quiz-design-merge-JtI2J
+# See differences between branches
+git diff claude/avery-design-option1-JtI2J claude/avery-design-option2-JtI2J
 
 # See file differences
 git diff main frontend/index.html
@@ -192,97 +259,140 @@ git pull origin claude/avery-design-option1-JtI2J
 
 ---
 
-## What Each Branch is For
+## Feature Comparison Across Options
 
-| Branch | Primary Purpose | Technology | Best For |
-|--------|----------------|------------|----------|
-| **main** | Production | Python + HTML | Stable deployments |
-| **fix-gemini** | Backend fixes | Python | API improvements |
-| **quiz-design-merge** | Advanced UI | Next.js + React | Component library |
-| **avery-option1** ⭐ | Design (HTML) | Vanilla HTML/CSS | Quick design changes |
-| **avery-option2** | Design (React) | Next.js | Component design |
-| **avery-option3** | Design (Hybrid) | HTML + Docs | Comprehensive reference |
+| Feature | Option 1 ⭐ | Option 2 | Option 3 |
+|---------|-----------|----------|----------|
+| **Work on** | HTML | React | HTML |
+| **Build required** | ❌ No | ✅ Yes (npm) | ❌ No |
+| **Hot reload** | Manual | ✅ Auto | Manual |
+| **Next.js reference** | Basic | ✅ Direct | ✅ Docs |
+| **Migration guides** | ❌ | N/A | ✅ Yes |
+| **Gold particles** | ❌ Not included | ✅ Included | 📚 Guide to port |
+| **Liquid animations** | ❌ Not included | ✅ Included | 📚 Guide to port |
+| **Spring physics** | ❌ Not included | ✅ Included | 📚 Approx guide |
+| **Documentation** | 42 KB | 58 KB | 68 KB |
+| **Complexity** | ⭐ Simple | ⭐⭐⭐ Advanced | ⭐⭐ Medium |
 
 ---
 
-## Important Notes
+## Which Branch Should You Use?
 
-### Your Branch is Safe
+### Stay on Option 1 (this branch) if:
 
-- Your changes on `claude/avery-design-option1-JtI2J` **will not** affect other branches
-- You can experiment freely
-- Other collaborators' work is preserved elsewhere
+✅ You want simple HTML design work
+✅ Don't need advanced features (particles, springs)
+✅ Prefer no build tools
+✅ Want to focus on basics (colors, typography, layout)
+✅ Value simplicity over features
 
-### Non-Destructive Exploration
+### Switch to Option 2 if:
 
-You can switch branches to explore:
+✅ You want to work with React components
+✅ Are comfortable with Next.js/TypeScript
+✅ Want all advanced features available
+✅ Like hot reload development
+✅ Plan to build component library
 
+**Command:**
 ```bash
-# Explore Next.js implementation
-git checkout claude/quiz-design-merge-JtI2J
+git checkout claude/avery-design-option2-JtI2J
 cd harmonia-nextjs
 npm install
 npm run dev
-
-# Return to your work (your changes are preserved)
-git checkout claude/avery-design-option1-JtI2J
 ```
 
-Your uncommitted changes will either:
-- Come with you (if files don't conflict)
-- Need to be committed first (Git will warn you)
+### Switch to Option 3 if:
 
-### Git Best Practices
+✅ You want HTML work (like Option 1)
+✅ Want to reference Next.js implementation
+✅ Plan to port some features to HTML
+✅ Need comprehensive documentation
+✅ Want full project context
 
+**Command:**
 ```bash
-# Before switching branches
-git status                    # Check for uncommitted changes
-git add frontend/index.html   # Stage your changes
-git commit -m "Message"       # Commit before switching
-
-# Now safe to switch
-git checkout other-branch
+git checkout claude/avery-design-option3-JtI2J
+# Work on HTML, reference docs/ when needed
 ```
 
 ---
 
-## Where to Find Things
+## What Each Branch Contains
 
-### Design Resources
+### Option 1 (This Branch) ⭐
 
-- **Design System:** `DESIGN_SYSTEM.md` (on this branch)
-- **Color Tokens:** `frontend/index.html` lines 8-60
-- **Typography:** `DESIGN_SYSTEM.md` Typography section
-- **Component Patterns:** `DESIGN_SYSTEM.md` Component Patterns
+```
+claude/avery-design-option1-JtI2J/
+├── frontend/
+│   └── index.html (5,820 lines)
+│
+├── INSTRUCTIONS.md
+├── DESIGN_SYSTEM.md
+├── OTHER_IMPLEMENTATIONS.md
+├── BRANCH_GUIDE.md
+│
+└── Python backend/ (from main)
+```
 
-### Code References
+### Option 2
 
-- **HTML Structure:** `frontend/index.html` lines 1500+
-- **CSS Styles:** `frontend/index.html` lines 60-1500
-- **JavaScript:** `frontend/index.html` embedded `<script>` tags
+```
+claude/avery-design-option2-JtI2J/
+├── harmonia-nextjs/
+│   ├── app/ (pages + globals.css)
+│   ├── components/ (13 files)
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── NEXTJS_INSTRUCTIONS.md
+├── COMPONENT_GUIDE.md
+├── DESIGN_TOKENS.md
+└── CHANGELOG_SESSIONS_1-11.md
+```
 
-### Advanced Features
+### Option 3
 
-- **Next.js Components:** Switch to `claude/quiz-design-merge-JtI2J`, then `harmonia-nextjs/components/`
-- **Animation Examples:** `OTHER_IMPLEMENTATIONS.md` on this branch
-- **Migration Guides:** `OTHER_IMPLEMENTATIONS.md` → "How to Port Features"
+```
+claude/avery-design-option3-JtI2J/
+├── frontend/
+│   └── index.html (5,820 lines)
+│
+├── docs/
+│   ├── NEXTJS_REFERENCE.md
+│   ├── BRANCH_COMPARISON.md
+│   ├── DESIGN_MIGRATION.md
+│   └── SESSION_HISTORY.md
+│
+├── INSTRUCTIONS.md
+└── Python backend/ (from main)
+```
 
 ---
 
 ## Getting Help
 
-### Documentation Files on This Branch
+### Documentation on This Branch
 
 1. **INSTRUCTIONS.md** - Getting started guide
 2. **DESIGN_SYSTEM.md** - Complete design reference
 3. **OTHER_IMPLEMENTATIONS.md** - What's on other branches
 4. **BRANCH_GUIDE.md** - This file (branch overview)
 
-### Other Resources
+### Documentation on Other Branches
 
-- **Main README:** `git checkout main` then read `README.md`
-- **Deployment Docs:** `deployment/` directory on main branch
-- **Session History:** `git log` on any branch
+**Option 2 (Next.js):**
+- NEXTJS_INSTRUCTIONS.md - How to run Next.js
+- COMPONENT_GUIDE.md - All 17 components
+- DESIGN_TOKENS.md - Tailwind config
+- CHANGELOG_SESSIONS_1-11.md - Complete build history
+
+**Option 3 (Hybrid):**
+- INSTRUCTIONS.md - Hybrid approach guide
+- docs/NEXTJS_REFERENCE.md - Component details
+- docs/BRANCH_COMPARISON.md - Feature comparison
+- docs/DESIGN_MIGRATION.md - Porting guides
+- docs/SESSION_HISTORY.md - Build history
 
 ---
 
@@ -305,27 +415,46 @@ git commit -m "Message"                    # Commit
 git push                                   # Push to remote
 
 # Explore branches
-git diff main..claude/quiz-design-merge-JtI2J  # Compare branches
-git log --oneline --graph --all --decorate     # Visual branch tree
+git diff option1..option2                  # Compare branches
+git log --oneline --graph --all --decorate # Visual branch tree
 ```
 
 ---
 
 ## Branch Status Summary
 
-| Branch | Status | Last Updated | Files |
-|--------|--------|--------------|-------|
-| main | ✅ Stable | Jan 11 | Python + HTML |
-| fix-gemini | ✅ Active | Recent | Python backend |
-| quiz-design-merge | ✅ 11 sessions | Jan 12 | Next.js + HTML |
-| avery-option1 ⭐ | 🆕 Just created | Now | HTML + docs |
-| avery-option2 | 📅 Planned | Session 3 | Next.js |
-| avery-option3 | 📅 Planned | Session 4 | HTML + docs |
+| Branch | Status | Created | Files |
+|--------|--------|---------|-------|
+| main | ✅ Stable | - | Python + HTML |
+| fix-gemini | ✅ Active | - | Python backend |
+| quiz-design-merge | ✅ 11 sessions | Sessions 1-11 | Next.js + HTML |
+| **avery-option1** ⭐ | ✅ Ready | Session 2 | HTML + docs (42 KB) |
+| **avery-option2** | ✅ Ready | Session 3 | Next.js (58 KB) |
+| **avery-option3** | ✅ Ready | Session 4 | HTML + docs (68 KB) |
 
 ---
 
-**You're currently working on:** `claude/avery-design-option1-JtI2J`
+## Where to Find Things
 
-**Primary file:** `frontend/index.html`
+### Design Resources
 
-**Ready to start designing!** 🎨
+- **This branch:** DESIGN_SYSTEM.md (colors, typography, spacing)
+- **Option 2:** DESIGN_TOKENS.md (Tailwind configuration)
+- **Option 3:** docs/BRANCH_COMPARISON.md (feature matrix)
+
+### Code Examples
+
+- **This branch:** OTHER_IMPLEMENTATIONS.md (basic porting examples)
+- **Option 2:** COMPONENT_GUIDE.md (all 17 components with code)
+- **Option 3:** docs/DESIGN_MIGRATION.md (step-by-step porting)
+
+### Build History
+
+- **Option 2:** CHANGELOG_SESSIONS_1-11.md (complete details)
+- **Option 3:** docs/SESSION_HISTORY.md (summary)
+
+---
+
+**You're currently on:** `claude/avery-design-option1-JtI2J` (Option 1: Simple HTML) ⭐
+
+**Ready to design!** 🎨
