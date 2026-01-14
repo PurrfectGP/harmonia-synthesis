@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia: Local Network Complete V5.3</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ════════════════════════════════════════════════════════════════════
+         * HARMONIA V5.3 UNIFIED DESIGN SYSTEM
+         * ════════════════════════════════════════════════════════════════════
+         */
+        :root {
+            --cream: #FAF6F1;
+            --parchment: #F0E8DF;
+            --parchment-dark: #E6DCD0;
+            --gold: #D4A853;
+            --gold-dim: #C59A45;
+            --gold-light: rgba(212, 168, 83, 0.15);
+            --maroon: #722F37;
+            --maroon-deep: #5C1A1B;
+            --maroon-faded: rgba(114, 47, 55, 0.1);
+            --ink: #2A2424;
+            --code-bg: #1a1b1e;
+            --code-text: #E8C97A; 
+            
+            --font-display: 'Cormorant Garamond', serif;
+            --font-ui: 'DM Sans', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            
+            --radius-lg: 12px;
+            --radius-md: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--cream);
+            color: var(--maroon-deep);
+            font-family: var(--font-ui);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, transparent 100%);
+            overflow: hidden; /* Prevent body scroll, handle in containers */
+        }
+
+        .app-shell {
+            width: 100%;
+            max-width: 1400px;
+            height: 95vh;
+            background: var(--parchment);
+            border: 1px solid var(--gold);
+            box-shadow: 
+                0 0 0 4px #E6DCD0,
+                0 0 0 5px var(--gold),
+                0 20px 60px rgba(92, 26, 27, 0.25);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* HEADER */
+        .app-header {
+            height: 65px;
+            background: linear-gradient(to right, #FAF6F1, #E6DCD0);
+            border-bottom: 1px solid var(--gold-dim);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 20;
+        }
+
+        .header-brand {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--maroon);
+            letter-spacing: 0.05em;
+        }
+
+        .header-meta {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--maroon-deep);
+            opacity: 0.7;
+            background: rgba(255,255,255,0.5);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--gold-light);
+        }
+
+        /* ════════════════════════════════════════════════════
+           MODULE 1: SETUP WIZARD (INPUT)
+           ════════════════════════════════════════════════════ */
+        .module-setup {
+            position: absolute;
+            top: 65px; left: 0; width: 100%; height: calc(100% - 65px);
+            background: var(--parchment);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+        .module-setup.exit { transform: translateY(-100%); }
+
+        .progress-bar {
+            height: 4px;
+            width: 100%;
+            background: var(--gold-light);
+            position: relative;
+        }
+        .progress-fill { height: 100%; background: var(--maroon); width: 25%; transition: width 0.5s ease; }
+
+        .wizard-stage {
+            flex: 1;
+            padding: 2rem;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            overflow-y: auto;
+        }
+        .wizard-stage.active { display: block; }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .stage-header {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--maroon);
+            margin-bottom: 0.5rem;
+        }
+        .stage-sub {
+            font-family: var(--font-ui);
+            color: var(--ink);
+            opacity: 0.7;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        /* Setup Components */
+        .upload-box {
+            border: 2px dashed var(--gold);
+            padding: 3rem;
+            text-align: center;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.4);
+        }
+        .upload-box:hover { background: rgba(212, 168, 83, 0.1); border-color: var(--maroon); }
+
+        .felix-terminal {
+            background: #fff;
+            border: 1px solid var(--gold-dim);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            font-family: var(--font-code);
+            display: grid;
+            gap: 1rem;
+        }
+
+        .felix-input-group {
+            display: grid;
+            grid-template-columns: 150px 1fr 50px;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            border-bottom: 1px dashed #eee;
+        }
+        .felix-input-group:last-child { border-bottom: none; }
+
+        .felix-label { color: var(--maroon); font-weight: bold; }
+        
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--maroon);
+        }
+
+        .code-stream {
+            background: var(--code-bg);
+            color: var(--code-text);
+            font-family: var(--font-code);
+            padding: 2rem;
+            height: 100%;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+        }
+
+        .wizard-nav {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--gold-light);
+            display: flex;
+            justify-content: flex-end;
+            background: var(--parchment);
+        }
+        
+        .btn-main {
+            background: var(--maroon); color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 0.8rem 2rem;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+        /* ════════════════════════════════════════════════════
+           MODULE 2: THE BRIDGE (ENGINE ANIMATION)
+           ════════════════════════════════════════════════════ */
+        .module-engine {
+            position: absolute;
+            top: 65px; left: 0; width: 100%; height: calc(100% - 65px);
+            background: radial-gradient(circle, var(--cream) 0%, var(--parchment) 100%);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        .module-engine.active { opacity: 1; pointer-events: all; }
+
+        .nodes-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .node-ring {
+            width: 100px; height: 100px;
+            border: 2px solid var(--gold-dim);
+            border-radius: 50%;
+            display: flex;
+            align-items: center; justify-content: center;
+            font-size: 2.5rem;
+            background: var(--cream);
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+        
+        .node-connector {
+            width: 100px; height: 4px;
+            background: var(--gold-light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .connector-fill { width: 0%; height: 100%; background: var(--maroon); }
+
+        .engine-text {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--maroon);
+            margin-bottom: 0.5rem;
+        }
+        
+        .engine-sub {
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            color: var(--gold-dim);
+        }
+
+        /* ════════════════════════════════════════════════════
+           MODULE 3: THE SUITE (RESULTS DASHBOARD)
+           ════════════════════════════════════════════════════ */
+        .module-results {
+            position: absolute;
+            top: 65px; left: 0; width: 100%; height: calc(100% - 65px);
+            background: var(--parchment);
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            opacity: 0; /* Hidden initially */
+            transition: opacity 1s;
+        }
+        .module-results.visible { opacity: 1; }
+
+        .results-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--parchment);
+            border-bottom: 1px solid var(--gold-light);
+        }
+
+        .nav-pill {
+            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--gold-dim);
+            border-radius: 20px;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--maroon);
+            background: transparent;
+        }
+        .nav-pill.active { background: var(--maroon); color: var(--cream); }
+
+        .results-body {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-view {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            padding: 2rem;
+            overflow-y: auto;
+            display: none;
+        }
+        .result-view.active { display: block; animation: slideUp 0.5s ease; }
+        
+        @keyframes slideUp { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+        /* CUSTOMER CARD */
+        .customer-card {
+            max-width: 900px; margin: 0 auto;
+            background: var(--cream); border: 1px solid var(--gold);
+            padding: 2rem;
+            display: grid; grid-template-columns: 300px 1fr; gap: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .customer-card::before {
+            content:''; position:absolute; top:5px; left:5px; right:5px; bottom:5px;
+            border: 1px solid var(--gold-light); pointer-events:none;
+        }
+
+        .spark-badge {
+            background: linear-gradient(135deg, var(--maroon), #4a1c20);
+            color: var(--gold); padding: 1rem; text-align: center;
+            border: 1px solid var(--gold); margin-top: 1rem;
+        }
+
+        /* ADMIN/RESEARCHER UTILS */
+        .json-viewer {
+            background: var(--code-bg); color: #d4d4d4;
+            padding: 1rem; font-family: var(--font-code); font-size: 0.75rem;
+            border: 1px solid #333; overflow: auto; height: 100%;
+        }
+
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .data-card { background: #fff; padding: 1rem; border: 1px solid var(--gold-light); }
+        .data-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #eee; padding: 4px 0; font-family: var(--font-code); font-size: 0.8rem; }
+
+        .repo-layout { display: grid; grid-template-columns: 300px 1fr; height: 100%; gap: 0; }
+        .file-tree { background: #fff; padding: 1rem; border-right: 1px solid var(--gold-dim); overflow-y: auto; }
+        .file-item { padding: 5px; cursor: pointer; font-family: var(--font-code); font-size: 0.8rem; margin-left: 15px; }
+        .file-item:hover { background: var(--gold-light); }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-shell">
+        
+        <!-- HEADER -->
+        <div class="app-header">
+            <div class="header-brand">HARMONIA <span style="font-weight:400; font-style:italic; font-size:1rem;">// Local Node</span></div>
+            <div class="header-meta">V5.3 MASTER SPEC | /app/data | SECURE</div>
+        </div>
+
+        <!-- MODULE 1: SETUP WIZARD -->
+        <div class="module-setup" id="setup-module">
+            <div class="progress-bar"><div class="progress-fill" id="setup-progress"></div></div>
+            
+            <!-- STEP 1: VISUAL -->
+            <div class="wizard-stage active" id="step-1">
+                <div class="stage-header">Phase 1: Visual Calibration</div>
+                <div class="stage-sub">Upload primary asset and initiate SCUT-FBP5500 feature extraction.</div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div class="upload-box" onclick="this.style.borderColor='var(--maroon)'; document.getElementById('up-msg').innerText='Asset Acquired';">
+                        <i class="fas fa-camera" style="font-size:2rem; color:var(--gold-dim); margin-bottom:1rem;"></i>
+                        <div style="font-family:var(--font-display); font-size:1.2rem;">Upload Primary Photo</div>
+                        <div id="up-msg" style="color:var(--maroon); margin-top:10px; font-weight:bold;"></div>
+                    </div>
+                    <div style="background:#fff; padding:1rem; border:1px solid var(--gold-dim);">
+                        <div style="font-family:var(--font-code); color:var(--gold-dim);">CALIBRATION DECK (1/14)</div>
+                        <div style="width:100%; height:200px; background:#eee; margin:1rem 0; display:flex; align-items:center; justify-content:center; color:#999;">
+                            [SCUT-FBP5500 IMAGE MOCK]
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <button style="flex:1; padding:5px; border:1px solid var(--maroon);">Pass</button>
+                            <button style="flex:1; padding:5px; background:var(--maroon); color:#fff; border:none;">Attract</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: PSYCH (FELIX) -->
+            <div class="wizard-stage" id="step-2">
+                <div class="stage-header">Phase 2: Felix Terminal (PIIP)</div>
+                <div class="stage-sub">Input psychometric values for the Seven Sins vector. System will detect friction points.</div>
+                
+                <div class="felix-terminal">
+                    <div class="felix-input-group">
+                        <div class="felix-label">LUST (Drive)</div>
+                        <input type="range" min="0" max="100" value="85" oninput="document.getElementById('v-lust').innerText=this.value">
+                        <div id="v-lust">85</div>
+                    </div>
+                    <div class="felix-input-group">
+                        <div class="felix-label">GLUTTONY</div>
+                        <input type="range" min="0" max="100" value="40" oninput="document.getElementById('v-glut').innerText=this.value">
+                        <div id="v-glut">40</div>
+                    </div>
+                    <div class="felix-input-group">
+                        <div class="felix-label">GREED</div>
+                        <input type="range" min="0" max="100" value="60" oninput="document.getElementById('v-greed').innerText=this.value">
+                        <div id="v-greed">60</div>
+                    </div>
+                    <div class="felix-input-group">
+                        <div class="felix-label">SLOTH (Energy)</div>
+                        <input type="range" min="0" max="100" value="20" oninput="document.getElementById('v-sloth').innerText=this.value">
+                        <div id="v-sloth">20</div>
+                    </div>
+                    <div class="felix-input-group">
+                        <div class="felix-label">PRIDE (Ego)</div>
+                        <input type="range" min="0" max="100" value="75" oninput="document.getElementById('v-pride').innerText=this.value">
+                        <div id="v-pride">75</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: BIO (VAULT) -->
+            <div class="wizard-stage" id="step-3">
+                <div class="stage-header">Phase 3: Secure HIBAG Ingestion</div>
+                <div class="stage-sub">Drop 23andMe Archive. Data is Fernet-encrypted client-side.</div>
+                
+                <div class="upload-box" style="height:300px; display:flex; flex-direction:column; justify-content:center; align-items:center;" onclick="document.getElementById('enc-status').innerText='ENCRYPTING: p3_hla_secure.enc...'">
+                    <i class="fas fa-fingerprint" style="font-size:3rem; color:var(--maroon); margin-bottom:1rem;"></i>
+                    <div style="font-family:var(--font-display); font-size:1.5rem;">Secure Vault Drop</div>
+                    <div id="enc-status" style="font-family:var(--font-code); margin-top:1rem; color:var(--maroon);"></div>
+                </div>
+            </div>
+
+            <!-- STEP 4: COMPILE -->
+            <div class="wizard-stage" id="step-4">
+                <div class="stage-header">Compiling Profile...</div>
+                <div class="code-stream" id="terminal-output">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+
+            <div class="wizard-nav">
+                <button class="btn-main" onclick="nextWizardStep()">CONTINUE <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <!-- MODULE 2: ENGINE (THE BRIDGE) -->
+        <div class="module-engine" id="engine-module">
+            <div class="nodes-wrapper">
+                <div class="node-ring" id="node-1">👁️</div>
+                <div class="node-connector"><div class="connector-fill" id="fill-1"></div></div>
+                <div class="node-ring" id="node-2">🧠</div>
+                <div class="node-connector"><div class="connector-fill" id="fill-2"></div></div>
+                <div class="node-ring" id="node-3">🧬</div>
+            </div>
+            <div class="engine-text" id="eng-status">INITIALIZING...</div>
+            <div class="engine-sub" id="eng-detail">Connecting to Global Registry...</div>
+        </div>
+
+        <!-- MODULE 3: RESULTS SUITE -->
+        <div class="module-results" id="results-module">
+            <div class="results-nav">
+                <button class="nav-pill active" onclick="showResultTab('customer', this)">Customer</button>
+                <button class="nav-pill" onclick="showResultTab('researcher', this)">Researcher</button>
+                <button class="nav-pill" onclick="showResultTab('admin', this)">Admin (Files)</button>
+            </div>
+
+            <div class="results-body">
+                <!-- A: CUSTOMER -->
+                <div id="res-customer" class="result-view active">
+                    <div class="customer-card">
+                        <div>
+                            <div style="width:100%; aspect-ratio:1; background:#ddd; border:2px solid var(--gold); padding:5px;">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400" style="width:100%; height:100%; object-fit:cover; filter:sepia(0.3)">
+                            </div>
+                            <h2 style="font-family:var(--font-display); font-size:2rem; margin-top:1rem;">Match #892</h2>
+                            <div class="spark-badge">⚡ INSTANT SPARK</div>
+                        </div>
+                        <div>
+                            <div style="font-family:var(--font-display); font-size:1.8rem; color:var(--maroon);">"A Classic 'Opposites Attract' Dynamic."</div>
+                            <p style="font-family:var(--font-ui); margin:1rem 0; line-height:1.6;">
+                                You have incredible physical and biological chemistry. While you share core values, your different energy levels (Subject A's drive vs. Subject B's relaxed nature) will keep things exciting.
+                            </p>
+                            <!-- Mini Charts -->
+                            <div style="display:flex; gap:10px; margin-top:2rem;">
+                                <div style="flex:1; background:var(--gold-light); height:10px; border-radius:5px;"><div style="width:92%; height:100%; background:var(--maroon); border-radius:5px;"></div><div style="font-size:0.7rem; margin-top:5px;">Physical</div></div>
+                                <div style="flex:1; background:var(--gold-light); height:10px; border-radius:5px;"><div style="width:52%; height:100%; background:var(--maroon); border-radius:5px;"></div><div style="font-size:0.7rem; margin-top:5px;">Lifestyle</div></div>
+                                <div style="flex:1; background:var(--gold-light); height:10px; border-radius:5px;"><div style="width:98%; height:100%; background:var(--maroon); border-radius:5px;"></div><div style="font-size:0.7rem; margin-top:5px;">Bio-Chem</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B: RESEARCHER -->
+                <div id="res-researcher" class="result-view">
+                    <div class="grid-layout">
+                        <div class="data-card">
+                            <div style="font-family:var(--font-display); font-size:1.2rem; color:var(--maroon); margin-bottom:1rem;">Visual Forensic</div>
+                            <div class="data-row"><span>Landmarks</span><span>68</span></div>
+                            <div class="data-row"><span>fWHR</span><span>1.84</span></div>
+                            <div class="data-row"><span>Symmetry</span><span>98.2%</span></div>
+                        </div>
+                        <div class="data-card">
+                            <div style="font-family:var(--font-display); font-size:1.2rem; color:var(--maroon); margin-bottom:1rem;">Psych Forensic</div>
+                            <div style="height:150px;"><canvas id="radarChart"></canvas></div>
+                            <div class="data-row" style="margin-top:10px;"><span>Sloth Delta</span><span style="color:red">-0.4</span></div>
+                        </div>
+                        <div class="data-card">
+                            <div style="font-family:var(--font-display); font-size:1.2rem; color:var(--maroon); margin-bottom:1rem;">Bio Forensic</div>
+                            <div class="data-row"><span>HLA-A</span><span>A*01 + A*24</span></div>
+                            <div class="data-row"><span>HLA-B</span><span>B*08 + B*44</span></div>
+                            <div class="data-row"><span>Heterozygosity</span><span>0.916</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C: ADMIN (REPO) -->
+                <div id="res-admin" class="result-view" style="padding:0;">
+                    <div class="repo-layout">
+                        <div class="file-tree">
+                            <div style="font-weight:bold; color:var(--gold-dim); margin-bottom:10px;">/app/data/profiles/uuid_892a/</div>
+                            <div class="file-item" onclick="viewFile('p1')">📄 p1_visual_vector.json</div>
+                            <div class="file-item" onclick="viewFile('p2')">📄 p2_psych_piip.json</div>
+                            <div class="file-item" onclick="viewFile('p3')">🔒 p3_hla_secure.enc</div>
+                            
+                            <div style="font-weight:bold; color:var(--gold-dim); margin:15px 0 10px 0;">/app/data/reports/match_892/</div>
+                            <div class="file-item" onclick="viewFile('reasoning')">📊 reasoning_chain.json</div>
+                            <div class="file-item" onclick="viewFile('narrative')">📝 gemini_narrative.md</div>
+                        </div>
+                        <div class="json-viewer">
+                            <div id="file-title" style="border-bottom:1px solid #444; margin-bottom:10px; color:var(--gold);">SELECT FILE</div>
+                            <pre id="file-content"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ════════════════════════════════════════════════════
+        // STATE & DATA
+        // ════════════════════════════════════════════════════
+        let setupStep = 1;
+        const fileData = {
+            p1: `{\n  "uuid": "892a",\n  "visual": { "landmarks": 68, "fWHR": 1.84, "calibrated": true }\n}`,
+            p2: `{\n  "uuid": "892a",\n  "piip": { "lust": 85, "sloth": 20, "pride": 75 }\n}`,
+            p3: `<ENCRYPTED>\nKey: FERNET_04\nHash: 8x92a...`,
+            reasoning: `{\n  "match_id": "892",\n  "score": 0.75,\n  "logic": "Opposites Attract"\n}`,
+            narrative: `# Match Analysis\nTarget B exhibits high dimorphism...`
+        };
+
+        // ════════════════════════════════════════════════════
+        // SETUP WIZARD LOGIC
+        // ════════════════════════════════════════════════════
+        function nextWizardStep() {
+            // Hide current
+            document.getElementById(`step-${setupStep}`).classList.remove('active');
+            
+            setupStep++;
+            document.getElementById('setup-progress').style.width = `${setupStep * 25}%`;
+
+            if (setupStep <= 4) {
+                // Show next
+                document.getElementById(`step-${setupStep}`).classList.add('active');
+                
+                // If final step, run terminal then transition
+                if(setupStep === 4) {
+                    runTerminal();
+                }
+            }
+        }
+
+        function runTerminal() {
+            const term = document.getElementById('terminal-output');
+            const lines = [
+                "Writing p1_visual_vector.json...",
+                "Writing p2_psych_piip.json...",
+                "Encrypting p3_hla_secure.enc...",
+                "Files Committed to /app/data.",
+                "Initiating Match Engine..."
+            ];
+
+            lines.forEach((l, i) => {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.innerText = `> ${l}`;
+                    term.appendChild(div);
+                }, i * 800);
+            });
+
+            // TRIGGER ENGINE AFTER TERMINAL
+            setTimeout(triggerEngine, 4500);
+        }
+
+        // ════════════════════════════════════════════════════
+        // ENGINE LOGIC
+        // ════════════════════════════════════════════════════
+        function triggerEngine() {
+            // Slide Setup Up/Out
+            document.getElementById('setup-module').classList.add('exit');
+            
+            // Show Engine
+            const engine = document.getElementById('engine-module');
+            engine.classList.add('active');
+
+            const tl = gsap.timeline();
+            const status = document.getElementById('eng-status');
+            const sub = document.getElementById('eng-detail');
+
+            // Phase 1
+            tl.to('#node-1', { scale:1.2, borderColor:'#722F37', duration:0.5 });
+            tl.to('#fill-1', { width:'100%', duration:1.5, onStart:()=> {
+                status.innerText = "PHASE 1: META-FBP";
+                sub.innerText = "Analyzing Facial Embeddings...";
+            }});
+            tl.to('#node-1', { scale:1, borderColor:'#D4A853' });
+
+            // Phase 2
+            tl.to('#node-2', { scale:1.2, borderColor:'#722F37', duration:0.5 });
+            tl.to('#fill-2', { width:'100%', duration:1.5, onStart:()=> {
+                status.innerText = "PHASE 2: PIIP";
+                sub.innerText = "Mapping Seven Sins Vector...";
+            }});
+            tl.to('#node-2', { scale:1, borderColor:'#D4A853' });
+
+            // Phase 3
+            tl.to('#node-3', { scale:1.2, borderColor:'#722F37', duration:0.5, onStart:()=> {
+                status.innerText = "PHASE 3: HLA/HIBAG";
+                sub.innerText = "Decrypting & Comparing Alleles...";
+            }});
+
+            // Transition to Results
+            tl.call(showResults, null, "+=1");
+        }
+
+        function showResults() {
+            document.getElementById('engine-module').style.opacity = 0;
+            document.getElementById('engine-module').style.pointerEvents = 'none';
+            document.getElementById('results-module').classList.add('visible');
+            
+            // Init Chart for Researcher Tab (even if hidden initially)
+            initChart();
+        }
+
+        // ════════════════════════════════════════════════════
+        // RESULTS LOGIC
+        // ════════════════════════════════════════════════════
+        function showResultTab(id, btn) {
+            document.querySelectorAll('.result-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`res-${id}`).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function viewFile(key) {
+            document.getElementById('file-title').innerText = key.toUpperCase() + ".JSON";
+            document.getElementById('file-content').innerText = fileData[key];
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('radarChart');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['LUST', 'GLUTTONY', 'GREED', 'SLOTH', 'WRATH', 'ENVY', 'PRIDE'],
+                    datasets: [{
+                        label: 'Target',
+                        data: [85, 40, 60, 20, 30, 50, 75],
+                        backgroundColor: 'rgba(114, 47, 55, 0.2)',
+                        borderColor: '#722F37',
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: { r: { ticks: { display: false }, grid: { color: 'rgba(212, 168, 83, 0.3)' } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
