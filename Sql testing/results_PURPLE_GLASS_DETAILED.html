@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia Results - Purple Glassmorphism</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* GLASSMORPHISM CARDS */
+        /* ═══════════════════════════════════════════════ */
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* HEADER */
+        /* ═══════════════════════════════════════════════ */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* OVERALL SCORE - BIG HERO */
+        /* ═══════════════════════════════════════════════ */
+        .overall-card {
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .score-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .score-ring {
+            transform: rotate(-90deg);
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 15;
+        }
+
+        .ring-progress {
+            fill: none;
+            stroke: url(#scoreGradient);
+            stroke-width: 15;
+            stroke-linecap: round;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 113;
+            animation: fillRing 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fillRing {
+            from { stroke-dashoffset: 565; }
+            to { stroke-dashoffset: 113; }
+        }
+
+        .score-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .score-value {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .score-unit {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.5rem;
+        }
+
+        .verdict {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* COMPONENT CARDS - WITH LEFT BORDER COLORS */
+        /* ═══════════════════════════════════════════════ */
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .component-card {
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .component-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+        }
+
+        .component-card.visual {
+            border-left: 4px solid #ec4899;
+        }
+
+        .component-card.personality {
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .component-card.genetic {
+            border-left: 4px solid #06b6d4;
+        }
+
+        .component-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .component-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .component-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .component-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* DETAILED INSIGHTS - GLASS CARDS WITH COLOR BORDERS */
+        /* ═══════════════════════════════════════════════ */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .insight-card {
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .insight-card.vibe {
+            grid-column: span 2;
+            border-left: 4px solid #a78bfa;
+        }
+
+        .insight-card.first-impression {
+            border-left: 4px solid #ec4899;
+        }
+
+        .insight-card.long-term {
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .insight-card.mutual {
+            border-left: 4px solid #06b6d4;
+        }
+
+        .insight-card h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .insight-card.vibe h3 { color: #a78bfa; }
+        .insight-card.first-impression h3 { color: #ec4899; }
+        .insight-card.long-term h3 { color: #8b5cf6; }
+        .insight-card.mutual h3 { color: #06b6d4; }
+
+        .insight-card p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* RADAR CHART SECTION */
+        /* ═══════════════════════════════════════════════ */
+        .chart-section {
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-section h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .chart-wrapper {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .legend-instruction {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            font-style: italic;
+            padding: 1rem;
+            background: rgba(236, 72, 153, 0.1);
+            border-radius: 12px;
+            border-left: 3px solid #ec4899;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* THEMES - PILL BADGES */
+        /* ═══════════════════════════════════════════════ */
+        .themes-section {
+            margin-bottom: 3rem;
+        }
+
+        .themes-section h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .theme-badge {
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            color: #ec4899;
+            padding: 1rem 1.5rem;
+            border-radius: 100px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .theme-badge:hover {
+            background: rgba(236, 72, 153, 0.25);
+            border-color: rgba(236, 72, 153, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* FLAGS */
+        /* ═══════════════════════════════════════════════ */
+        .flags-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .flag-card {
+            padding: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+        }
+
+        .flag-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .flag-card.green {
+            border-left: 4px solid #22c55e;
+        }
+
+        .flag-card.red {
+            border-left: 4px solid #ef4444;
+        }
+
+        .flag-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .flag-content h3 {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .flag-content p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* DOWNLOAD BUTTON */
+        /* ═══════════════════════════════════════════════ */
+        .actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1.25rem 3rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            box-shadow: 0 8px 24px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(236, 72, 153, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* RESPONSIVE */
+        /* ═══════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .components-grid,
+            .insights-grid,
+            .themes-grid,
+            .flags-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .insight-card.vibe {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Compatibility Complete</h1>
+            <p>Alice & Bob — Analysis Results</p>
+        </div>
+
+        <!-- Overall Score -->
+        <div class="glass overall-card">
+            <div class="score-label">Overall Compatibility</div>
+            <div class="score-circle">
+                <svg class="score-ring" width="200" height="200">
+                    <defs>
+                        <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="ring-bg" cx="100" cy="100" r="90" />
+                    <circle class="ring-progress" cx="100" cy="100" r="90" />
+                </svg>
+                <div class="score-content">
+                    <div class="score-value">80</div>
+                    <div class="score-unit">%</div>
+                </div>
+            </div>
+            <p class="verdict">
+                Strong compatibility with meaningful depth across multiple dimensions of connection. This pairing shows genuine potential for sustained intimacy and mutual growth.
+            </p>
+        </div>
+
+        <!-- Component Scores -->
+        <div class="components-grid">
+            <div class="glass component-card visual">
+                <div class="component-icon">🖼️</div>
+                <div class="component-label">Visual Chemistry</div>
+                <div class="component-score">75%</div>
+                <div class="component-description">The immediate spark</div>
+            </div>
+            
+            <div class="glass component-card personality">
+                <div class="component-icon">🧠</div>
+                <div class="component-label">Personality Resonance</div>
+                <div class="component-score">82%</div>
+                <div class="component-description">The deeper alignment</div>
+            </div>
+            
+            <div class="glass component-card genetic">
+                <div class="component-icon">🧬</div>
+                <div class="component-label">Genetic Harmony</div>
+                <div class="component-score">78%</div>
+                <div class="component-description">The invisible chemistry</div>
+            </div>
+        </div>
+
+        <!-- Detailed Insights - Glass Cards with Color Borders -->
+        <div class="insights-grid">
+            <div class="glass insight-card vibe">
+                <h3>💜 The Vibe</h3>
+                <p>
+                    A balanced and authentic connection characterized by mutual respect and genuine curiosity about each other. The energy between you feels natural and comfortable, with moments of both playful chemistry and deeper intellectual resonance. There's a sense of ease in communication paired with enough difference to keep things interesting and dynamic.
+                </p>
+            </div>
+
+            <div class="glass insight-card first-impression">
+                <h3>👀 First Impression</h3>
+                <p>
+                    Strong initial chemistry driven by both visual appeal and an intuitive sense of personality compatibility. First encounters would likely feel natural and engaging, with conversational flow coming easily. The combination of aesthetic attraction and perceived similarity creates a foundation of immediate interest and comfort that invites further exploration.
+                </p>
+            </div>
+
+            <div class="glass insight-card long-term">
+                <h3>🔑 Long-Term Key</h3>
+                <p>
+                    Success hinges on embracing complementary differences while building on shared values. Open communication about differing processing speeds and decision-making approaches will be essential. The strong foundation of mutual respect and intellectual compatibility provides excellent raw material for building lasting intimacy and partnership.
+                </p>
+            </div>
+
+            <div class="glass insight-card mutual">
+                <h3>🤝 Mutual Perception</h3>
+                <p>
+                    Both are likely to perceive each other as thoughtful, emotionally mature individuals with depth and complexity. There's an appreciation for each other's introspective qualities and genuine approach to relationships. The perception of shared values and complementary strengths creates a foundation of mutual understanding that can deepen over time.
+                </p>
+            </div>
+        </div>
+
+        <!-- Radar Chart -->
+        <div class="glass chart-section">
+            <h2>Personality Profile Comparison</h2>
+            <div class="chart-wrapper">
+                <div>
+                    <canvas id="radarChart" width="500" height="500"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-instruction">
+                        💡 This chart visualizes personality traits across seven key dimensions
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ec4899;"></div>
+                        <span>Alice</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #8b5cf6;"></div>
+                        <span>Bob</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connection Themes -->
+        <div class="themes-section">
+            <h2>Connection Themes</h2>
+            <div class="themes-grid">
+                <div class="theme-badge">Complementary Dynamics</div>
+                <div class="theme-badge">Shared Growth Potential</div>
+                <div class="theme-badge">Authentic Connection</div>
+            </div>
+        </div>
+
+        <!-- Flags -->
+        <div class="flags-grid">
+            <div class="glass flag-card green">
+                <div class="flag-icon">🟢</div>
+                <div class="flag-content">
+                    <h3>Green Flag</h3>
+                    <p>
+                        Both demonstrate emotional intelligence and genuine openness to understanding different perspectives. This foundation of mutual respect and curiosity creates space for authentic connection and collaborative problem-solving. The combination of intellectual compatibility and emotional maturity suggests strong potential for sustained intimacy.
+                    </p>
+                </div>
+            </div>
+
+            <div class="glass flag-card red">
+                <div class="flag-icon">🔴</div>
+                <div class="flag-content">
+                    <h3>Red Flag</h3>
+                    <p>
+                        Different communication rhythms and processing speeds may occasionally create friction. Being aware of these differences and practicing patience will help navigate moments where one needs more time to process while the other prefers immediate resolution. What looks like conflict might actually be complementary approaches seeking integration.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn btn-primary" onclick="alert('Download functionality - connects to backend')">
+                <span>📄</span>
+                <span>Download Full Report</span>
+            </button>
+            <button class="btn btn-secondary" onclick="alert('Restart')">
+                Start New Analysis
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Render Radar Chart
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Greed', 'Pride', 'Lust', 'Wrath', 'Gluttony', 'Envy', 'Sloth'],
+                datasets: [{
+                    label: 'Alice',
+                    data: [2.5, 1.0, -1.5, 0.5, 3.0, -2.0, 1.5],
+                    borderColor: '#ec4899',
+                    backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ec4899',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#ec4899',
+                    pointRadius: 6,
+                    pointHoverRadius: 9
+                }, {
+                    label: 'Bob',
+                    data: [1.5, 2.0, -0.5, -1.0, 2.0, -1.5, 0.5],
+                    borderColor: '#8b5cf6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#8b5cf6',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#8b5cf6',
+                    pointRadius: 6,
+                    pointHoverRadius: 9
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        min: -5,
+                        max: 5,
+                        ticks: { 
+                            stepSize: 2.5,
+                            color: 'rgba(255, 255, 255, 0.5)',
+                            backdropColor: 'transparent'
+                        },
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        angleLines: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        pointLabels: { 
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#ec4899',
+                        bodyColor: 'white',
+                        borderColor: '#ec4899',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true
+                    }
+                },
+                interaction: {
+                    mode: 'point',
+                    intersect: true
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+    </script>
+</body>
+</html>
